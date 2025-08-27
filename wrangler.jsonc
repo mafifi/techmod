@@ -39,8 +39,8 @@
 	 */
 
 	"vars": {
-		"CONVEX_DEPLOYMENT": "dev:third-parakeet-727",
-		"PUBLIC_CONVEX_URL": "https://third-parakeet-727.convex.cloud",
+		"CONVEX_DEPLOYMENT": "prod:coordinated-hare-711",
+		"PUBLIC_CONVEX_URL": "https://coordinated-hare-711.convex.cloud",
 	},
 
 	"env": {
