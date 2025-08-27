@@ -1,38 +1,51 @@
-# sv
+# TechMod
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+TechMod is a platform for centrally tracking and managing modernization strategy across the firm. It helps organizations model products, govern lifecycle, categorize with TBM, track usage, score applications, provide modernization pathways, and govern business cases.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Model products and their relationships
+- Govern product lifecycle and ownership
+- Categorize assets using Technology Business Management (TBM) taxonomy
+- Track product usage and dependencies
+- Score applications based on various criteria
+- Provide modernization pathways and recommendations
+- Govern business cases and investment decisions
+
+## Tech Stack
+
+- Convex backend for data management and APIs
+- Cloudflare Workers for hosting and edge deployment
+- SvelteKit frontend for a fast and reactive user interface
+
+## Getting Started
+
+To get started with TechMod, follow these steps:
 
 ```sh
-# create a new project in the current directory
-npx sv create
+# Clone the repository
+git clone https://github.com/your-org/techmod.git
+cd techmod
 
-# create a new project in my-app
-npx sv create my-app
-```
+# Install dependencies
+npm install
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
+# Start the development server
 npm run dev
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
+# Build the production version
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+## Contributing
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+We welcome contributions from the community! To contribute, please:
+
+- Fork the repository
+- Create a feature branch
+- Submit a pull request with a clear description of your changes
+- Ensure your code follows the project's coding standards and includes tests where appropriate
+
+## License
+
+This project is licensed under [LICENSE NAME]. See the LICENSE file for details.
