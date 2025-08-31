@@ -32,7 +32,7 @@ export class ProductViewModel {
 	async updateProduct(id: string, productData: ProductProps): Promise<void> {
 		try {
 			await this.client.mutation(api.spm.product.mutations.updateById, {
-				id: id as any,
+				id: id as string & { __tableName: "products" },
 				updates: productData
 			});
 		} catch (error) {
@@ -44,7 +44,7 @@ export class ProductViewModel {
 	async deleteProduct(id: string): Promise<void> {
 		try {
 			await this.client.mutation(api.spm.product.mutations.deleteById, {
-				id: id as any
+				id: id as string & { __tableName: "products" }
 			});
 		} catch (error) {
 			console.error('Failed to delete product:', error);

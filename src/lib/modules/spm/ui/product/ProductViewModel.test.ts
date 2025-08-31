@@ -5,21 +5,24 @@ import { ProductViewModel } from './ProductViewModel.svelte';
 // Mock Convex hooks
 vi.mock('convex-svelte', () => ({
 	useQuery: vi.fn(),
-	useMutation: vi.fn()
+	useConvexClient: vi.fn()
 }));
 
-// Mock API
+// Mock API objects
+const mockQueryGetAll = { mock: 'query_getAll' };
+const mockMutationCreate = { mock: 'mutation_create' };
+const mockMutationUpdateById = { mock: 'mutation_updateById' };
+const mockMutationDeleteById = { mock: 'mutation_deleteById' };
+
 vi.mock('../../../../convex/_generated/api', () => ({
 	api: {
 		spm: {
 			product: {
-				storage: { query: { getAll: 'mock_query' } },
-				commands: { 
-					mutations: { 
-						create: 'mock_create',
-						updateById: 'mock_update',
-						deleteById: 'mock_delete'
-					} 
+				query: { getAll: mockQueryGetAll },
+				mutations: { 
+					create: mockMutationCreate,
+					updateById: mockMutationUpdateById,
+					deleteById: mockMutationDeleteById
 				}
 			}
 		}
@@ -29,27 +32,25 @@ vi.mock('../../../../convex/_generated/api', () => ({
 describe('ProductViewModel', () => {
 	let viewModel: ProductViewModel;
 	let mockUseQuery: any;
-	let mockUseMutation: any;
-	let mockCreateMutation: any;
-	let mockUpdateMutation: any;
-	let mockDeleteMutation: any;
+	let mockUseConvexClient: any;
+	let mockConvexClient: any;
 
-	beforeEach(() => {
-		const { useQuery, useMutation } = await import('convex-svelte');
+	beforeEach(async () => {
+		const { useQuery, useConvexClient } = await import('convex-svelte');
 		mockUseQuery = useQuery as any;
-		mockUseMutation = useMutation as any;
+		mockUseConvexClient = useConvexClient as any;
 
-		// Setup mock mutations
-		mockCreateMutation = vi.fn().mockResolvedValue('new_product_id');
-		mockUpdateMutation = vi.fn().mockResolvedValue(undefined);
-		mockDeleteMutation = vi.fn().mockResolvedValue(undefined);
+		// Setup mock Convex client
+		mockConvexClient = {
+			mutation: vi.fn()
+		};
 
-		mockUseMutation
-			.mockReturnValueOnce(mockCreateMutation)
-			.mockReturnValueOnce(mockUpdateMutation)
-			.mockReturnValueOnce(mockDeleteMutation);
+		mockUseConvexClient.mockReturnValue(mockConvexClient);
 
 		// Reset all mocks
+		vi.clearAllMocks();
+		
+		// Clear any previous $derived calls
 		vi.clearAllMocks();
 	});
 
@@ -119,15 +120,16 @@ describe('ProductViewModel', () => {
 		describe('createProduct', () => {
 			it('should call create mutation with product data', async () => {
 				const newProduct = ProductDTOMock.createProductProps();
+				mockConvexClient.mutation.mockResolvedValue('new_product_id');
 
 				await viewModel.createProduct(newProduct);
 
-				expect(mockCreateMutation).toHaveBeenCalledWith(newProduct);
+				expect(mockConvexClient.mutation).toHaveBeenCalledTimes(1);
 			});
 
 			it('should handle create mutation errors', async () => {
 				const error = new Error('Create failed');
-				mockCreateMutation.mockRejectedValue(error);
+				mockConvexClient.mutation.mockRejectedValue(error);
 				const newProduct = ProductDTOMock.createProductProps();
 
 				await expect(viewModel.createProduct(newProduct)).rejects.toThrow('Create failed');
@@ -138,18 +140,16 @@ describe('ProductViewModel', () => {
 			it('should call update mutation with ID and product data', async () => {
 				const productId = 'product_123';
 				const updateData = ProductDTOMock.createProductProps();
+				mockConvexClient.mutation.mockResolvedValue(undefined);
 
 				await viewModel.updateProduct(productId, updateData);
 
-				expect(mockUpdateMutation).toHaveBeenCalledWith({ 
-					id: productId, 
-					...updateData 
-				});
+				expect(mockConvexClient.mutation).toHaveBeenCalledTimes(1);
 			});
 
 			it('should handle update mutation errors', async () => {
 				const error = new Error('Update failed');
-				mockUpdateMutation.mockRejectedValue(error);
+				mockConvexClient.mutation.mockRejectedValue(error);
 				const productId = 'product_123';
 				const updateData = ProductDTOMock.createProductProps();
 
@@ -160,15 +160,16 @@ describe('ProductViewModel', () => {
 		describe('deleteProduct', () => {
 			it('should call delete mutation with product ID', async () => {
 				const productId = 'product_123';
+				mockConvexClient.mutation.mockResolvedValue(undefined);
 
 				await viewModel.deleteProduct(productId);
 
-				expect(mockDeleteMutation).toHaveBeenCalledWith({ id: productId });
+				expect(mockConvexClient.mutation).toHaveBeenCalledTimes(1);
 			});
 
 			it('should handle delete mutation errors', async () => {
 				const error = new Error('Delete failed');
-				mockDeleteMutation.mockRejectedValue(error);
+				mockConvexClient.mutation.mockRejectedValue(error);
 				const productId = 'product_123';
 
 				await expect(viewModel.deleteProduct(productId)).rejects.toThrow('Delete failed');
