@@ -10,7 +10,7 @@ import type { Product, ProductProps } from '../../domain/ProductDTO';
 export class ProductViewModel {
 	// Convex client for mutations
 	private client = useConvexClient();
-	
+
 	// Reactive query for all products
 	private allProductsQuery = useQuery(api.spm.product.query.getAll, {});
 
@@ -32,7 +32,7 @@ export class ProductViewModel {
 	async updateProduct(id: string, productData: ProductProps): Promise<void> {
 		try {
 			await this.client.mutation(api.spm.product.mutations.updateById, {
-				id: id as string & { __tableName: "products" },
+				id: id as string & { __tableName: 'products' },
 				updates: productData
 			});
 		} catch (error) {
@@ -44,7 +44,7 @@ export class ProductViewModel {
 	async deleteProduct(id: string): Promise<void> {
 		try {
 			await this.client.mutation(api.spm.product.mutations.deleteById, {
-				id: id as string & { __tableName: "products" }
+				id: id as string & { __tableName: 'products' }
 			});
 		} catch (error) {
 			console.error('Failed to delete product:', error);
@@ -54,13 +54,11 @@ export class ProductViewModel {
 
 	// Business logic helpers
 	getProductsByCategory(category: string): Product[] {
-		return this.data.filter(product => product.category === category);
+		return this.data.filter((product) => product.category === category);
 	}
 
 	getProductsInPriceRange(minPrice: number, maxPrice: number): Product[] {
-		return this.data.filter(product => 
-			product.price >= minPrice && product.price <= maxPrice
-		);
+		return this.data.filter((product) => product.price >= minPrice && product.price <= maxPrice);
 	}
 
 	getTotalValue(): number {
