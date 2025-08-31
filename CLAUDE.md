@@ -168,87 +168,103 @@ export const create = mutation({
 - Production: `coordinated-hare-711.convex.cloud`
 - Staging: `third-parakeet-727.convex.cloud`
 
+## Specialized Agent Usage
+
+This project uses specialized agents for different aspects of development. **ALWAYS** use the appropriate agent for the task at hand to ensure architectural consistency and quality standards.
+
+### When to Use Each Agent
+
+**spm-architect** - Use for:
+- Designing complex features that span multiple entities
+- Planning system architecture and integration points
+- Breaking down large requirements into coordinated work streams
+- Orchestrating cross-domain implementations
+
+**convex-developer** - Use for:
+- Creating or modifying any Convex backend code
+- Adding new SPM entities following the mandatory pattern
+- Implementing queries, mutations, actions, or triggers
+- Database schema changes and Zod integration
+
+**ui-mvvm-developer** - Use for:
+- Creating or modifying Svelte components
+- Implementing MVVM pattern Views and ViewModels
+- Building route pages and CRUD dialog components
+- Ensuring design system compliance
+
+**tbm-itsm-expert** - Use for:
+- Validating business domain models against TBM 5 standards
+- Ensuring ITSM process alignment
+- Reviewing entity schemas for industry compliance
+- Providing naming conventions and taxonomy guidance
+
+**spm-testing-expert** - Use for:
+- Creating comprehensive test coverage for new features
+- Writing unit tests for SPM entities and Convex functions
+- Implementing integration and e2e testing scenarios
+- Ensuring quality standards across all layers
+
+### Agent Collaboration Pattern
+
+For new features, follow this collaboration sequence:
+1. **spm-architect** - Design the overall feature architecture
+2. **tbm-itsm-expert** - Validate business alignment and standards
+3. **convex-developer** - Implement backend components
+4. **ui-mvvm-developer** - Create frontend components  
+5. **spm-testing-expert** - Add comprehensive test coverage
+
+### Using Specialized Agents
+
+**IMPORTANT**: When working on tasks that match an agent's expertise, use the Task tool to delegate to the appropriate agent:
+
+```typescript
+// Example: Creating a new entity
+Task tool with subagent_type: "spm-architect" 
+→ Design the entity architecture and relationships
+
+Task tool with subagent_type: "tbm-itsm-expert"
+→ Validate entity aligns with TBM 5 standards
+
+Task tool with subagent_type: "convex-developer" 
+→ Implement the backend entity following SPM patterns
+
+Task tool with subagent_type: "ui-mvvm-developer"
+→ Create MVVM components for entity management
+
+Task tool with subagent_type: "spm-testing-expert"
+→ Add comprehensive test coverage for the entity
+```
+
+This ensures each aspect of development follows the established patterns and quality standards.
+
 ## Common Development Workflows
 
 ### Adding a New SPM Entity
 
 **MANDATORY: Follow this exact sequence for all new SPM entities**
 
-1. **Define Domain Schema:**
-   ```typescript
-   // src/lib/modules/spm/domain/[Entity]DTO.ts
-   import { z } from 'zod';
-   
-   export const [Entity]PropsSchema = z.object({
-     // Define entity properties with validation
-   });
-   
-   export const [Entity]Schema = [Entity]PropsSchema.extend({
-     _id: z.string(),
-     _creationTime: z.number().optional(),
-   });
-   
-   export type [Entity]Props = z.infer<typeof [Entity]PropsSchema>;
-   export type [Entity] = z.infer<typeof [Entity]Schema>;
-   ```
+**Important**: Use the `convex-developer` agent for all backend implementation work. The agent contains detailed code examples and enforces the SPM architecture patterns.
 
-2. **Create Table Definition:**
-   ```typescript
-   // src/convex/spm/[entity]/tables.ts
-   import { defineTable } from 'convex/server';
-   import { zodOutputToConvex } from 'convex-helpers/server/zod';
-   import { [Entity]PropsSchema } from '../../../lib/modules/spm/domain/[Entity]DTO';
-   
-   export const [entity]s = defineTable(zodOutputToConvex([Entity]PropsSchema));
-   ```
+1. **Define Domain Schema** in `src/lib/modules/spm/domain/[Entity]DTO.ts`
+2. **Create Table Definition** in `src/convex/spm/[entity]/tables.ts` 
+3. **Create Operation Files** (create all, even if initially empty):
+   - `storage.query.ts` - Read operations
+   - `commands.mutations.ts` - Write operations
+   - `orchestration.action.ts` - External integrations
+   - `trigger.ts` - Event triggers
+4. **Update Schema Registration** in `src/convex/schema.ts`
 
-3. **Create Operation Files (create all, even if initially empty):**
-   - `src/convex/spm/[entity]/storage.query.ts` - Read operations
-   - `src/convex/spm/[entity]/commands.mutations.ts` - Write operations
-   - `src/convex/spm/[entity]/orchestration.action.ts` - External integrations
-   - `src/convex/spm/[entity]/trigger.ts` - Event triggers
+**Detailed Implementation**: The `convex-developer` agent contains comprehensive code examples and workflow guidance for each step.
 
-4. **Update Schema Registration:**
-   ```typescript
-   // src/convex/schema.ts
-   import { [entity]s } from "./spm/[entity]/tables";
-   
-   export default defineSchema({
-     [entity]s,
-     // ... other tables
-   });
-   ```
+### Agent Integration Notes
 
-### Adding Operations to Existing SPM Entity
-
-**For Read Operations (`storage.query.ts`):**
-```typescript
-import { query } from "convex/server";
-import { v } from "convex/values";
-
-export const getAll = query({
-  args: {},
-  handler: async (ctx) => {
-    return await ctx.db.query("[entity]s").collect();
-  },
-});
-```
-
-**For Write Operations (`commands.mutations.ts`):**
-```typescript
-import { mutation } from "convex/server";
-import { zodToConvex } from "convex-helpers/server/zod";
-import { [Entity]PropsSchema } from "../../../lib/modules/spm/domain/[Entity]DTO";
-
-export const create = mutation({
-  args: zodToConvex([Entity]PropsSchema),
-  handler: async (ctx, args) => {
-    return await ctx.db.insert("[entity]s", args);
-  },
-});
-```
+- **convex-developer** agent contains detailed code examples for all SPM entity patterns
+- **ui-mvvm-developer** agent has comprehensive MVVM component examples  
+- **spm-testing-expert** agent provides testing strategies for all layers
+- **tbm-itsm-expert** agent validates business domain alignment
+- **spm-architect** agent coordinates complex multi-entity features
 
 **Before committing:**
 1. Run `npm run lint` to ensure code quality
-2. Run `npm run check` for TypeScript validation
+2. Run `npm run check` for TypeScript validation  
 3. Run `npm run test` for full test suite
