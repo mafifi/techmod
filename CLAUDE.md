@@ -60,9 +60,9 @@ TechMod is a platform for centrally tracking and managing modernization strategy
 - Business entities defined with Zod schemas in `src/lib/modules/spm/domain/`
 - Convex tables defined in `src/convex/spm/[entity]/tables.ts`
 - Operations separated across specialized files per entity:
-  - `storage.query.ts` - Read-only queries
-  - `commands.mutations.ts` - Write operations  
-  - `orchestration.action.ts` - External system integrations
+  - `query.ts` - Read-only queries
+  - `mutations.ts` - Write operations  
+  - `action.ts` - External system integrations
   - `trigger.ts` - Reactive triggers and event handling
 
 **Testing Setup:**
@@ -80,9 +80,9 @@ When adding new SPM entities, **ALWAYS** follow this exact file structure and na
 ```
 src/lib/modules/spm/domain/[Entity]DTO.ts    # Zod schema + TypeScript types
 src/convex/spm/[entity]/tables.ts            # Convex table definition
-src/convex/spm/[entity]/storage.query.ts     # Read-only queries
-src/convex/spm/[entity]/commands.mutations.ts # Write operations
-src/convex/spm/[entity]/orchestration.action.ts # External integrations  
+src/convex/spm/[entity]/query.ts     # Read-only queries
+src/convex/spm/[entity]/mutations.ts # Write operations
+src/convex/spm/[entity]/action.ts # External integrations  
 src/convex/spm/[entity]/trigger.ts           # Reactive triggers
 ```
 
@@ -98,17 +98,17 @@ src/convex/spm/[entity]/trigger.ts           # Reactive triggers
 - Import schema from domain layer
 - No business logic, only table structure
 
-**Storage Queries (`storage.query.ts`):**
+**Storage Queries (`query.ts`):**
 - Read-only operations using `query({})`
 - Data retrieval, filtering, aggregation
 - No mutations or side effects
 
-**Commands (`commands.mutations.ts`):**
+**Commands (`mutations.ts`):**
 - Write operations using `mutation({})`
 - Create, update, delete operations
 - Validation using Zod schemas
 
-**Orchestration (`orchestration.action.ts`):**
+**Orchestration (`action.ts`):**
 - External system integrations using `action({})`
 - API calls, file operations, third-party services
 - Convex convention for side-effect operations
@@ -248,9 +248,9 @@ This ensures each aspect of development follows the established patterns and qua
 1. **Define Domain Schema** in `src/lib/modules/spm/domain/[Entity]DTO.ts`
 2. **Create Table Definition** in `src/convex/spm/[entity]/tables.ts` 
 3. **Create Operation Files** (create all, even if initially empty):
-   - `storage.query.ts` - Read operations
-   - `commands.mutations.ts` - Write operations
-   - `orchestration.action.ts` - External integrations
+   - `query.ts` - Read operations
+   - `mutations.ts` - Write operations
+   - `action.ts` - External integrations
    - `trigger.ts` - Event triggers
 4. **Update Schema Registration** in `src/convex/schema.ts`
 

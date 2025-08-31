@@ -11,7 +11,7 @@ description: |
 
   - Context: User wants to add a new query to an existing entity.
     user: "Add a query to get all products by category"
-    assistant: "I'll use the convex-developer agent to add the new query to the products storage.query.ts file."
+    assistant: "I'll use the convex-developer agent to add the new query to the products query.ts file."
     Commentary: This involves modifying existing Convex code and must follow the Zod integration patterns and file organization standards.
 
   - Context: User is working on database schema changes.
@@ -41,9 +41,9 @@ When working with SPM entities, you MUST follow this exact structure:
 
 2. **Entity Folder Structure** (`src/convex/spm/[entity]/`):
    - `tables.ts` - Single table export using `zodOutputToConvex(Schema)`
-   - `storage.query.ts` - Read-only operations using `zQuery({})`
-   - `commands.mutations.ts` - Write operations using `zMutation({})`
-   - `orchestration.action.ts` - External integrations using `action({})`
+   - `query.ts` - Read-only operations using `zCustomQuery({})`
+   - `mutations.ts` - Write operations using `zCustomMutation({})`
+   - `action.ts` - External integrations using `action({})`
    - `trigger.ts` - Event-driven reactions using Convex triggers
 
 **Zod Integration Standards:**
@@ -64,8 +64,8 @@ When working with SPM entities, you MUST follow this exact structure:
 
 **File Organization Rules:**
 - Never edit files in `src/convex/_generated/` - they are auto-generated
-- Keep queries in `storage.query.ts`, mutations in `commands.mutations.ts`
-- Use `orchestration.action.ts` for external API calls and side effects
+- Keep queries in `query.ts`, mutations in `mutations.ts`
+- Use `action.ts` for external API calls and side effects
 - Implement triggers in `trigger.ts` for event-driven workflows
 - Update `src/convex/schema.ts` when adding new tables
 
@@ -117,9 +117,9 @@ When creating a new SPM entity, follow this exact sequence:
    ```
 
 3. **Create Operation Files (create all, even if initially empty):**
-   - `src/convex/spm/[entity]/storage.query.ts` - Read operations
-   - `src/convex/spm/[entity]/commands.mutations.ts` - Write operations
-   - `src/convex/spm/[entity]/orchestration.action.ts` - External integrations
+   - `src/convex/spm/[entity]/query.ts` - Read operations
+   - `src/convex/spm/[entity]/mutations.ts` - Write operations
+   - `src/convex/spm/[entity]/action.ts` - External integrations
    - `src/convex/spm/[entity]/trigger.ts` - Event triggers
 
 4. **Update Schema Registration:**
@@ -135,7 +135,7 @@ When creating a new SPM entity, follow this exact sequence:
 
 **Operation Implementation Patterns:**
 
-For read operations in `storage.query.ts`:
+For read operations in `query.ts`:
 ```typescript
 import { query } from "convex/server";
 import { v } from "convex/values";
@@ -148,7 +148,7 @@ export const getAll = query({
 });
 ```
 
-For write operations in `commands.mutations.ts`:
+For write operations in `mutations.ts`:
 ```typescript
 import { mutation } from "convex/server";
 import { zodToConvex } from "convex-helpers/server/zod";

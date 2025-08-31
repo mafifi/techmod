@@ -13,6 +13,9 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as spm_auth_modifiers from "../spm/auth/modifiers.js";
+import type * as spm_product_mutations from "../spm/product/mutations.js";
+import type * as spm_product_query from "../spm/product/query.js";
 import type * as spm_product_tables from "../spm/product/tables.js";
 
 /**
@@ -24,6 +27,9 @@ import type * as spm_product_tables from "../spm/product/tables.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  "spm/auth/modifiers": typeof spm_auth_modifiers;
+  "spm/product/mutations": typeof spm_product_mutations;
+  "spm/product/query": typeof spm_product_query;
   "spm/product/tables": typeof spm_product_tables;
 }>;
 export declare const api: FilterApi<

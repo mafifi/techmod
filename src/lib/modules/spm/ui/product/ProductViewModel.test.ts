@@ -1,0 +1,251 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { ProductDTOMock } from '../../domain/ProductDTOMock';
+import { ProductViewModel } from './ProductViewModel.svelte';
+
+// Mock Convex hooks
+vi.mock('convex-svelte', () => ({
+	useQuery: vi.fn(),
+	useMutation: vi.fn()
+}));
+
+// Mock API
+vi.mock('../../../../convex/_generated/api', () => ({
+	api: {
+		spm: {
+			product: {
+				storage: { query: { getAll: 'mock_query' } },
+				commands: { 
+					mutations: { 
+						create: 'mock_create',
+						updateById: 'mock_update',
+						deleteById: 'mock_delete'
+					} 
+				}
+			}
+		}
+	}
+}));
+
+describe('ProductViewModel', () => {
+	let viewModel: ProductViewModel;
+	let mockUseQuery: any;
+	let mockUseMutation: any;
+	let mockCreateMutation: any;
+	let mockUpdateMutation: any;
+	let mockDeleteMutation: any;
+
+	beforeEach(() => {
+		const { useQuery, useMutation } = await import('convex-svelte');
+		mockUseQuery = useQuery as any;
+		mockUseMutation = useMutation as any;
+
+		// Setup mock mutations
+		mockCreateMutation = vi.fn().mockResolvedValue('new_product_id');
+		mockUpdateMutation = vi.fn().mockResolvedValue(undefined);
+		mockDeleteMutation = vi.fn().mockResolvedValue(undefined);
+
+		mockUseMutation
+			.mockReturnValueOnce(mockCreateMutation)
+			.mockReturnValueOnce(mockUpdateMutation)
+			.mockReturnValueOnce(mockDeleteMutation);
+
+		// Reset all mocks
+		vi.clearAllMocks();
+	});
+
+	describe('MVVM Contract Compliance', () => {
+		it('should expose exactly three derived values: isLoading, error, data', () => {
+			// Mock successful state
+			mockUseQuery.mockReturnValue({
+				isLoading: false,
+				error: null,
+				data: ProductDTOMock.createProductArray(3)
+			});
+
+			viewModel = new ProductViewModel();
+
+			// Check that all three required derived values exist
+			expect(viewModel).toHaveProperty('isLoading');
+			expect(viewModel).toHaveProperty('error');
+			expect(viewModel).toHaveProperty('data');
+
+			// Check that they are derived correctly
+			expect(viewModel.isLoading).toBe(false);
+			expect(viewModel.error).toBe(null);
+			expect(viewModel.data).toHaveLength(3);
+		});
+
+		it('should handle loading state correctly', () => {
+			mockUseQuery.mockReturnValue({
+				isLoading: true,
+				error: null,
+				data: undefined
+			});
+
+			viewModel = new ProductViewModel();
+
+			expect(viewModel.isLoading).toBe(true);
+			expect(viewModel.error).toBe(null);
+			expect(viewModel.data).toEqual([]);
+		});
+
+		it('should handle error state correctly', () => {
+			const mockError = new Error('Query failed');
+			mockUseQuery.mockReturnValue({
+				isLoading: false,
+				error: mockError,
+				data: undefined
+			});
+
+			viewModel = new ProductViewModel();
+
+			expect(viewModel.isLoading).toBe(false);
+			expect(viewModel.error).toBe(mockError);
+			expect(viewModel.data).toEqual([]);
+		});
+	});
+
+	describe('Business Actions', () => {
+		beforeEach(() => {
+			mockUseQuery.mockReturnValue({
+				isLoading: false,
+				error: null,
+				data: ProductDTOMock.createProductArray(3)
+			});
+
+			viewModel = new ProductViewModel();
+		});
+
+		describe('createProduct', () => {
+			it('should call create mutation with product data', async () => {
+				const newProduct = ProductDTOMock.createProductProps();
+
+				await viewModel.createProduct(newProduct);
+
+				expect(mockCreateMutation).toHaveBeenCalledWith(newProduct);
+			});
+
+			it('should handle create mutation errors', async () => {
+				const error = new Error('Create failed');
+				mockCreateMutation.mockRejectedValue(error);
+				const newProduct = ProductDTOMock.createProductProps();
+
+				await expect(viewModel.createProduct(newProduct)).rejects.toThrow('Create failed');
+			});
+		});
+
+		describe('updateProduct', () => {
+			it('should call update mutation with ID and product data', async () => {
+				const productId = 'product_123';
+				const updateData = ProductDTOMock.createProductProps();
+
+				await viewModel.updateProduct(productId, updateData);
+
+				expect(mockUpdateMutation).toHaveBeenCalledWith({ 
+					id: productId, 
+					...updateData 
+				});
+			});
+
+			it('should handle update mutation errors', async () => {
+				const error = new Error('Update failed');
+				mockUpdateMutation.mockRejectedValue(error);
+				const productId = 'product_123';
+				const updateData = ProductDTOMock.createProductProps();
+
+				await expect(viewModel.updateProduct(productId, updateData)).rejects.toThrow('Update failed');
+			});
+		});
+
+		describe('deleteProduct', () => {
+			it('should call delete mutation with product ID', async () => {
+				const productId = 'product_123';
+
+				await viewModel.deleteProduct(productId);
+
+				expect(mockDeleteMutation).toHaveBeenCalledWith({ id: productId });
+			});
+
+			it('should handle delete mutation errors', async () => {
+				const error = new Error('Delete failed');
+				mockDeleteMutation.mockRejectedValue(error);
+				const productId = 'product_123';
+
+				await expect(viewModel.deleteProduct(productId)).rejects.toThrow('Delete failed');
+			});
+		});
+	});
+
+	describe('Business Logic Helpers', () => {
+		beforeEach(() => {
+			const mockData = [
+				...ProductDTOMock.createProductArray(2, { category: 'Software', price: 100 }),
+				...ProductDTOMock.createProductArray(2, { category: 'Hardware', price: 200 }),
+			];
+
+			mockUseQuery.mockReturnValue({
+				isLoading: false,
+				error: null,
+				data: mockData
+			});
+
+			viewModel = new ProductViewModel();
+		});
+
+		describe('getProductsByCategory', () => {
+			it('should filter products by category', () => {
+				const softwareProducts = viewModel.getProductsByCategory('Software');
+				const hardwareProducts = viewModel.getProductsByCategory('Hardware');
+
+				expect(softwareProducts).toHaveLength(2);
+				expect(hardwareProducts).toHaveLength(2);
+				
+				softwareProducts.forEach(product => {
+					expect(product.category).toBe('Software');
+				});
+			});
+
+			it('should return empty array for non-existent category', () => {
+				const result = viewModel.getProductsByCategory('NonExistent');
+				expect(result).toEqual([]);
+			});
+		});
+
+		describe('getProductsInPriceRange', () => {
+			it('should filter products within price range', () => {
+				const results = viewModel.getProductsInPriceRange(150, 250);
+				
+				expect(results).toHaveLength(2);
+				results.forEach(product => {
+					expect(product.price).toBeGreaterThanOrEqual(150);
+					expect(product.price).toBeLessThanOrEqual(250);
+				});
+			});
+
+			it('should return empty array when no products in range', () => {
+				const results = viewModel.getProductsInPriceRange(1000, 2000);
+				expect(results).toEqual([]);
+			});
+		});
+
+		describe('getTotalValue', () => {
+			it('should calculate total value of all products', () => {
+				const total = viewModel.getTotalValue();
+				// 2 products at 100 + 2 products at 200 = 600
+				expect(total).toBe(600);
+			});
+
+			it('should return 0 for empty product list', () => {
+				mockUseQuery.mockReturnValue({
+					isLoading: false,
+					error: null,
+					data: []
+				});
+
+				viewModel = new ProductViewModel();
+				const total = viewModel.getTotalValue();
+				expect(total).toBe(0);
+			});
+		});
+	});
+});
