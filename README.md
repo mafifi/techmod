@@ -30,8 +30,14 @@ cd techmod
 # Install dependencies
 npm install
 
+# Install playwright, required for merging code into origin
+npx playwright install
+
 # Start the development server
 npm run dev
+
+# Start Convex dev
+npx convex dev
 
 # Build the production version
 npm run build
@@ -45,6 +51,15 @@ We welcome contributions from the community! To contribute, please:
 - Create a feature branch
 - Submit a pull request with a clear description of your changes
 - Ensure your code follows the project's coding standards and includes tests where appropriate
+- Husky ensures your code checks and passes unit tests before merging. Check issues you need to address with
+
+```sh
+# Check code for issues
+npm run check
+
+# Check for unit test failures
+npm run test:unit
+```
 
 ## License
 
