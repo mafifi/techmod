@@ -1,6 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ProductDTOMock } from '../../domain/ProductDTOMock';
 import { ProductViewModel } from './ProductViewModel.svelte';
+import {
+	mockProductQueries,
+	resetProductQueryMocks
+} from '../../../../../convex/spm/product/query.mock';
+import {
+	mockProductMutations,
+	resetProductMutationMocks
+} from '../../../../../convex/spm/product/mutations.mock';
 
 // Mock Convex hooks
 vi.mock('convex-svelte', () => ({
@@ -8,22 +16,16 @@ vi.mock('convex-svelte', () => ({
 	useConvexClient: vi.fn()
 }));
 
-// Mock API objects
-const mockQueryGetAll = { mock: 'query_getAll' };
-const mockMutationCreate = { mock: 'mutation_create' };
-const mockMutationUpdateById = { mock: 'mutation_updateById' };
-const mockMutationDeleteById = { mock: 'mutation_deleteById' };
+// Import the mocked functions after the mock
+import { useQuery, useConvexClient } from 'convex-svelte';
 
+// Mock API using our centralized mock objects
 vi.mock('../../../../convex/_generated/api', () => ({
 	api: {
 		spm: {
 			product: {
-				query: { getAll: mockQueryGetAll },
-				mutations: { 
-					create: mockMutationCreate,
-					updateById: mockMutationUpdateById,
-					deleteById: mockMutationDeleteById
-				}
+				query: mockProductQueries,
+				mutations: mockProductMutations
 			}
 		}
 	}
@@ -31,14 +33,13 @@ vi.mock('../../../../convex/_generated/api', () => ({
 
 describe('ProductViewModel', () => {
 	let viewModel: ProductViewModel;
-	let mockUseQuery: any;
-	let mockUseConvexClient: any;
-	let mockConvexClient: any;
+	let mockUseQuery: ReturnType<typeof vi.fn>;
+	let mockUseConvexClient: ReturnType<typeof vi.fn>;
+	let mockConvexClient: { mutation: ReturnType<typeof vi.fn> };
 
-	beforeEach(async () => {
-		const { useQuery, useConvexClient } = await import('convex-svelte');
-		mockUseQuery = useQuery as any;
-		mockUseConvexClient = useConvexClient as any;
+	beforeEach(() => {
+		mockUseQuery = vi.mocked(useQuery);
+		mockUseConvexClient = vi.mocked(useConvexClient);
 
 		// Setup mock Convex client
 		mockConvexClient = {
@@ -47,11 +48,10 @@ describe('ProductViewModel', () => {
 
 		mockUseConvexClient.mockReturnValue(mockConvexClient);
 
-		// Reset all mocks
+		// Reset all mocks including our centralized mocks
 		vi.clearAllMocks();
-		
-		// Clear any previous $derived calls
-		vi.clearAllMocks();
+		resetProductQueryMocks();
+		resetProductMutationMocks();
 	});
 
 	describe('MVVM Contract Compliance', () => {
@@ -153,7 +153,9 @@ describe('ProductViewModel', () => {
 				const productId = 'product_123';
 				const updateData = ProductDTOMock.createProductProps();
 
-				await expect(viewModel.updateProduct(productId, updateData)).rejects.toThrow('Update failed');
+				await expect(viewModel.updateProduct(productId, updateData)).rejects.toThrow(
+					'Update failed'
+				);
 			});
 		});
 
@@ -181,7 +183,7 @@ describe('ProductViewModel', () => {
 		beforeEach(() => {
 			const mockData = [
 				...ProductDTOMock.createProductArray(2, { category: 'Software', price: 100 }),
-				...ProductDTOMock.createProductArray(2, { category: 'Hardware', price: 200 }),
+				...ProductDTOMock.createProductArray(2, { category: 'Hardware', price: 200 })
 			];
 
 			mockUseQuery.mockReturnValue({
@@ -200,8 +202,8 @@ describe('ProductViewModel', () => {
 
 				expect(softwareProducts).toHaveLength(2);
 				expect(hardwareProducts).toHaveLength(2);
-				
-				softwareProducts.forEach(product => {
+
+				softwareProducts.forEach((product) => {
 					expect(product.category).toBe('Software');
 				});
 			});
@@ -215,9 +217,9 @@ describe('ProductViewModel', () => {
 		describe('getProductsInPriceRange', () => {
 			it('should filter products within price range', () => {
 				const results = viewModel.getProductsInPriceRange(150, 250);
-				
+
 				expect(results).toHaveLength(2);
-				results.forEach(product => {
+				results.forEach((product) => {
 					expect(product.price).toBeGreaterThanOrEqual(150);
 					expect(product.price).toBeLessThanOrEqual(250);
 				});
