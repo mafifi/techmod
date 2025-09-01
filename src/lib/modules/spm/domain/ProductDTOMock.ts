@@ -16,6 +16,7 @@ export class ProductDTOMock {
 			description: 'A comprehensive test product for validation',
 			price: 99.99,
 			category: 'Software',
+			productPortfolioId: 'portfolio_test_default',
 			...overrides
 		};
 	}
@@ -36,7 +37,10 @@ export class ProductDTOMock {
 	/**
 	 * Generate multiple ProductProps for bulk testing
 	 */
-	static createProductPropsArray(count: number, overrides: Partial<ProductProps> = {}): ProductProps[] {
+	static createProductPropsArray(
+		count: number,
+		overrides: Partial<ProductProps> = {}
+	): ProductProps[] {
 		return Array.from({ length: count }, () => this.createProductProps(overrides));
 	}
 
@@ -58,15 +62,36 @@ export class ProductDTOMock {
 		descriptionTooLong: Partial<ProductProps>;
 	} {
 		return {
-			nameEmpty: { name: '', price: 99.99, category: 'Software' },
-			nameTooLong: { name: 'A'.repeat(101), price: 99.99, category: 'Software' },
-			negativePrice: { name: 'Valid Product', price: -10, category: 'Software' },
-			categoryTooShort: { name: 'Valid Product', price: 99.99, category: 'A' },
-			descriptionTooLong: { 
-				name: 'Valid Product', 
-				description: 'A'.repeat(501), 
-				price: 99.99, 
-				category: 'Software' 
+			nameEmpty: {
+				name: '',
+				price: 99.99,
+				category: 'Software',
+				productPortfolioId: 'portfolio_test_default'
+			},
+			nameTooLong: {
+				name: 'A'.repeat(101),
+				price: 99.99,
+				category: 'Software',
+				productPortfolioId: 'portfolio_test_default'
+			},
+			negativePrice: {
+				name: 'Valid Product',
+				price: -10,
+				category: 'Software',
+				productPortfolioId: 'portfolio_test_default'
+			},
+			categoryTooShort: {
+				name: 'Valid Product',
+				price: 99.99,
+				category: 'A',
+				productPortfolioId: 'portfolio_test_default'
+			},
+			descriptionTooLong: {
+				name: 'Valid Product',
+				description: 'A'.repeat(501),
+				price: 99.99,
+				category: 'Software',
+				productPortfolioId: 'portfolio_test_default'
 			}
 		};
 	}
@@ -81,7 +106,10 @@ export class ProductDTOMock {
 	/**
 	 * Create product with specific category for filtering tests
 	 */
-	static createProductByCategory(category: string, overrides: Partial<ProductProps> = {}): ProductProps {
+	static createProductByCategory(
+		category: string,
+		overrides: Partial<ProductProps> = {}
+	): ProductProps {
 		return this.createProductProps({ category, ...overrides });
 	}
 
@@ -90,10 +118,10 @@ export class ProductDTOMock {
 	 */
 	static createProductsWithPriceRange(): ProductProps[] {
 		return [
-			this.createProductProps({ name: 'Budget Product', price: 10.00 }),
-			this.createProductProps({ name: 'Mid Range Product', price: 50.00 }),
-			this.createProductProps({ name: 'Premium Product', price: 200.00 }),
-			this.createProductProps({ name: 'Enterprise Product', price: 1000.00 })
+			this.createProductProps({ name: 'Budget Product', price: 10.0 }),
+			this.createProductProps({ name: 'Mid Range Product', price: 50.0 }),
+			this.createProductProps({ name: 'Premium Product', price: 200.0 }),
+			this.createProductProps({ name: 'Enterprise Product', price: 1000.0 })
 		];
 	}
 }
