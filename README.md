@@ -63,4 +63,4 @@ npm run test:unit
 
 ## License
 
-This project is licensed under [LICENSE NAME]. See the LICENSE file for details.
+This project is licensed under [PLACEHOLDER LICENSE NAME]. See the LICENSE file for details.
