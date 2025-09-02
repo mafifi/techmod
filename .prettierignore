@@ -10,3 +10,6 @@ bun.lockb
 
 # shadcn/ui components - external dependencies, don't format
 src/lib/ui/components/
+
+# Convex generated files - auto-generated, don't format
+src/convex/_generated/
