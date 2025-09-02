@@ -13,7 +13,11 @@
 		name: '',
 		category: '',
 		price: 0,
-		description: ''
+		description: '',
+		productOwner: '',
+		department: '',
+		superDepartment: '',
+		modernity: 'MODERN'
 	});
 
 	let isSubmitting = $state(false);
@@ -25,7 +29,16 @@
 				name: viewModel.selectedProduct.name,
 				category: viewModel.selectedProduct.category,
 				price: viewModel.selectedProduct.price,
-				description: viewModel.selectedProduct.description || ''
+				description: viewModel.selectedProduct.description || '',
+				productOwner: viewModel.selectedProduct.productOwner || '',
+				department: viewModel.selectedProduct.department || '',
+				superDepartment: viewModel.selectedProduct.superDepartment || '',
+				modernity: viewModel.selectedProduct.modernity || 'MODERN',
+				pdr: viewModel.selectedProduct.pdr || undefined,
+				businessCriticality: viewModel.selectedProduct.businessCriticality || undefined,
+				lifecycleStage: viewModel.selectedProduct.lifecycleStage || undefined,
+				lastAssessmentDate: viewModel.selectedProduct.lastAssessmentDate || undefined,
+				nextReviewDate: viewModel.selectedProduct.nextReviewDate || undefined
 			};
 		}
 	});

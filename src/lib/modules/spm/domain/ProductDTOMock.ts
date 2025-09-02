@@ -11,11 +11,27 @@ export class ProductDTOMock {
 	 * Generate a valid ProductProps for testing
 	 */
 	static createProductProps(overrides: Partial<ProductProps> = {}): ProductProps {
+		const departments = ['Engineering', 'Marketing', 'Sales', 'Operations'];
+		const superDepartments = ['Technology', 'Business', 'Support'];
+		const owners = ['John Smith', 'Sarah Johnson', 'Mike Davis', 'Lisa Wilson'];
+		const modernityLevels = ['LEGACY', 'TRANSITIONAL', 'MODERN', 'CUTTING_EDGE'] as const;
+		const criticalityLevels = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as const;
+		const lifecycleStages = ['PLAN', 'BUILD', 'RUN', 'RETIRE'] as const;
+
 		return {
 			name: `Test Product ${this.counter++}`,
 			description: 'A comprehensive test product for validation',
 			price: 99.99,
 			category: 'Software',
+			productOwner: owners[Math.floor(Math.random() * owners.length)],
+			department: departments[Math.floor(Math.random() * departments.length)],
+			superDepartment: superDepartments[Math.floor(Math.random() * superDepartments.length)],
+			modernity: modernityLevels[Math.floor(Math.random() * modernityLevels.length)],
+			pdr: Math.random() > 0.5 ? `https://example.com/pdr/${this.counter}` : undefined,
+			businessCriticality: criticalityLevels[Math.floor(Math.random() * criticalityLevels.length)],
+			lifecycleStage: lifecycleStages[Math.floor(Math.random() * lifecycleStages.length)],
+			lastAssessmentDate: Date.now() - Math.floor(Math.random() * 365 * 24 * 60 * 60 * 1000),
+			nextReviewDate: Date.now() + Math.floor(Math.random() * 365 * 24 * 60 * 60 * 1000),
 			...overrides
 		};
 	}

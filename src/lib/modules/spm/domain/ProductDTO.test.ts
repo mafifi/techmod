@@ -8,7 +8,11 @@ describe('ProductDTO', () => {
 				name: 'Test Product',
 				description: 'A test product description',
 				price: 99.99,
-				category: 'Software'
+				category: 'Software',
+				productOwner: 'John Smith',
+				department: 'Engineering',
+				superDepartment: 'Technology',
+				modernity: 'MODERN'
 			};
 
 			const result = ProductPropsSchema.safeParse(validProduct);
@@ -20,7 +24,11 @@ describe('ProductDTO', () => {
 				name: 'A', // Too short (min 2)
 				description: 'Valid description',
 				price: 99.99,
-				category: 'Software'
+				category: 'Software',
+				productOwner: 'John Smith',
+				department: 'Engineering',
+				superDepartment: 'Technology',
+				modernity: 'MODERN' as const
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
@@ -36,7 +44,11 @@ describe('ProductDTO', () => {
 				name: 'A'.repeat(101), // Too long (max 100)
 				description: 'Valid description',
 				price: 99.99,
-				category: 'Software'
+				category: 'Software',
+				productOwner: 'John Smith',
+				department: 'Engineering',
+				superDepartment: 'Technology',
+				modernity: 'MODERN' as const
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
@@ -48,7 +60,11 @@ describe('ProductDTO', () => {
 				name: 'Valid Product',
 				description: 'Valid description',
 				price: -10, // Invalid negative price
-				category: 'Software'
+				category: 'Software',
+				productOwner: 'John Smith',
+				department: 'Engineering',
+				superDepartment: 'Technology',
+				modernity: 'MODERN' as const
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
@@ -60,7 +76,11 @@ describe('ProductDTO', () => {
 				name: 'Valid Product',
 				description: 'Valid description',
 				price: 99.99,
-				category: 'A' // Too short (min 2)
+				category: 'A', // Too short (min 2)
+				productOwner: 'John Smith',
+				department: 'Engineering',
+				superDepartment: 'Technology',
+				modernity: 'MODERN' as const
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
@@ -71,7 +91,11 @@ describe('ProductDTO', () => {
 			const validProduct = {
 				name: 'Valid Product',
 				price: 99.99,
-				category: 'Software'
+				category: 'Software',
+				productOwner: 'John Smith',
+				department: 'Engineering',
+				superDepartment: 'Technology',
+				modernity: 'MODERN' as const
 				// description omitted
 			};
 
@@ -84,7 +108,11 @@ describe('ProductDTO', () => {
 				name: 'Valid Product',
 				description: 'A'.repeat(501), // Too long (max 500)
 				price: 99.99,
-				category: 'Software'
+				category: 'Software',
+				productOwner: 'John Smith',
+				department: 'Engineering',
+				superDepartment: 'Technology',
+				modernity: 'MODERN' as const
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
@@ -100,7 +128,11 @@ describe('ProductDTO', () => {
 				name: 'Test Product',
 				description: 'A test product description',
 				price: 99.99,
-				category: 'Software'
+				category: 'Software',
+				productOwner: 'Jane Doe',
+				department: 'Product Management',
+				superDepartment: 'Business',
+				modernity: 'CUTTING_EDGE'
 			};
 
 			const result = ProductSchema.safeParse(validProduct);
@@ -113,7 +145,11 @@ describe('ProductDTO', () => {
 				name: 'Test Product',
 				description: 'A test product description',
 				price: 99.99,
-				category: 'Software'
+				category: 'Software',
+				productOwner: 'Jane Doe',
+				department: 'Product Management',
+				superDepartment: 'Business',
+				modernity: 'CUTTING_EDGE' as const
 				// _creationTime omitted
 			};
 
@@ -127,7 +163,11 @@ describe('ProductDTO', () => {
 				name: 'Test Product',
 				description: 'A test product description',
 				price: 99.99,
-				category: 'Software'
+				category: 'Software',
+				productOwner: 'Jane Doe',
+				department: 'Product Management',
+				superDepartment: 'Business',
+				modernity: 'CUTTING_EDGE' as const
 			};
 
 			const result = ProductSchema.safeParse(invalidProduct);
