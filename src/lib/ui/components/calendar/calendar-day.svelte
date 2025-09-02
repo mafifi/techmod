@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { buttonVariants } from "$lib/ui/button/index.js";
+	import { buttonVariants } from "$lib/ui/components/button/index.js";
 	import { cn } from "$lib/ui/utils.js";
 	import { Calendar as CalendarPrimitive } from "bits-ui";
 

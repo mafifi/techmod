@@ -4,7 +4,7 @@ This repository (TechMod) is a SvelteKit frontend with a Convex backend and Clou
 
 - Frontend: `routes/`, Svelte components (e.g. `routes/+page.svelte`, `routes/+layout.svelte`).
 - Convex backend functions: `src/convex/`
-- Convex  generated API `src/convex/_generated/` (do NOT edit generated files).
+- Convex generated API `src/convex/_generated/` (do NOT edit generated files).
 - Shared utilities: `src/lib/index.ts` and `src/lib/assets/`.
 - Tests: unit tests with Vitest (`vitest`, `vitest-setup-client.ts`) and end-to-end tests with Playwright in `e2e/`.
 - Deployment: SvelteKit uses a Cloudflare adapter and `wrangler.jsonc` is present for Cloudflare Workers.

@@ -7,3 +7,6 @@ bun.lockb
 
 # Miscellaneous
 /static/
+
+# shadcn/ui components - external dependencies, don't format
+src/lib/ui/components/

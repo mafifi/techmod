@@ -27,6 +27,10 @@ export default ts.config(
 		}
 	},
 	{
+		// Ignore shadcn/ui components - they are external dependencies
+		ignores: ['src/lib/ui/components/**/*.svelte']
+	},
+	{
 		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
 		languageOptions: {
 			parserOptions: {

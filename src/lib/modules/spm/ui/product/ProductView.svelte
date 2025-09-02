@@ -1,130 +1,98 @@
 <script lang="ts">
+	import EnhancedDataTable from '$lib/ui/blocks/application/tables/enhanced-data-table.svelte';
+	import { createColumns } from './columns';
 	import type { ProductViewModel } from './ProductViewModel.svelte';
-	
+	import { Button } from '$lib/ui/components/button';
+	import { PlusCircle } from '@lucide/svelte';
+	import { goto } from '$app/navigation';
+	import ProductCreateDialog from './ProductCreateDialog.svelte';
+	import ProductEditDialog from './ProductEditDialog.svelte';
+	import ProductDeleteDialog from './ProductDeleteDialog.svelte';
+
 	interface Props {
 		viewModel: ProductViewModel;
 	}
-	
+
 	let { viewModel }: Props = $props();
+
+	// Action handlers for the dropdown
+	function handleShow(productId: string) {
+		goto(`/products/${productId}`);
+	}
+
+	function handleEdit(productId: string) {
+		const product = viewModel.data?.find((p) => p._id === productId);
+		if (product) {
+			viewModel.openEditDialog(product);
+		}
+	}
+
+	function handleDelete(productId: string) {
+		const product = viewModel.data?.find((p) => p._id === productId);
+		if (product) {
+			viewModel.openDeleteDialog(product);
+		}
+	}
+
+	// Create columns with action handlers
+	const columns = createColumns({ handleShow, handleEdit, handleDelete });
 </script>
 
-<!-- Product Management View - Dumb presentation component -->
-<div class="product-view">
-	<h1>Products</h1>
-	
-	{#if viewModel.isLoading}
-		<div class="loading">Loading products...</div>
-	{:else if viewModel.error}
-		<div class="error">Error: {viewModel.error.message}</div>
-	{:else if viewModel.data.length === 0}
-		<div class="empty">No products found</div>
-	{:else}
-		<div class="products-grid">
-			{#each viewModel.data as product (product._id)}
-				<div class="product-card">
-					<h3>{product.name}</h3>
-					<p class="category">{product.category}</p>
-					<p class="price">${product.price.toFixed(2)}</p>
-					{#if product.description}
-						<p class="description">{product.description}</p>
-					{/if}
-					<div class="actions">
-						<button
-							type="button"
-							onclick={() => viewModel.deleteProduct(product._id)}
-							class="delete-button"
-						>
-							Delete
-						</button>
-					</div>
-				</div>
-			{/each}
+<div class="space-y-4">
+	<!-- Header Section -->
+	<div class="flex items-center justify-between">
+		<div>
+			<h1 class="text-2xl font-semibold">Products</h1>
+			<p class="text-muted-foreground">Manage your product catalog</p>
 		</div>
-		
-		<div class="summary">
-			<p>Total Products: {viewModel.data.length}</p>
-			<p>Total Value: ${viewModel.getTotalValue().toFixed(2)}</p>
+		<Button onclick={() => viewModel.openCreateDialog()}>
+			<PlusCircle class="mr-2 h-4 w-4" />
+			Add Product
+		</Button>
+	</div>
+
+	<!-- Data Table -->
+	{#if viewModel.isLoading}
+		<div class="flex items-center justify-center py-12">
+			<div class="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
+		</div>
+	{:else if viewModel.error}
+		<div class="flex items-center justify-center py-12">
+			<p class="text-destructive">Error: {viewModel.error.message}</p>
+		</div>
+	{:else}
+		<EnhancedDataTable
+			{columns}
+			data={viewModel.data}
+			searchPlaceholder="Search products..."
+			enableGlobalFilter={true}
+			enableColumnFilters={false}
+			enableSorting={true}
+			enableRowSelection={false}
+			enableColumnVisibility={true}
+			enablePagination={true}
+			initialColumnVisibility={{
+				name: true,
+				category: true,
+				price: true,
+				description: false,
+				_creationTime: false
+			}}
+		/>
+	{/if}
+
+	<!-- Summary Information -->
+	{#if !viewModel.isLoading && !viewModel.error && viewModel.data.length > 0}
+		<div class="rounded-lg border bg-muted/50 p-4">
+			<div class="flex items-center justify-between text-sm">
+				<span><strong>Total Products:</strong> {viewModel.data.length}</span>
+				<span><strong>Total Value:</strong> ${viewModel.getTotalValue().toFixed(2)}</span>
+			</div>
 		</div>
 	{/if}
-</div>
 
-<style>
-	.product-view {
-		padding: 1rem;
-	}
-	
-	.loading,
-	.error,
-	.empty {
-		padding: 2rem;
-		text-align: center;
-	}
-	
-	.error {
-		color: red;
-	}
-	
-	.products-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-		gap: 1rem;
-		margin-bottom: 2rem;
-	}
-	
-	.product-card {
-		border: 1px solid #ccc;
-		border-radius: 8px;
-		padding: 1rem;
-	}
-	
-	.product-card h3 {
-		margin: 0 0 0.5rem 0;
-	}
-	
-	.category {
-		color: #666;
-		font-size: 0.9rem;
-		margin: 0.25rem 0;
-	}
-	
-	.price {
-		font-weight: bold;
-		font-size: 1.1rem;
-		color: #2d5a2d;
-		margin: 0.25rem 0;
-	}
-	
-	.description {
-		font-size: 0.9rem;
-		margin: 0.5rem 0;
-	}
-	
-	.actions {
-		margin-top: 1rem;
-	}
-	
-	.delete-button {
-		background-color: #dc3545;
-		color: white;
-		border: none;
-		padding: 0.5rem 1rem;
-		border-radius: 4px;
-		cursor: pointer;
-	}
-	
-	.delete-button:hover {
-		background-color: #c82333;
-	}
-	
-	.summary {
-		border-top: 1px solid #ccc;
-		padding-top: 1rem;
-		display: flex;
-		gap: 2rem;
-	}
-	
-	.summary p {
-		margin: 0;
-		font-weight: bold;
-	}
-</style>
+	<!-- Dialogs -->
+	<ProductCreateDialog {viewModel} />
+	<ProductEditDialog {viewModel} />
+	<ProductDeleteDialog {viewModel} />
+</div>

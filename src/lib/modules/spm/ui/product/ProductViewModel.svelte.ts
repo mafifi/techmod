@@ -19,12 +19,20 @@ export class ProductViewModel {
 	readonly error = $derived(this.allProductsQuery.error);
 	readonly data = $derived(this.allProductsQuery.data ?? []);
 
+	// Dialog state management
+	createDialogOpen = $state(false);
+	editDialogOpen = $state(false);
+	deleteDialogOpen = $state(false);
+	selectedProduct = $state<Product | null>(null);
+
 	// Business actions - Use ConvexClient for mutations
 	async createProduct(productData: ProductProps): Promise<void> {
 		try {
-			await this.client.mutation(api.spm.product.mutations.create, productData);
+			console.log('ViewModel: Creating product with data:', productData);
+			const result = await this.client.mutation(api.spm.product.mutations.create, productData);
+			console.log('ViewModel: Product created with result:', result);
 		} catch (error) {
-			console.error('Failed to create product:', error);
+			console.error('ViewModel: Failed to create product:', error);
 			throw error;
 		}
 	}
@@ -63,5 +71,21 @@ export class ProductViewModel {
 
 	getTotalValue(): number {
 		return this.data.reduce((total, product) => total + product.price, 0);
+	}
+
+	// Dialog management methods
+	openCreateDialog(): void {
+		this.selectedProduct = null;
+		this.createDialogOpen = true;
+	}
+
+	openEditDialog(product: Product): void {
+		this.selectedProduct = product;
+		this.editDialogOpen = true;
+	}
+
+	openDeleteDialog(product: Product): void {
+		this.selectedProduct = product;
+		this.deleteDialogOpen = true;
 	}
 }
