@@ -1,6 +1,7 @@
 import { useQuery, useConvexClient } from 'convex-svelte';
 import { api } from '../../../../../convex/_generated/api';
 import type { Product, ProductProps } from '../../domain/ProductDTO';
+import { toast } from 'svelte-sonner';
 
 /**
  * ProductViewModel - Business logic for Product management
@@ -30,9 +31,11 @@ export class ProductViewModel {
 		try {
 			console.log('ViewModel: Creating product with data:', productData);
 			const result = await this.client.mutation(api.spm.product.mutations.create, productData);
+			toast.success('Product created successfully');
 			console.log('ViewModel: Product created with result:', result);
 		} catch (error) {
 			console.error('ViewModel: Failed to create product:', error);
+			toast.error('Failed to create product');
 			throw error;
 		}
 	}
@@ -43,8 +46,10 @@ export class ProductViewModel {
 				id: id as string & { __tableName: 'products' },
 				updates: productData
 			});
+			toast.success('Product updated successfully');
 		} catch (error) {
 			console.error('Failed to update product:', error);
+			toast.error('Failed to update product');
 			throw error;
 		}
 	}
@@ -54,8 +59,10 @@ export class ProductViewModel {
 			await this.client.mutation(api.spm.product.mutations.deleteById, {
 				id: id as string & { __tableName: 'products' }
 			});
+			toast.success('Product deleted successfully');
 		} catch (error) {
 			console.error('Failed to delete product:', error);
+			toast.error('Failed to delete product');
 			throw error;
 		}
 	}

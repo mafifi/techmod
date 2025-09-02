@@ -14,7 +14,7 @@ import { customCtx } from 'convex-helpers/server/customFunctions';
  * when authentication infrastructure is added
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const requireJWTModifier = customCtx(async (_ctx) => {
+export const requireJWTModifier = customCtx(async (ctx) => {
 	// TODO: Implement JWT token verification
 	// const identity = await ctx.auth.getUserIdentity();
 	// if (!identity) {
@@ -36,7 +36,7 @@ export const requireJWTModifier = customCtx(async (_ctx) => {
  * TODO: Implement actual JWT token verification
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const optionalJWTModifier = customCtx(async (_ctx) => {
+export const optionalJWTModifier = customCtx(async (ctx) => {
 	// TODO: Implement JWT token verification
 	// const identity = await ctx.auth.getUserIdentity();
 
@@ -55,7 +55,7 @@ export const optionalJWTModifier = customCtx(async (_ctx) => {
  * TODO: Implement role-based access control
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const requireAdminModifier = customCtx(async (_ctx) => {
+export const requireAdminModifier = customCtx(async (ctx) => {
 	// TODO: Implement JWT + admin role verification
 	// const identity = await ctx.auth.getUserIdentity();
 	// if (!identity) {
