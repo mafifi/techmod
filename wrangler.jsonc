@@ -40,7 +40,8 @@
 
 	"vars": {
 		"CONVEX_DEPLOYMENT": "prod:coordinated-hare-711",
-		"PUBLIC_CONVEX_URL": "https://coordinated-hare-711.convex.cloud"
+		"PUBLIC_CONVEX_URL": "https://coordinated-hare-711.convex.cloud",
+		"CONVEX_DEPLOYMENT_KEY": "prod:coordinated-hare-711|eyJ2MiI6ImUyNmY4NmI5ZTI1ZTQ5YzNiMDJlZjc0NDNmNGYzZjg0In0="
 	},
 
 	"env": {
