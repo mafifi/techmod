@@ -1,6 +1,6 @@
-import type { 
-	TaxonomyNodeProps, 
-	TaxonomyNode, 
+import type {
+	TaxonomyNodeProps,
+	TaxonomyNode,
 	TaxonomyNodeType,
 	PortfolioProps,
 	LineProps,
@@ -78,7 +78,10 @@ export class TaxonomyNodeDTOMock {
 	/**
 	 * Generate a Category node (child of line)
 	 */
-	static createCategoryProps(parentLineId: string, overrides: Partial<CategoryProps> = {}): CategoryProps {
+	static createCategoryProps(
+		parentLineId: string,
+		overrides: Partial<CategoryProps> = {}
+	): CategoryProps {
 		return this.createTaxonomyNodeProps({
 			type: 'category',
 			parentId: parentLineId,
@@ -107,16 +110,32 @@ export class TaxonomyNodeDTOMock {
 	 * Create multiple hierarchical nodes with children arrays for tree testing
 	 */
 	static createHierarchyWithChildren() {
-		const portfolio1 = this.createTaxonomyNode(this.createPortfolioProps({ name: 'Core Portfolio' }));
-		const portfolio2 = this.createTaxonomyNode(this.createPortfolioProps({ name: 'Innovation Portfolio' }));
+		const portfolio1 = this.createTaxonomyNode(
+			this.createPortfolioProps({ name: 'Core Portfolio' })
+		);
+		const portfolio2 = this.createTaxonomyNode(
+			this.createPortfolioProps({ name: 'Innovation Portfolio' })
+		);
 
-		const line1 = this.createTaxonomyNode(this.createLineProps(portfolio1._id, { name: 'Enterprise Line' }));
-		const line2 = this.createTaxonomyNode(this.createLineProps(portfolio1._id, { name: 'Consumer Line' }));
-		const line3 = this.createTaxonomyNode(this.createLineProps(portfolio2._id, { name: 'Research Line' }));
+		const line1 = this.createTaxonomyNode(
+			this.createLineProps(portfolio1._id, { name: 'Enterprise Line' })
+		);
+		const line2 = this.createTaxonomyNode(
+			this.createLineProps(portfolio1._id, { name: 'Consumer Line' })
+		);
+		const line3 = this.createTaxonomyNode(
+			this.createLineProps(portfolio2._id, { name: 'Research Line' })
+		);
 
-		const category1 = this.createTaxonomyNode(this.createCategoryProps(line1._id, { name: 'Security Category' }));
-		const category2 = this.createTaxonomyNode(this.createCategoryProps(line1._id, { name: 'Analytics Category' }));
-		const category3 = this.createTaxonomyNode(this.createCategoryProps(line2._id, { name: 'Mobile Category' }));
+		const category1 = this.createTaxonomyNode(
+			this.createCategoryProps(line1._id, { name: 'Security Category' })
+		);
+		const category2 = this.createTaxonomyNode(
+			this.createCategoryProps(line1._id, { name: 'Analytics Category' })
+		);
+		const category3 = this.createTaxonomyNode(
+			this.createCategoryProps(line2._id, { name: 'Mobile Category' })
+		);
 
 		// Structure with children arrays for tree rendering
 		return [
@@ -132,9 +151,7 @@ export class TaxonomyNodeDTOMock {
 					},
 					{
 						...line2,
-						children: [
-							{ ...category3, children: [] }
-						]
+						children: [{ ...category3, children: [] }]
 					}
 				]
 			},
@@ -158,7 +175,7 @@ export class TaxonomyNodeDTOMock {
 		type: TaxonomyNodeType = 'portfolio',
 		overrides: Partial<TaxonomyNodeProps> = {}
 	): TaxonomyNodeProps[] {
-		return Array.from({ length: count }, () => 
+		return Array.from({ length: count }, () =>
 			this.createTaxonomyNodeProps({ type, ...overrides })
 		);
 	}
@@ -171,9 +188,7 @@ export class TaxonomyNodeDTOMock {
 		type: TaxonomyNodeType = 'portfolio',
 		overrides: Partial<TaxonomyNode> = {}
 	): TaxonomyNode[] {
-		return Array.from({ length: count }, () => 
-			this.createTaxonomyNode({ type, ...overrides })
-		);
+		return Array.from({ length: count }, () => this.createTaxonomyNode({ type, ...overrides }));
 	}
 
 	/**
@@ -181,9 +196,15 @@ export class TaxonomyNodeDTOMock {
 	 */
 	static createMixedActiveNodes(): TaxonomyNode[] {
 		return [
-			this.createTaxonomyNode(this.createPortfolioProps({ name: 'Active Portfolio', isActive: true })),
-			this.createTaxonomyNode(this.createPortfolioProps({ name: 'Inactive Portfolio', isActive: false })),
-			this.createTaxonomyNode(this.createPortfolioProps({ name: 'Active Portfolio 2', isActive: true }))
+			this.createTaxonomyNode(
+				this.createPortfolioProps({ name: 'Active Portfolio', isActive: true })
+			),
+			this.createTaxonomyNode(
+				this.createPortfolioProps({ name: 'Inactive Portfolio', isActive: false })
+			),
+			this.createTaxonomyNode(
+				this.createPortfolioProps({ name: 'Active Portfolio 2', isActive: true })
+			)
 		];
 	}
 
@@ -323,18 +344,24 @@ export class TaxonomyNodeDTOMock {
 	 */
 	static createNodesForSearchTesting(): TaxonomyNode[] {
 		return [
-			this.createTaxonomyNode(this.createPortfolioProps({ 
-				name: 'Digital Portfolio', 
-				description: 'Portfolio focused on digital transformation initiatives'
-			})),
-			this.createTaxonomyNode(this.createPortfolioProps({ 
-				name: 'Legacy Systems', 
-				description: 'Portfolio managing legacy system maintenance'
-			})),
-			this.createTaxonomyNode(this.createPortfolioProps({ 
-				name: 'Innovation Hub', 
-				description: 'Hub for innovative digital solutions'
-			}))
+			this.createTaxonomyNode(
+				this.createPortfolioProps({
+					name: 'Digital Portfolio',
+					description: 'Portfolio focused on digital transformation initiatives'
+				})
+			),
+			this.createTaxonomyNode(
+				this.createPortfolioProps({
+					name: 'Legacy Systems',
+					description: 'Portfolio managing legacy system maintenance'
+				})
+			),
+			this.createTaxonomyNode(
+				this.createPortfolioProps({
+					name: 'Innovation Hub',
+					description: 'Hub for innovative digital solutions'
+				})
+			)
 		];
 	}
 
@@ -342,9 +369,15 @@ export class TaxonomyNodeDTOMock {
 	 * Create nodes for type filtering tests
 	 */
 	static createMixedTypeNodes(): TaxonomyNode[] {
-		const portfolio = this.createTaxonomyNode(this.createPortfolioProps({ name: 'Test Portfolio' }));
-		const line = this.createTaxonomyNode(this.createLineProps(portfolio._id, { name: 'Test Line' }));
-		const category = this.createTaxonomyNode(this.createCategoryProps(line._id, { name: 'Test Category' }));
+		const portfolio = this.createTaxonomyNode(
+			this.createPortfolioProps({ name: 'Test Portfolio' })
+		);
+		const line = this.createTaxonomyNode(
+			this.createLineProps(portfolio._id, { name: 'Test Line' })
+		);
+		const category = this.createTaxonomyNode(
+			this.createCategoryProps(line._id, { name: 'Test Category' })
+		);
 
 		return [portfolio, line, category];
 	}

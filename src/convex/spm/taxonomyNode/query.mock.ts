@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { vi } from 'vitest';
 import { TaxonomyNodeDTOMock } from '../../../lib/modules/spm/domain/TaxonomyNodeDTOMock';
 
@@ -24,21 +26,35 @@ export const mockTaxonomyNodeQueries = {
  * Reset all query mocks to their initial state
  */
 export function resetTaxonomyNodeQueryMocks(): void {
-	Object.values(mockTaxonomyNodeQueries).forEach(mock => {
+	Object.values(mockTaxonomyNodeQueries).forEach((mock) => {
 		mock.mockClear();
 	});
 
 	// Set default return values
 	mockTaxonomyNodeQueries.getAll.mockResolvedValue(TaxonomyNodeDTOMock.createTaxonomyNodeArray(3));
 	mockTaxonomyNodeQueries.getById.mockResolvedValue(TaxonomyNodeDTOMock.createTaxonomyNode());
-	mockTaxonomyNodeQueries.getByType.mockResolvedValue(TaxonomyNodeDTOMock.createTaxonomyNodeArray(2, 'portfolio'));
-	mockTaxonomyNodeQueries.getByParentId.mockResolvedValue(TaxonomyNodeDTOMock.createTaxonomyNodeArray(2, 'line'));
-	mockTaxonomyNodeQueries.getFullHierarchy.mockResolvedValue(TaxonomyNodeDTOMock.createHierarchyWithChildren());
-	mockTaxonomyNodeQueries.getActiveNodes.mockResolvedValue(TaxonomyNodeDTOMock.createMixedActiveNodes().filter(node => node.isActive));
-	mockTaxonomyNodeQueries.searchNodes.mockResolvedValue(TaxonomyNodeDTOMock.createNodesForSearchTesting());
+	mockTaxonomyNodeQueries.getByType.mockResolvedValue(
+		TaxonomyNodeDTOMock.createTaxonomyNodeArray(2, 'portfolio')
+	);
+	mockTaxonomyNodeQueries.getByParentId.mockResolvedValue(
+		TaxonomyNodeDTOMock.createTaxonomyNodeArray(2, 'line')
+	);
+	mockTaxonomyNodeQueries.getFullHierarchy.mockResolvedValue(
+		TaxonomyNodeDTOMock.createHierarchyWithChildren()
+	);
+	mockTaxonomyNodeQueries.getActiveNodes.mockResolvedValue(
+		TaxonomyNodeDTOMock.createMixedActiveNodes().filter((node) => node.isActive)
+	);
+	mockTaxonomyNodeQueries.searchNodes.mockResolvedValue(
+		TaxonomyNodeDTOMock.createNodesForSearchTesting()
+	);
 	mockTaxonomyNodeQueries.getNodePath.mockResolvedValue([TaxonomyNodeDTOMock.createTaxonomyNode()]);
-	mockTaxonomyNodeQueries.getNodeDescendants.mockResolvedValue(TaxonomyNodeDTOMock.createTaxonomyNodeArray(2));
-	mockTaxonomyNodeQueries.getValidParents.mockResolvedValue(TaxonomyNodeDTOMock.createTaxonomyNodeArray(1, 'portfolio'));
+	mockTaxonomyNodeQueries.getNodeDescendants.mockResolvedValue(
+		TaxonomyNodeDTOMock.createTaxonomyNodeArray(2)
+	);
+	mockTaxonomyNodeQueries.getValidParents.mockResolvedValue(
+		TaxonomyNodeDTOMock.createTaxonomyNodeArray(1, 'portfolio')
+	);
 }
 
 /**
@@ -58,10 +74,13 @@ export const mockTaxonomyNodeQueryScenarios = {
 	 * Simulate loading state
 	 */
 	loading: () => {
-		Object.values(mockTaxonomyNodeQueries).forEach(mock => {
-			mock.mockImplementation(() => new Promise(resolve => {
-				// Never resolve to simulate loading
-			}));
+		Object.values(mockTaxonomyNodeQueries).forEach((mock) => {
+			mock.mockImplementation(
+				() =>
+					new Promise((resolve) => {
+						// Never resolve to simulate loading
+					})
+			);
 		});
 	},
 
@@ -70,7 +89,7 @@ export const mockTaxonomyNodeQueryScenarios = {
 	 */
 	error: (errorMessage: string = 'Query failed') => {
 		const error = new Error(errorMessage);
-		Object.values(mockTaxonomyNodeQueries).forEach(mock => {
+		Object.values(mockTaxonomyNodeQueries).forEach((mock) => {
 			mock.mockRejectedValue(error);
 		});
 	},
@@ -81,19 +100,16 @@ export const mockTaxonomyNodeQueryScenarios = {
 	successfulHierarchy: () => {
 		const hierarchy = TaxonomyNodeDTOMock.createHierarchyWithChildren();
 		mockTaxonomyNodeQueries.getFullHierarchy.mockResolvedValue(hierarchy);
-		
+
 		// Set up other queries to return consistent data
-		const allNodes = hierarchy.flatMap(portfolio => [
+		const allNodes = hierarchy.flatMap((portfolio) => [
 			portfolio,
-			...portfolio.children.flatMap(line => [
-				line,
-				...line.children
-			])
+			...portfolio.children.flatMap((line) => [line, ...line.children])
 		]);
-		
+
 		mockTaxonomyNodeQueries.getAll.mockResolvedValue(allNodes);
-		mockTaxonomyNodeQueries.getByType.mockImplementation((type: string) => 
-			Promise.resolve(allNodes.filter(node => node.type === type))
+		mockTaxonomyNodeQueries.getByType.mockImplementation((type: string) =>
+			Promise.resolve(allNodes.filter((node) => node.type === type))
 		);
 	},
 
@@ -102,9 +118,10 @@ export const mockTaxonomyNodeQueryScenarios = {
 	 */
 	searchResults: (searchTerm: string) => {
 		const allNodes = TaxonomyNodeDTOMock.createNodesForSearchTesting();
-		const filtered = allNodes.filter(node => 
-			node.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			node.description.toLowerCase().includes(searchTerm.toLowerCase())
+		const filtered = allNodes.filter(
+			(node) =>
+				node.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+				node.description.toLowerCase().includes(searchTerm.toLowerCase())
 		);
 		mockTaxonomyNodeQueries.searchNodes.mockResolvedValue(filtered);
 	},
@@ -114,7 +131,7 @@ export const mockTaxonomyNodeQueryScenarios = {
 	 */
 	filteredByType: (type: string) => {
 		const allNodes = TaxonomyNodeDTOMock.createMixedTypeNodes();
-		const filtered = type === 'all' ? allNodes : allNodes.filter(node => node.type === type);
+		const filtered = type === 'all' ? allNodes : allNodes.filter((node) => node.type === type);
 		mockTaxonomyNodeQueries.getByType.mockResolvedValue(filtered);
 	},
 
@@ -123,7 +140,7 @@ export const mockTaxonomyNodeQueryScenarios = {
 	 */
 	filteredByActive: (activeOnly: boolean) => {
 		const allNodes = TaxonomyNodeDTOMock.createMixedActiveNodes();
-		const filtered = activeOnly ? allNodes.filter(node => node.isActive) : allNodes;
+		const filtered = activeOnly ? allNodes.filter((node) => node.isActive) : allNodes;
 		mockTaxonomyNodeQueries.getActiveNodes.mockResolvedValue(filtered);
 	},
 

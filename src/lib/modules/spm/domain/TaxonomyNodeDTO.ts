@@ -7,16 +7,16 @@ export const TaxonomyNodePropsSchema = z.object({
 	// Core identity fields
 	name: z.string().min(2).max(100),
 	description: z.string().min(10).max(1000),
-	
+
 	// Type discrimination for the unified hierarchy
 	type: TaxonomyNodeType,
-	
+
 	// Optional strategy field (applicable to all levels)
 	strategy: z.string().min(5).max(2000).optional(),
-	
+
 	// Hierarchy relationship - null for top-level portfolios (required for portfolios)
 	parentId: z.string().nullable().default(null),
-	
+
 	// Audit trail fields
 	createdBy: z.string(),
 	updatedBy: z.string(),
@@ -31,7 +31,7 @@ export const TaxonomyNodePropsSchema = z.object({
 			})
 		)
 		.default([]),
-	
+
 	// Status tracking
 	isActive: z.boolean().default(true),
 	version: z.number().default(1)
@@ -45,6 +45,11 @@ export const TaxonomyNodeSchema = TaxonomyNodePropsSchema.extend({
 export type TaxonomyNodeType = z.infer<typeof TaxonomyNodeType>;
 export type TaxonomyNodeProps = z.infer<typeof TaxonomyNodePropsSchema>;
 export type TaxonomyNode = z.infer<typeof TaxonomyNodeSchema>;
+
+// Recursive hierarchy node type used by the UI
+export type TaxonomyHierarchyNode = TaxonomyNode & {
+	children: TaxonomyHierarchyNode[];
+};
 
 // Type-specific schemas for validation
 export const PortfolioPropsSchema = TaxonomyNodePropsSchema.extend({

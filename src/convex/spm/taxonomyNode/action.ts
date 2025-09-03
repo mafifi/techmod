@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
+
 import { action } from '../../_generated/server';
 import { v } from 'convex/values';
 import { api } from '../../_generated/api';
 import type { ActionCtx } from '../../_generated/server';
 import type { Doc, Id } from '../../_generated/dataModel';
-import { TaxonomyNodePropsSchema, TaxonomyNodeType } from '../../../lib/modules/spm/domain/TaxonomyNodeDTO';
+import {
+	TaxonomyNodePropsSchema,
+	TaxonomyNodeType
+} from '../../../lib/modules/spm/domain/TaxonomyNodeDTO';
 import type { z } from 'zod';
 import { getById, getByName, getChildren, getFullHierarchy } from './query';
 import { create, update, deleteNode } from './mutations';
@@ -18,34 +23,34 @@ type TaxonomyNodeDisplay = Doc<'taxonomyNodes'> & {
 };
 
 interface TaxonomyHierarchyNode extends TaxonomyNodeDisplay {
-    children: TaxonomyHierarchyNode[];
+	children: TaxonomyHierarchyNode[];
 }
 
 interface ExportFormat {
-    type: 'json' | 'csv';
-    includeMetadata?: boolean;
+	type: 'json' | 'csv';
+	includeMetadata?: boolean;
 }
 
 // Error handling types
 interface SuccessResult<T> {
-    success: true;
-    data: T;
+	success: true;
+	data: T;
 }
 
 interface ErrorResult {
-    success: false;
-    error: string;
+	success: false;
+	error: string;
 }
 
 type ActionResult<T> = SuccessResult<T> | ErrorResult;
 
 // Helper function to handle errors consistently
 function handleError(error: unknown): ErrorResult {
-    const message = error instanceof Error ? error.message : 'Unknown error occurred';
-    return {
-        success: false,
-        error: message
-    };
+	const message = error instanceof Error ? error.message : 'Unknown error occurred';
+	return {
+		success: false,
+		error: message
+	};
 }
 
 // External integration action placeholders
@@ -57,17 +62,19 @@ export const syncWithExternalSystem = action({
 	},
 	handler: async (ctx: ActionCtx, args: any) => {
 		const { nodeId, externalSystem, syncDirection } = args;
-		
+
 		// Get the node data
-	const node: any = await ctx.runQuery((api as any)['spm/taxonomyNode/query'].getById, { nodeId });
+		const node: any = await ctx.runQuery((api as any)['spm/taxonomyNode/query'].getById, {
+			nodeId
+		});
 		if (!node) {
 			throw new Error('Node not found');
 		}
-		
+
 		// TODO: Implement external system integrations
 		// This is a placeholder for future external system integrations
 		// Examples: ERP systems, CMDB, ServiceNow, etc.
-		
+
 		switch (externalSystem.toLowerCase()) {
 			case 'servicenow':
 				return await syncWithServiceNow(ctx, node, syncDirection);
@@ -85,7 +92,7 @@ export const syncWithExternalSystem = action({
 async function syncWithServiceNow(ctx: any, node: any, syncDirection: string) {
 	// TODO: Implement ServiceNow API integration
 	console.log('ServiceNow sync placeholder', { node: node._id, syncDirection });
-	
+
 	return {
 		success: true,
 		system: 'ServiceNow',
@@ -98,7 +105,7 @@ async function syncWithServiceNow(ctx: any, node: any, syncDirection: string) {
 async function syncWithJira(ctx: any, node: any, syncDirection: string) {
 	// TODO: Implement Jira API integration
 	console.log('Jira sync placeholder', { node: node._id, syncDirection });
-	
+
 	return {
 		success: true,
 		system: 'Jira',
@@ -111,7 +118,7 @@ async function syncWithJira(ctx: any, node: any, syncDirection: string) {
 async function syncWithAzureDevOps(ctx: any, node: any, syncDirection: string) {
 	// TODO: Implement Azure DevOps API integration
 	console.log('Azure DevOps sync placeholder', { node: node._id, syncDirection });
-	
+
 	return {
 		success: true,
 		system: 'Azure DevOps',
@@ -123,39 +130,44 @@ async function syncWithAzureDevOps(ctx: any, node: any, syncDirection: string) {
 // Bulk operations for migration and data management
 export const bulkImport = action({
 	args: {
-		nodes: v.array(v.object({
-			name: v.string(),
-			description: v.string(),
-			type: v.union(v.literal('portfolio'), v.literal('line'), v.literal('category')),
-			parentName: v.optional(v.string()),
-			strategy: v.optional(v.string()),
-			isActive: v.optional(v.boolean())
-		})),
+		nodes: v.array(
+			v.object({
+				name: v.string(),
+				description: v.string(),
+				type: v.union(v.literal('portfolio'), v.literal('line'), v.literal('category')),
+				parentName: v.optional(v.string()),
+				strategy: v.optional(v.string()),
+				isActive: v.optional(v.boolean())
+			})
+		),
 		importedBy: v.string(),
 		validateHierarchy: v.optional(v.boolean())
 	},
 	handler: async (ctx: ActionCtx, args: any) => {
 		const { nodes, importedBy, validateHierarchy = true } = args;
-		
-	const results = [];
-	const createdNodes = new Map(); // name -> nodeId mapping
-		
+
+		const results = [];
+		const createdNodes = new Map(); // name -> nodeId mapping
+
 		// Sort nodes by type to ensure proper creation order (portfolio -> line -> category)
-		const sortedNodes = ([...nodes] as Array<{ type: 'portfolio'|'line'|'category' } & Record<string, any>>)
-			.sort((a, b) => {
+		const sortedNodes = (
+			[...nodes] as Array<{ type: 'portfolio' | 'line' | 'category' } & Record<string, any>>
+		).sort((a, b) => {
 			const typeOrder = { portfolio: 0, line: 1, category: 2 };
 			return typeOrder[a.type] - typeOrder[b.type];
 		});
-		
+
 		for (const nodeData of sortedNodes) {
 			try {
 				// Find parent ID if parentName is provided
 				let parentId = null;
-				
+
 				// Portfolios cannot have parents
 				if (nodeData.type === 'portfolio') {
 					if (nodeData.parentName) {
-						throw new Error(`Portfolio '${nodeData.name}' cannot have a parent - portfolios must be top-level`);
+						throw new Error(
+							`Portfolio '${nodeData.name}' cannot have a parent - portfolios must be top-level`
+						);
 					}
 					parentId = null;
 				} else {
@@ -163,14 +175,17 @@ export const bulkImport = action({
 					if (!nodeData.parentName) {
 						throw new Error(`${nodeData.type} '${nodeData.name}' must have a parent`);
 					}
-					
+
 					if (createdNodes.has(nodeData.parentName)) {
 						parentId = createdNodes.get(nodeData.parentName);
 					} else {
 						// Look for existing parent
-						const existingParent: any = await ctx.runQuery((api as any)['spm/taxonomyNode/query'].getByName, {
-							name: nodeData.parentName
-						});
+						const existingParent: any = await ctx.runQuery(
+							(api as any)['spm/taxonomyNode/query'].getByName,
+							{
+								name: nodeData.parentName
+							}
+						);
 						if (existingParent) {
 							parentId = existingParent._id;
 						} else if (validateHierarchy) {
@@ -178,22 +193,25 @@ export const bulkImport = action({
 						}
 					}
 				}
-				
+
 				// Create the node
-				const nodeId: Id<'taxonomyNodes'> = await ctx.runMutation((api as any)['spm/taxonomyNode/mutations'].create, {
-					name: nodeData.name,
-					description: nodeData.description,
-					type: nodeData.type,
-					parentId,
-					strategy: nodeData.strategy,
-					isActive: nodeData.isActive ?? true,
-					createdBy: importedBy,
-					updatedBy: importedBy,
-					lastModified: Date.now(),
-					changeHistory: [],
-					version: 1
-				});
-				
+				const nodeId: Id<'taxonomyNodes'> = await ctx.runMutation(
+					(api as any)['spm/taxonomyNode/mutations'].create,
+					{
+						name: nodeData.name,
+						description: nodeData.description,
+						type: nodeData.type,
+						parentId,
+						strategy: nodeData.strategy,
+						isActive: nodeData.isActive ?? true,
+						createdBy: importedBy,
+						updatedBy: importedBy,
+						lastModified: Date.now(),
+						changeHistory: [],
+						version: 1
+					}
+				);
+
 				createdNodes.set(nodeData.name, nodeId);
 				results.push({
 					success: true,
@@ -201,7 +219,6 @@ export const bulkImport = action({
 					nodeId,
 					type: nodeData.type
 				});
-				
 			} catch (error: unknown) {
 				const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
 				results.push({
@@ -212,10 +229,10 @@ export const bulkImport = action({
 				});
 			}
 		}
-		
-		const successCount = results.filter(r => r.success).length;
+
+		const successCount = results.filter((r) => r.success).length;
 		const errorCount = results.length - successCount;
-		
+
 		return {
 			totalProcessed: results.length,
 			successCount,
@@ -229,23 +246,25 @@ export const bulkExport = action({
 	args: {
 		format: v.union(v.literal('json'), v.literal('csv')),
 		includeInactive: v.optional(v.boolean()),
-		typeFilter: v.optional(v.union(v.literal('portfolio'), v.literal('line'), v.literal('category')))
+		typeFilter: v.optional(
+			v.union(v.literal('portfolio'), v.literal('line'), v.literal('category'))
+		)
 	},
 	handler: async (ctx, args) => {
 		const { format, includeInactive = false, typeFilter } = args;
-		
+
 		// Get all nodes with hierarchy
-	const hierarchy = await ctx.runQuery((api as any)['spm/taxonomyNode/query'].getFullHierarchy, {
+		const hierarchy = await ctx.runQuery((api as any)['spm/taxonomyNode/query'].getFullHierarchy, {
 			activeOnly: !includeInactive
 		});
-		
+
 		// Flatten hierarchy for export
 		const flattenedNodes: TaxonomyNodeDisplay[] = [];
-		
+
 		function flattenHierarchy(nodes: any[], parentPath = '') {
 			for (const node of nodes) {
 				const currentPath = parentPath ? `${parentPath} > ${node.name}` : node.name;
-				
+
 				if (!typeFilter || node.type === typeFilter) {
 					flattenedNodes.push({
 						...node,
@@ -253,23 +272,30 @@ export const bulkExport = action({
 						parentName: parentPath.split(' > ').pop() || null
 					});
 				}
-				
+
 				if (node.children && node.children.length > 0) {
 					flattenHierarchy(node.children, currentPath);
 				}
 			}
 		}
-		
+
 		flattenHierarchy(hierarchy);
-		
+
 		if (format === 'csv') {
 			// Convert to CSV format
 			const headers = [
-				'Name', 'Description', 'Type', 'Strategy', 'Parent',
-				'Hierarchy Path', 'Is Active', 'Created By', 'Last Modified'
+				'Name',
+				'Description',
+				'Type',
+				'Strategy',
+				'Parent',
+				'Hierarchy Path',
+				'Is Active',
+				'Created By',
+				'Last Modified'
 			];
-			
-			const csvRows = flattenedNodes.map(node => [
+
+			const csvRows = flattenedNodes.map((node) => [
 				node.name,
 				node.description,
 				node.type,
@@ -280,7 +306,7 @@ export const bulkExport = action({
 				node.createdBy,
 				new Date(node.lastModified).toISOString()
 			]);
-			
+
 			return {
 				format: 'csv',
 				headers,
@@ -288,7 +314,7 @@ export const bulkExport = action({
 				count: flattenedNodes.length
 			};
 		}
-		
+
 		// Return JSON format
 		return {
 			format: 'json',
@@ -305,40 +331,46 @@ export const calculateTreeMetrics = action({
 	},
 	handler: async (ctx, args) => {
 		const { rootNodeId } = args;
-		
+
 		let nodes;
 		if (rootNodeId) {
 			// Get subtree starting from specified root
-			const rootNode = await ctx.runQuery((api as any)['spm/taxonomyNode/query'].getById, { nodeId: rootNodeId });
+			const rootNode = await ctx.runQuery((api as any)['spm/taxonomyNode/query'].getById, {
+				nodeId: rootNodeId
+			});
 			if (!rootNode) {
 				throw new Error('Root node not found');
 			}
-			
+
 			// Get all descendants
 			nodes = await getAllDescendants(ctx, rootNodeId);
 			nodes.unshift(rootNode); // Include root in metrics
 		} else {
 			// Get entire hierarchy
-			const hierarchy = await ctx.runQuery((api as any)['spm/taxonomyNode/query'].getFullHierarchy, {});
+			const hierarchy = await ctx.runQuery(
+				(api as any)['spm/taxonomyNode/query'].getFullHierarchy,
+				{}
+			);
 			nodes = flattenHierarchy(hierarchy);
 		}
-		
+
 		// Calculate metrics
 		const metrics = {
 			totalNodes: nodes.length,
-			activeNodes: nodes.filter(n => n.isActive).length,
-			inactiveNodes: nodes.filter(n => !n.isActive).length,
+			activeNodes: nodes.filter((n) => n.isActive).length,
+			inactiveNodes: nodes.filter((n) => !n.isActive).length,
 			nodesByType: {
-				portfolio: nodes.filter(n => n.type === 'portfolio').length,
-				line: nodes.filter(n => n.type === 'line').length,
-				category: nodes.filter(n => n.type === 'category').length
+				portfolio: nodes.filter((n) => n.type === 'portfolio').length,
+				line: nodes.filter((n) => n.type === 'line').length,
+				category: nodes.filter((n) => n.type === 'category').length
 			},
 			maxDepth: calculateMaxDepth(nodes),
-			nodesWithStrategy: nodes.filter(n => n.strategy).length,
+			nodesWithStrategy: nodes.filter((n) => n.strategy).length,
 			averageChildrenPerNode: calculateAverageChildren(nodes),
-			orphanedNodes: nodes.filter(n => n.parentId && !nodes.find(p => p._id === n.parentId)).length
+			orphanedNodes: nodes.filter((n) => n.parentId && !nodes.find((p) => p._id === n.parentId))
+				.length
 		};
-		
+
 		return metrics;
 	}
 });
@@ -346,65 +378,65 @@ export const calculateTreeMetrics = action({
 // Helper function to get all descendants of a node
 async function getAllDescendants(ctx: any, nodeId: string): Promise<any[]> {
 	const descendants = [];
-	const children = await ctx.runQuery((api as any)['spm/taxonomyNode/query'].getChildren, { parentId: nodeId });
-	
+	const children = await ctx.runQuery((api as any)['spm/taxonomyNode/query'].getChildren, {
+		parentId: nodeId
+	});
+
 	for (const child of children) {
 		descendants.push(child);
 		const grandchildren = await getAllDescendants(ctx, child._id);
 		descendants.push(...grandchildren);
 	}
-	
+
 	return descendants;
 }
 
 // Helper function to flatten hierarchy
 function flattenHierarchy(nodes: any[]): any[] {
 	const flattened = [];
-	
+
 	for (const node of nodes) {
 		flattened.push(node);
 		if (node.children && node.children.length > 0) {
 			flattened.push(...flattenHierarchy(node.children));
 		}
 	}
-	
+
 	return flattened;
 }
 
 // Helper function to calculate maximum depth
 function calculateMaxDepth(nodes: any[]): number {
 	let maxDepth = 0;
-	
+
 	for (const node of nodes) {
 		let depth = 0;
 		let currentNode = node;
-		
+
 		// Walk up the hierarchy to calculate depth
 		while (currentNode.parentId) {
 			depth++;
-			currentNode = nodes.find(n => n._id === currentNode.parentId);
+			currentNode = nodes.find((n) => n._id === currentNode.parentId);
 			if (!currentNode) break; // Prevent infinite loops
 		}
-		
+
 		maxDepth = Math.max(maxDepth, depth);
 	}
-	
+
 	return maxDepth;
 }
 
 // Helper function to calculate average children per node
 function calculateAverageChildren(nodes: any[]): number {
-	const parentNodes = nodes.filter(n => 
-		nodes.some(child => child.parentId === n._id)
-	);
-	
+	const parentNodes = nodes.filter((n) => nodes.some((child) => child.parentId === n._id));
+
 	if (parentNodes.length === 0) return 0;
-	
+
 	const totalChildren = parentNodes.reduce((sum, parent) => {
-		const childrenCount = nodes.filter(n => n.parentId === parent._id).length;
+		const childrenCount = nodes.filter((n) => n.parentId === parent._id).length;
 		return sum + childrenCount;
 	}, 0);
-	
+
 	return totalChildren / parentNodes.length;
 }
 
@@ -416,28 +448,30 @@ export const cleanupOrphanedNodes = action({
 	},
 	handler: async (ctx, args) => {
 		const { updatedBy, dryRun = false } = args;
-		
+
 		// Find all nodes
-	const allNodes = await ctx.runQuery((api as any)['spm/taxonomyNode/query'].getFullHierarchy, { activeOnly: false });
+		const allNodes = await ctx.runQuery((api as any)['spm/taxonomyNode/query'].getFullHierarchy, {
+			activeOnly: false
+		});
 		const flatNodes = flattenHierarchy(allNodes);
-		
+
 		// Find orphaned nodes (have parentId but parent doesn't exist)
 		const orphanedNodes = [];
-		
+
 		for (const node of flatNodes) {
 			if (node.parentId) {
-				const parentExists = flatNodes.some(n => n._id === node.parentId);
+				const parentExists = flatNodes.some((n) => n._id === node.parentId);
 				if (!parentExists) {
 					orphanedNodes.push(node);
 				}
 			}
 		}
-		
+
 		if (dryRun) {
 			return {
 				dryRun: true,
 				orphanedCount: orphanedNodes.length,
-				orphanedNodes: orphanedNodes.map(n => ({
+				orphanedNodes: orphanedNodes.map((n) => ({
 					id: n._id,
 					name: n.name,
 					type: n.type,
@@ -445,7 +479,7 @@ export const cleanupOrphanedNodes = action({
 				}))
 			};
 		}
-		
+
 		// Fix orphaned nodes
 		let fixedCount = 0;
 		for (const orphanedNode of orphanedNodes) {
@@ -467,7 +501,7 @@ export const cleanupOrphanedNodes = action({
 			}
 			fixedCount++;
 		}
-		
+
 		return {
 			dryRun: false,
 			orphanedCount: orphanedNodes.length,

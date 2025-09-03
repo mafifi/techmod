@@ -1,17 +1,18 @@
 import { useQuery, useConvexClient } from 'convex-svelte';
+import { SvelteSet } from 'svelte/reactivity';
 import { api } from '../../../../../convex/_generated/api';
-import type { Id } from '../../../../../../convex/_generated/dataModel';
-import type { TaxonomyNode, TaxonomyNodeProps, TaxonomyNodeType } from '../domain/TaxonomyNodeDTO';
-
-interface TaxonomyHierarchyNode extends TaxonomyNode {
-	children: TaxonomyHierarchyNode[];
-}
+import type { Id } from '../../../../../convex/_generated/dataModel';
+import type {
+	TaxonomyNodeProps,
+	TaxonomyNodeType,
+	TaxonomyHierarchyNode
+} from '../../domain/TaxonomyNodeDTO';
 
 interface TaxonomyViewModelState {
 	searchTerm: string;
 	selectedType: TaxonomyNodeType | 'all';
 	activeOnly: boolean;
-	expandedNodes: Set<string>;
+	expandedNodes: SvelteSet<string>;
 }
 
 export class TaxonomyViewModel {
@@ -19,16 +20,16 @@ export class TaxonomyViewModel {
 		searchTerm: '',
 		selectedType: 'all',
 		activeOnly: true,
-		expandedNodes: new Set()
+		expandedNodes: new SvelteSet()
 	});
 
 	// Convex client for mutations
 	private client = useConvexClient();
 
 	// Queries
-	private hierarchyQuery = useQuery(api.spm.taxonomyNode.query.getFullHierarchy, 
-		() => ({ activeOnly: this._state.activeOnly })
-	);
+	private hierarchyQuery = useQuery(api.spm.taxonomyNode.query.getFullHierarchy, () => ({
+		activeOnly: this._state.activeOnly
+	}));
 
 	// Computed properties required by MVVM pattern
 	get isLoading(): boolean {
@@ -44,7 +45,9 @@ export class TaxonomyViewModel {
 		if (!rawData) return [];
 
 		// Apply filtering
-		return this.filterHierarchy(rawData);
+		// Convex generated types may include Id<'...'> | undefined for parentId; cast to our UI hierarchy type
+		const uiData = rawData as unknown as TaxonomyHierarchyNode[];
+		return this.filterHierarchy(uiData);
 	}
 
 	// State accessors
@@ -72,19 +75,17 @@ export class TaxonomyViewModel {
 		this._state.activeOnly = value;
 	}
 
-	get expandedNodes(): Set<string> {
+	get expandedNodes(): SvelteSet<string> {
 		return this._state.expandedNodes;
 	}
 
 	// Node expansion methods
 	toggleNodeExpansion(nodeId: string): void {
-		const expanded = new Set(this._state.expandedNodes);
-		if (expanded.has(nodeId)) {
-			expanded.delete(nodeId);
+		if (this._state.expandedNodes.has(nodeId)) {
+			this._state.expandedNodes.delete(nodeId);
 		} else {
-			expanded.add(nodeId);
+			this._state.expandedNodes.add(nodeId);
 		}
-		this._state.expandedNodes = expanded;
 	}
 
 	expandNode(nodeId: string): void {
@@ -97,11 +98,11 @@ export class TaxonomyViewModel {
 
 	expandAll(): void {
 		const allNodeIds = this.getAllNodeIds(this.data);
-		this._state.expandedNodes = new Set(allNodeIds);
+		this._state.expandedNodes = new SvelteSet(allNodeIds);
 	}
 
 	collapseAll(): void {
-		this._state.expandedNodes = new Set();
+		this._state.expandedNodes = new SvelteSet();
 	}
 
 	isNodeExpanded(nodeId: string): boolean {
@@ -120,9 +121,9 @@ export class TaxonomyViewModel {
 	}
 
 	async updateNode(
-		nodeId: Id<'taxonomyNodes'>, 
-		updates: Partial<TaxonomyNodeProps>, 
-		updatedBy: string, 
+		nodeId: Id<'taxonomyNodes'>,
+		updates: Partial<TaxonomyNodeProps>,
+		updatedBy: string,
 		reason?: string
 	): Promise<boolean> {
 		try {
@@ -139,7 +140,11 @@ export class TaxonomyViewModel {
 		}
 	}
 
-	async deleteNode(nodeId: Id<'taxonomyNodes'>, updatedBy: string, forceDelete: boolean = false): Promise<boolean> {
+	async deleteNode(
+		nodeId: Id<'taxonomyNodes'>,
+		updatedBy: string,
+		forceDelete: boolean = false
+	): Promise<boolean> {
 		try {
 			await this.client.mutation(api.spm.taxonomyNode.mutations.deleteNode, {
 				nodeId,
@@ -154,8 +159,8 @@ export class TaxonomyViewModel {
 	}
 
 	async deactivateNode(
-		nodeId: Id<'taxonomyNodes'>, 
-		updatedBy: string, 
+		nodeId: Id<'taxonomyNodes'>,
+		updatedBy: string,
 		cascadeToChildren: boolean = false,
 		reason?: string
 	): Promise<boolean> {
@@ -173,7 +178,11 @@ export class TaxonomyViewModel {
 		}
 	}
 
-	async reactivateNode(nodeId: Id<'taxonomyNodes'>, updatedBy: string, reason?: string): Promise<boolean> {
+	async reactivateNode(
+		nodeId: Id<'taxonomyNodes'>,
+		updatedBy: string,
+		reason?: string
+	): Promise<boolean> {
 		try {
 			await this.client.mutation(api.spm.taxonomyNode.mutations.reactivate, {
 				nodeId,
@@ -188,8 +197,8 @@ export class TaxonomyViewModel {
 	}
 
 	async moveNode(
-		nodeId: Id<'taxonomyNodes'>, 
-		newParentId: Id<'taxonomyNodes'> | null, 
+		nodeId: Id<'taxonomyNodes'>,
+		newParentId: Id<'taxonomyNodes'> | null,
 		updatedBy: string,
 		reason?: string
 	): Promise<boolean> {
@@ -210,7 +219,7 @@ export class TaxonomyViewModel {
 	// Helper methods
 	private filterHierarchy(nodes: TaxonomyHierarchyNode[]): TaxonomyHierarchyNode[] {
 		return nodes
-			.map(node => this.filterNode(node))
+			.map((node) => this.filterNode(node))
 			.filter((node): node is TaxonomyHierarchyNode => node !== null);
 	}
 
@@ -219,24 +228,25 @@ export class TaxonomyViewModel {
 		if (this._state.selectedType !== 'all' && node.type !== this._state.selectedType) {
 			// Check if any children match the filter
 			const filteredChildren = node.children
-				.map(child => this.filterNode(child))
+				.map((child) => this.filterNode(child))
 				.filter((child): child is TaxonomyHierarchyNode => child !== null);
-			
+
 			if (filteredChildren.length === 0) {
 				return null;
 			}
-			
+
 			return { ...node, children: filteredChildren };
 		}
 
 		// Apply search filter
-		const matchesSearch = this._state.searchTerm === '' ||
+		const matchesSearch =
+			this._state.searchTerm === '' ||
 			node.name.toLowerCase().includes(this._state.searchTerm.toLowerCase()) ||
 			node.description.toLowerCase().includes(this._state.searchTerm.toLowerCase());
 
 		// Filter children recursively
 		const filteredChildren = node.children
-			.map(child => this.filterNode(child))
+			.map((child) => this.filterNode(child))
 			.filter((child): child is TaxonomyHierarchyNode => child !== null);
 
 		// Include node if it matches search or has matching children
@@ -249,40 +259,38 @@ export class TaxonomyViewModel {
 
 	private getAllNodeIds(nodes: TaxonomyHierarchyNode[]): string[] {
 		const ids: string[] = [];
-		
+
 		function collectIds(node: TaxonomyHierarchyNode) {
 			ids.push(node._id);
-			node.children.forEach(collectIds);
+			node.children?.forEach(collectIds);
 		}
-		
+
 		nodes.forEach(collectIds);
 		return ids;
 	}
 
 	// Utility methods for getting valid parent options
-	getValidParentOptions(nodeType: TaxonomyNodeType, excludeNodeId?: string): TaxonomyHierarchyNode[] {
-		const allNodes = this.hierarchyQuery.data || [];
-		
+	getValidParentOptions(
+		nodeType: TaxonomyNodeType,
+		excludeNodeId?: string
+	): TaxonomyHierarchyNode[] {
+		// Cast convex-generated result to our UI hierarchy node type to avoid type-name collisions
+		const allNodes = (this.hierarchyQuery.data || []) as unknown as TaxonomyHierarchyNode[];
+
 		switch (nodeType) {
 			case 'portfolio':
 				// Portfolios cannot have parents
 				return [];
 			case 'line':
 				// Lines can only have portfolio parents
-				return this.flattenNodes(allNodes)
-					.filter(node => 
-						node.type === 'portfolio' && 
-						node.isActive &&
-						node._id !== excludeNodeId
-					);
+				return this.flattenNodes(allNodes).filter(
+					(node) => node.type === 'portfolio' && node.isActive && node._id !== excludeNodeId
+				);
 			case 'category':
 				// Categories can only have line parents
-				return this.flattenNodes(allNodes)
-					.filter(node => 
-						node.type === 'line' && 
-						node.isActive &&
-						node._id !== excludeNodeId
-					);
+				return this.flattenNodes(allNodes).filter(
+					(node) => node.type === 'line' && node.isActive && node._id !== excludeNodeId
+				);
 			default:
 				return [];
 		}
@@ -290,12 +298,12 @@ export class TaxonomyViewModel {
 
 	private flattenNodes(nodes: TaxonomyHierarchyNode[]): TaxonomyHierarchyNode[] {
 		const flattened: TaxonomyHierarchyNode[] = [];
-		
+
 		function flatten(node: TaxonomyHierarchyNode) {
 			flattened.push(node);
 			node.children.forEach(flatten);
 		}
-		
+
 		nodes.forEach(flatten);
 		return flattened;
 	}
@@ -303,22 +311,22 @@ export class TaxonomyViewModel {
 	// Get node by ID from hierarchy
 	getNodeById(nodeId: string): TaxonomyHierarchyNode | null {
 		const allNodes = this.flattenNodes(this.data);
-		return allNodes.find(node => node._id === nodeId) || null;
+		return allNodes.find((node) => node._id === nodeId) || null;
 	}
 
 	// Get breadcrumb path for a node
 	getBreadcrumbPath(nodeId: string): TaxonomyHierarchyNode[] {
 		const path: TaxonomyHierarchyNode[] = [];
 		const node = this.getNodeById(nodeId);
-		
+
 		if (!node) return path;
-		
+
 		let current: TaxonomyHierarchyNode | null = node;
 		while (current) {
 			path.unshift(current);
 			current = current.parentId ? this.getNodeById(current.parentId) : null;
 		}
-		
+
 		return path;
 	}
 }

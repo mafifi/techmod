@@ -1,172 +1,190 @@
 <script lang="ts">
-import { TaxonomyViewModel } from './TaxonomyViewModel.svelte';
-import TaxonomyTree from './TaxonomyTree.svelte';
-import TaxonomyNodeDialog from './TaxonomyNodeDialog.svelte';
-import DeleteTaxonomyNodeDialog from './DeleteTaxonomyNodeDialog.svelte';
-import { Button } from '$lib/ui/components/button';
-import { Input } from '$lib/ui/components/input';
-import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/ui/components/select';
-import { Switch } from '$lib/ui/components/switch';
-import { Label } from '$lib/ui/components/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/ui/components/card';
-import { Badge } from '$lib/ui/components/badge';
-import { Separator } from '$lib/ui/components/separator';
-import { Alert, AlertDescription } from '$lib/ui/components/alert';
-import { Skeleton } from '$lib/ui/components/skeleton';
-import { toast } from 'svelte-sonner';
-import { Plus, Search, Filter, Expand, ChevronUp, FolderTree } from 'lucide-svelte';
-import type { TaxonomyNode, TaxonomyNodeType } from '../../domain/TaxonomyNodeDTO';
-import type { Id } from '../../../../../convex/_generated/dataModel';
+	import { TaxonomyViewModel } from './TaxonomyViewModel.svelte';
+	import TaxonomyTree from './TaxonomyTree.svelte';
+	import TaxonomyNodeDialog from './TaxonomyNodeDialog.svelte';
+	import DeleteTaxonomyNodeDialog from './DeleteTaxonomyNodeDialog.svelte';
+	import { Button } from '$lib/ui/components/button';
+	import { Input } from '$lib/ui/components/input';
+	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/ui/components/select';
+	import { Switch } from '$lib/ui/components/switch';
+	import { Label } from '$lib/ui/components/label';
+	import {
+		Card,
+		CardContent,
+		CardDescription,
+		CardHeader,
+		CardTitle
+	} from '$lib/ui/components/card';
+	import { Badge } from '$lib/ui/components/badge';
+	// ...existing code...
+	import { Alert, AlertDescription } from '$lib/ui/components/alert';
+	import { Skeleton } from '$lib/ui/components/skeleton';
+	import { toast } from 'svelte-sonner';
+	import { Plus, Search, Filter, Expand, ChevronUp, FolderTree } from 'lucide-svelte';
+	import type {
+		TaxonomyNode,
+		TaxonomyNodeType,
+		TaxonomyNodeProps,
+		TaxonomyHierarchyNode
+	} from '../../domain/TaxonomyNodeDTO';
+	import type { Id } from '../../../../../convex/_generated/dataModel';
 
-// Props
-interface Props {
-	viewModel: TaxonomyViewModel;
-	currentUserId: string;
-}
+	// Props
+	interface Props {
+		viewModel: TaxonomyViewModel;
+		currentUserId: string;
+	}
 
-let { viewModel, currentUserId }: Props = $props();
+	let { viewModel, currentUserId }: Props = $props();
 
-// Local state for dialogs
-let showCreateDialog = $state(false);
-let showEditDialog = $state(false);
-let showDeleteDialog = $state(false);
-let selectedNode = $state<TaxonomyNode | null>(null);
-let createNodeType = $state<TaxonomyNodeType>('portfolio');
-let createParentId = $state<Id<'taxonomyNodes'> | null>(null);
+	// Local state for dialogs
+	let showCreateDialog = $state(false);
+	let showEditDialog = $state(false);
+	let showDeleteDialog = $state(false);
+	let selectedNode = $state<TaxonomyNode | null>(null);
+	let createNodeType = $state<TaxonomyNodeType>('portfolio');
+	let createParentId = $state<Id<'taxonomyNodes'> | null>(null);
 
-// Dialog handlers
-function handleCreateNode(type: TaxonomyNodeType, parentId: Id<'taxonomyNodes'> | null = null) {
-	createNodeType = type;
-	createParentId = parentId;
-	showCreateDialog = true;
-}
+	// Dialog handlers
+	function handleCreateNode(type: TaxonomyNodeType, parentId: Id<'taxonomyNodes'> | null = null) {
+		createNodeType = type;
+		createParentId = parentId;
+		showCreateDialog = true;
+	}
 
-function handleEditNode(node: TaxonomyNode) {
-	selectedNode = node;
-	showEditDialog = true;
-}
+	function handleEditNode(node: TaxonomyNode) {
+		selectedNode = node;
+		showEditDialog = true;
+	}
 
-function handleDeleteNode(node: TaxonomyNode) {
-	selectedNode = node;
-	showDeleteDialog = true;
-}
+	function handleDeleteNode(node: TaxonomyNode) {
+		selectedNode = node;
+		showDeleteDialog = true;
+	}
 
-function handleMoveNode(nodeId: Id<'taxonomyNodes'>, newParentId: Id<'taxonomyNodes'> | null) {
-	viewModel.moveNode(nodeId, newParentId, currentUserId, 'Node moved via drag and drop')
-		.then(() => {
-			toast.success('Node moved successfully');
-		})
-		.catch((error) => {
-			toast.error('Failed to move node: ' + error.message);
-		});
-}
+	function handleMoveNode(nodeId: Id<'taxonomyNodes'>, newParentId: Id<'taxonomyNodes'> | null) {
+		viewModel
+			.moveNode(nodeId, newParentId, currentUserId, 'Node moved via drag and drop')
+			.then(() => {
+				toast.success('Node moved successfully');
+			})
+			.catch((error) => {
+				toast.error('Failed to move node: ' + error.message);
+			});
+	}
 
-// Create dialog handlers
-async function handleCreateSubmit(nodeData: any) {
-	try {
-		const result = await viewModel.createNode({
-			...nodeData,
-			type: createNodeType,
-			parentId: createParentId,
-			createdBy: currentUserId,
-			updatedBy: currentUserId
-		});
-		
-		if (result) {
-			toast.success(`${createNodeType} created successfully`);
-			showCreateDialog = false;
+	// Create dialog handlers
+	async function handleCreateSubmit(nodeData: Partial<TaxonomyNodeProps>) {
+		try {
+			const result = await viewModel.createNode({
+				...(nodeData as TaxonomyNodeProps),
+				type: createNodeType,
+				parentId: createParentId,
+				createdBy: currentUserId,
+				updatedBy: currentUserId
+			});
+
+			if (result) {
+				toast.success(`${createNodeType} created successfully`);
+				showCreateDialog = false;
+			}
+		} catch (error: unknown) {
+			toast.error('Failed to create node: ' + ((error as Error).message ?? String(error)));
 		}
-	} catch (error: any) {
-		toast.error('Failed to create node: ' + error.message);
 	}
-}
 
-// Edit dialog handlers
-async function handleEditSubmit(updates: any) {
-	if (!selectedNode) return;
-	
-	try {
-		await viewModel.updateNode(
-			selectedNode._id as Id<'taxonomyNodes'>, 
-			updates, 
-			currentUserId,
-			'Updated via UI'
-		);
-		toast.success('Node updated successfully');
+	// Edit dialog handlers
+	async function handleEditSubmit(updates: Partial<TaxonomyNodeProps>) {
+		if (!selectedNode) return;
+
+		try {
+			await viewModel.updateNode(
+				selectedNode._id as Id<'taxonomyNodes'>,
+				updates,
+				currentUserId,
+				'Updated via UI'
+			);
+			toast.success('Node updated successfully');
+			showEditDialog = false;
+			selectedNode = null;
+		} catch (error: unknown) {
+			toast.error('Failed to update node: ' + ((error as Error).message ?? String(error)));
+		}
+	}
+
+	// Delete dialog handlers
+	async function handleDeleteSubmit(forceDelete: boolean) {
+		if (!selectedNode) return;
+
+		try {
+			await viewModel.deleteNode(
+				selectedNode._id as Id<'taxonomyNodes'>,
+				currentUserId,
+				forceDelete
+			);
+			toast.success('Node deleted successfully');
+			showDeleteDialog = false;
+			selectedNode = null;
+		} catch (error: unknown) {
+			toast.error('Failed to delete node: ' + ((error as Error).message ?? String(error)));
+		}
+	}
+
+	// Close dialogs
+	function closeDialogs() {
+		showCreateDialog = false;
 		showEditDialog = false;
-		selectedNode = null;
-	} catch (error: any) {
-		toast.error('Failed to update node: ' + error.message);
-	}
-}
-
-// Delete dialog handlers
-async function handleDeleteSubmit(forceDelete: boolean) {
-	if (!selectedNode) return;
-	
-	try {
-		await viewModel.deleteNode(selectedNode._id as Id<'taxonomyNodes'>, currentUserId, forceDelete);
-		toast.success('Node deleted successfully');
 		showDeleteDialog = false;
 		selectedNode = null;
-	} catch (error: any) {
-		toast.error('Failed to delete node: ' + error.message);
 	}
-}
 
-// Close dialogs
-function closeDialogs() {
-	showCreateDialog = false;
-	showEditDialog = false;
-	showDeleteDialog = false;
-	selectedNode = null;
-}
+	// Get node count by type
+	function getNodeCounts() {
+		const allNodes = viewModel.data.flat();
+		const counts = {
+			portfolio: 0,
+			line: 0,
+			category: 0,
+			total: 0
+		};
 
-// Get node count by type
-function getNodeCounts() {
-	const allNodes = viewModel.data.flat();
-	const counts = {
-		portfolio: 0,
-		line: 0,
-		category: 0,
-		total: 0
-	};
-	
-	function countNodes(nodes: any[]) {
-		for (const node of nodes) {
-			counts[node.type as keyof typeof counts]++;
-			counts.total++;
-			if (node.children?.length > 0) {
-				countNodes(node.children);
+		function countNodes(nodes: TaxonomyHierarchyNode[]) {
+			for (const node of nodes) {
+				counts[node.type as keyof typeof counts]++;
+				counts.total++;
+				if (node.children?.length > 0) {
+					countNodes(node.children);
+				}
 			}
 		}
-	}
-	
-	countNodes(allNodes);
-	return counts;
-}
 
-$effect(() => {
-	// Auto-expand first level when data loads
-	if (viewModel.data.length > 0 && viewModel.expandedNodes.size === 0) {
-		viewModel.data.forEach(node => viewModel.expandNode(node._id));
+		countNodes(allNodes);
+		return counts;
 	}
-});
+
+	$effect(() => {
+		// Auto-expand first level when data loads
+		if (viewModel.data.length > 0 && viewModel.expandedNodes.size === 0) {
+			viewModel.data.forEach((node) => viewModel.expandNode(node._id));
+		}
+	});
 </script>
 
-<div class="taxonomy-management h-full flex flex-col bg-background">
+<div class="taxonomy-management flex h-full flex-col bg-background">
 	<!-- Header -->
 	<div class="border-b bg-card">
 		<div class="p-6">
-			<div class="flex items-center justify-between mb-4">
+			<div class="mb-4 flex items-center justify-between">
 				<div class="flex items-center gap-3">
 					<FolderTree class="h-6 w-6 text-primary" />
 					<div>
 						<h1 class="text-2xl font-bold text-foreground">Taxonomy Management</h1>
-						<p class="text-sm text-muted-foreground">Manage portfolios, product lines, and categories</p>
+						<p class="text-sm text-muted-foreground">
+							Manage portfolios, product lines, and categories
+						</p>
 					</div>
 				</div>
-				
+
 				{#if !viewModel.isLoading}
 					{@const counts = getNodeCounts()}
 					<div class="flex items-center gap-2">
@@ -179,24 +197,30 @@ $effect(() => {
 			</div>
 
 			<!-- Controls -->
-			<div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+			<div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
 				<!-- Search and filters -->
-				<div class="flex flex-wrap gap-3 items-center">
+				<div class="flex flex-wrap items-center gap-3">
 					<div class="relative">
-						<Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+						<Search
+							class="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground"
+						/>
 						<Input
 							bind:value={viewModel.searchTerm}
 							placeholder="Search taxonomy..."
-							class="pl-10 w-64"
+							class="w-64 pl-10"
 						/>
 					</div>
-					
-					<Select bind:value={viewModel.selectedType}>
+
+					<Select type="single" bind:value={viewModel.selectedType}>
 						<SelectTrigger class="w-32">
-							<Filter class="h-4 w-4 mr-2" />
-							{viewModel.selectedType === 'all' ? 'All Types' : 
-							 viewModel.selectedType === 'portfolio' ? 'Portfolios' :
-							 viewModel.selectedType === 'line' ? 'Lines' : 'Categories'}
+							<Filter class="mr-2 h-4 w-4" />
+							{viewModel.selectedType === 'all'
+								? 'All Types'
+								: viewModel.selectedType === 'portfolio'
+									? 'Portfolios'
+									: viewModel.selectedType === 'line'
+										? 'Lines'
+										: 'Categories'}
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="all">All Types</SelectItem>
@@ -215,15 +239,15 @@ $effect(() => {
 				<!-- Actions -->
 				<div class="flex gap-2">
 					<Button variant="outline" size="sm" onclick={() => viewModel.expandAll()}>
-						<Expand class="h-4 w-4 mr-1" />
+						<Expand class="mr-1 h-4 w-4" />
 						Expand All
 					</Button>
 					<Button variant="outline" size="sm" onclick={() => viewModel.collapseAll()}>
-						<ChevronUp class="h-4 w-4 mr-1" />
+						<ChevronUp class="mr-1 h-4 w-4" />
 						Collapse All
 					</Button>
 					<Button size="sm" onclick={() => handleCreateNode('portfolio')}>
-						<Plus class="h-4 w-4 mr-1" />
+						<Plus class="mr-1 h-4 w-4" />
 						Add Portfolio
 					</Button>
 				</div>
@@ -238,49 +262,49 @@ $effect(() => {
 				<CardHeader class="pb-4">
 					<CardTitle class="text-lg">Taxonomy Tree</CardTitle>
 					<CardDescription>
-						Hierarchical view of your taxonomy structure. Click nodes to expand/collapse, 
+						Hierarchical view of your taxonomy structure. Click nodes to expand/collapse,
 						right-click for context menu, or drag to reorganize.
 					</CardDescription>
 				</CardHeader>
-				<CardContent class="pt-0 h-full overflow-hidden">
+				<CardContent class="h-full overflow-hidden pt-0">
 					<!-- Loading State -->
 					{#if viewModel.isLoading}
 						<div class="space-y-3">
-							{#each Array(5) as _}
+							{#each Array.from({ length: 5 }).map((_, idx) => idx) as i (i)}
 								<div class="flex items-center space-x-2">
 									<Skeleton class="h-4 w-4" />
 									<Skeleton class="h-4 w-48" />
 								</div>
 							{/each}
 						</div>
-					
-					<!-- Error State -->
+
+						<!-- Error State -->
 					{:else if viewModel.error}
 						<Alert variant="destructive">
 							<AlertDescription>
 								Failed to load taxonomy: {viewModel.error}
 							</AlertDescription>
 						</Alert>
-					
-					<!-- Empty State -->
+
+						<!-- Empty State -->
 					{:else if viewModel.data.length === 0}
-						<div class="flex flex-col items-center justify-center h-64 text-center">
-							<FolderTree class="h-12 w-12 text-muted-foreground mb-4" />
-							<h3 class="text-lg font-medium text-foreground mb-2">No taxonomy nodes found</h3>
-							<p class="text-sm text-muted-foreground mb-4">
-								{viewModel.searchTerm || viewModel.selectedType !== 'all' 
+						<div class="flex h-64 flex-col items-center justify-center text-center">
+							<FolderTree class="mb-4 h-12 w-12 text-muted-foreground" />
+							<h3 class="mb-2 text-lg font-medium text-foreground">No taxonomy nodes found</h3>
+							<p class="mb-4 text-sm text-muted-foreground">
+								{viewModel.searchTerm || viewModel.selectedType !== 'all'
 									? 'No nodes match your current filters. Try adjusting your search or filters.'
 									: 'Get started by creating your first portfolio.'}
 							</p>
 							{#if !viewModel.searchTerm && viewModel.selectedType === 'all'}
 								<Button onclick={() => handleCreateNode('portfolio')}>
-									<Plus class="h-4 w-4 mr-2" />
+									<Plus class="mr-2 h-4 w-4" />
 									Create Portfolio
 								</Button>
 							{/if}
 						</div>
-					
-					<!-- Tree View -->
+
+						<!-- Tree View -->
 					{:else}
 						<div class="h-full overflow-auto">
 							<TaxonomyTree
@@ -291,7 +315,7 @@ $effect(() => {
 								onEdit={handleEditNode}
 								onDelete={handleDeleteNode}
 								onMove={handleMoveNode}
-								currentUserId={currentUserId}
+								{currentUserId}
 							/>
 						</div>
 					{/if}
@@ -335,7 +359,10 @@ $effect(() => {
 {/if}
 
 <style>
-.taxonomy-management {
-	font-family: system-ui, -apple-system, sans-serif;
-}
+	.taxonomy-management {
+		font-family:
+			system-ui,
+			-apple-system,
+			sans-serif;
+	}
 </style>

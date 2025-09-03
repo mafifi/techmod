@@ -1,6 +1,11 @@
 import { vi } from 'vitest';
 import { TaxonomyNodeDTOMock } from '../../domain/TaxonomyNodeDTOMock';
-import type { TaxonomyNode, TaxonomyNodeProps, TaxonomyNodeType } from '../../domain/TaxonomyNodeDTO';
+import type {
+	TaxonomyNode,
+	TaxonomyNodeProps,
+	TaxonomyNodeType,
+	TaxonomyHierarchyNode
+} from '../../domain/TaxonomyNodeDTO';
 import type { Id } from '../../../../../convex/_generated/dataModel';
 
 /**
@@ -11,17 +16,19 @@ export class TaxonomyTestUtils {
 	/**
 	 * Create a mock Convex useQuery return value
 	 */
-	static createMockQueryReturn(overrides: {
-		isLoading?: boolean;
-		error?: Error | null;
-		data?: any;
-	} = {}) {
+	static createMockQueryReturn<T = unknown>(
+		overrides: {
+			isLoading?: boolean;
+			error?: Error | null;
+			data?: T;
+		} = {}
+	) {
 		return {
-			isLoading: false,
-			error: null,
-			data: undefined,
+			isLoading: false as boolean,
+			error: null as Error | null,
+			data: undefined as T | undefined,
 			...overrides
-		};
+		} as { isLoading: boolean; error: Error | null; data?: T };
 	}
 
 	/**
@@ -116,8 +123,8 @@ export class TaxonomyTestUtils {
 	static async simulateAsyncOperation(
 		duration: number = 100,
 		shouldSucceed: boolean = true
-	): Promise<any> {
-		return new Promise((resolve, reject) => {
+	): Promise<string> {
+		return new Promise<string>((resolve, reject) => {
 			setTimeout(() => {
 				if (shouldSucceed) {
 					resolve('success');
@@ -187,16 +194,18 @@ export class TaxonomyTestUtils {
 		const hierarchy = TaxonomyNodeDTOMock.createHierarchyWithChildren();
 		const sourceNode = hierarchy[0].children[0]; // First line
 		const targetNode = hierarchy[1]; // Second portfolio
-		
+
 		return {
 			sourceNode,
 			targetNode,
 			dragEvent: {
 				dataTransfer: {
-					getData: vi.fn().mockReturnValue(JSON.stringify({
-						nodeId: sourceNode._id,
-						nodeType: sourceNode.type
-					})),
+					getData: vi.fn().mockReturnValue(
+						JSON.stringify({
+							nodeId: sourceNode._id,
+							nodeType: sourceNode.type
+						})
+					),
 					setData: vi.fn()
 				},
 				preventDefault: vi.fn(),
@@ -204,10 +213,12 @@ export class TaxonomyTestUtils {
 			},
 			dropEvent: {
 				dataTransfer: {
-					getData: vi.fn().mockReturnValue(JSON.stringify({
-						nodeId: sourceNode._id,
-						nodeType: sourceNode.type
-					}))
+					getData: vi.fn().mockReturnValue(
+						JSON.stringify({
+							nodeId: sourceNode._id,
+							nodeType: sourceNode.type
+						})
+					)
 				},
 				preventDefault: vi.fn(),
 				stopPropagation: vi.fn(),
@@ -226,7 +237,7 @@ export class TaxonomyTestUtils {
 	 */
 	static createSearchTestScenarios() {
 		const nodes = TaxonomyNodeDTOMock.createNodesForSearchTesting();
-		
+
 		return {
 			nodes,
 			scenarios: [
@@ -265,7 +276,7 @@ export class TaxonomyTestUtils {
 	static createFilterTestScenarios() {
 		const mixedNodes = TaxonomyNodeDTOMock.createMixedTypeNodes();
 		const activeNodes = TaxonomyNodeDTOMock.createMixedActiveNodes();
-		
+
 		return {
 			mixedNodes,
 			activeNodes,
@@ -332,18 +343,22 @@ export class TaxonomyTestUtils {
 		});
 
 		// Mock ResizeObserver
-		(globalThis as any).ResizeObserver = vi.fn().mockImplementation(() => ({
-			observe: vi.fn(),
-			unobserve: vi.fn(),
-			disconnect: vi.fn()
-		}));
+		(globalThis as unknown as { ResizeObserver?: unknown }).ResizeObserver = vi
+			.fn()
+			.mockImplementation(() => ({
+				observe: vi.fn(),
+				unobserve: vi.fn(),
+				disconnect: vi.fn()
+			}));
 
 		// Mock IntersectionObserver
-		(globalThis as any).IntersectionObserver = vi.fn().mockImplementation(() => ({
-			observe: vi.fn(),
-			unobserve: vi.fn(),
-			disconnect: vi.fn()
-		}));
+		(globalThis as unknown as { IntersectionObserver?: unknown }).IntersectionObserver = vi
+			.fn()
+			.mockImplementation(() => ({
+				observe: vi.fn(),
+				unobserve: vi.fn(),
+				disconnect: vi.fn()
+			}));
 	}
 
 	/**
@@ -363,8 +378,8 @@ export class TaxonomyTestUtils {
 		 * Assert that an array contains nodes with specific names
 		 */
 		nodesContainNames: (nodes: TaxonomyNode[], expectedNames: string[]) => {
-			const actualNames = nodes.map(node => node.name);
-			expectedNames.forEach(name => {
+			const actualNames = nodes.map((node) => node.name);
+			expectedNames.forEach((name) => {
 				expect(actualNames).toContain(name);
 			});
 		},
@@ -373,7 +388,7 @@ export class TaxonomyTestUtils {
 		 * Assert that all nodes in array match a condition
 		 */
 		allNodesMatch: (nodes: TaxonomyNode[], condition: (node: TaxonomyNode) => boolean) => {
-			nodes.forEach(node => {
+			nodes.forEach((node) => {
 				expect(condition(node)).toBe(true);
 			});
 		},
@@ -381,18 +396,18 @@ export class TaxonomyTestUtils {
 		/**
 		 * Assert that hierarchy structure is correct
 		 */
-		hierarchyIsValid: (hierarchy: any[]) => {
-			hierarchy.forEach(portfolio => {
+		hierarchyIsValid: (hierarchy: TaxonomyHierarchyNode[]) => {
+			hierarchy.forEach((portfolio: TaxonomyHierarchyNode) => {
 				expect(portfolio.type).toBe('portfolio');
 				expect(portfolio.parentId).toBeNull();
 				expect(Array.isArray(portfolio.children)).toBe(true);
-				
-				portfolio.children.forEach((line: any) => {
+
+				portfolio.children.forEach((line: TaxonomyHierarchyNode) => {
 					expect(line.type).toBe('line');
 					expect(line.parentId).toBe(portfolio._id);
 					expect(Array.isArray(line.children)).toBe(true);
-					
-					line.children.forEach((category: any) => {
+
+					line.children.forEach((category: TaxonomyHierarchyNode) => {
 						expect(category.type).toBe('category');
 						expect(category.parentId).toBe(line._id);
 						expect(Array.isArray(category.children)).toBe(true);
@@ -407,7 +422,7 @@ export class TaxonomyTestUtils {
 interface TaxonomyViewModel {
 	isLoading: boolean;
 	error: string | null;
-	data: any[];
+	data: TaxonomyHierarchyNode[];
 	searchTerm: string;
 	selectedType: TaxonomyNodeType | 'all';
 	activeOnly: boolean;
@@ -419,12 +434,38 @@ interface TaxonomyViewModel {
 	collapseAll: () => void;
 	isNodeExpanded: (nodeId: string) => boolean;
 	createNode: (nodeData: TaxonomyNodeProps) => Promise<Id<'taxonomyNodes'> | null>;
-	updateNode: (nodeId: Id<'taxonomyNodes'>, updates: Partial<TaxonomyNodeProps>, updatedBy: string, reason?: string) => Promise<boolean>;
-	deleteNode: (nodeId: Id<'taxonomyNodes'>, updatedBy: string, forceDelete?: boolean) => Promise<boolean>;
-	deactivateNode: (nodeId: Id<'taxonomyNodes'>, updatedBy: string, cascadeToChildren?: boolean, reason?: string) => Promise<boolean>;
-	reactivateNode: (nodeId: Id<'taxonomyNodes'>, updatedBy: string, reason?: string) => Promise<boolean>;
-	moveNode: (nodeId: Id<'taxonomyNodes'>, newParentId: Id<'taxonomyNodes'> | null, updatedBy: string, reason?: string) => Promise<boolean>;
-	getValidParentOptions: (nodeType: TaxonomyNodeType, excludeNodeId?: string) => any[];
-	getNodeById: (nodeId: string) => any | null;
-	getBreadcrumbPath: (nodeId: string) => any[];
+	updateNode: (
+		nodeId: Id<'taxonomyNodes'>,
+		updates: Partial<TaxonomyNodeProps>,
+		updatedBy: string,
+		reason?: string
+	) => Promise<boolean>;
+	deleteNode: (
+		nodeId: Id<'taxonomyNodes'>,
+		updatedBy: string,
+		forceDelete?: boolean
+	) => Promise<boolean>;
+	deactivateNode: (
+		nodeId: Id<'taxonomyNodes'>,
+		updatedBy: string,
+		cascadeToChildren?: boolean,
+		reason?: string
+	) => Promise<boolean>;
+	reactivateNode: (
+		nodeId: Id<'taxonomyNodes'>,
+		updatedBy: string,
+		reason?: string
+	) => Promise<boolean>;
+	moveNode: (
+		nodeId: Id<'taxonomyNodes'>,
+		newParentId: Id<'taxonomyNodes'> | null,
+		updatedBy: string,
+		reason?: string
+	) => Promise<boolean>;
+	getValidParentOptions: (
+		nodeType: TaxonomyNodeType,
+		excludeNodeId?: string
+	) => TaxonomyHierarchyNode[];
+	getNodeById: (nodeId: string) => TaxonomyHierarchyNode | null;
+	getBreadcrumbPath: (nodeId: string) => TaxonomyHierarchyNode[];
 }

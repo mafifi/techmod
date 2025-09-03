@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
+
 import { vi } from 'vitest';
 import { TaxonomyNodeDTOMock } from '../../../lib/modules/spm/domain/TaxonomyNodeDTOMock';
 
@@ -23,7 +25,7 @@ export const mockTaxonomyNodeMutations = {
  * Reset all mutation mocks to their initial state
  */
 export function resetTaxonomyNodeMutationMocks(): void {
-	Object.values(mockTaxonomyNodeMutations).forEach(mock => {
+	Object.values(mockTaxonomyNodeMutations).forEach((mock) => {
 		mock.mockClear();
 	});
 
@@ -55,7 +57,7 @@ export const mockTaxonomyNodeMutationScenarios = {
 	 */
 	allFailed: (errorMessage: string = 'Mutation failed') => {
 		const error = new Error(errorMessage);
-		Object.values(mockTaxonomyNodeMutations).forEach(mock => {
+		Object.values(mockTaxonomyNodeMutations).forEach((mock) => {
 			mock.mockRejectedValue(error);
 		});
 	},
@@ -116,7 +118,9 @@ export const mockTaxonomyNodeMutationScenarios = {
 	 * Simulate delete operation failing due to children existing
 	 */
 	deleteHasChildren: () => {
-		const childrenError = new Error('Cannot delete node with children. Use force delete or deactivate instead.');
+		const childrenError = new Error(
+			'Cannot delete node with children. Use force delete or deactivate instead.'
+		);
 		childrenError.name = 'ValidationError';
 		mockTaxonomyNodeMutations.deleteNode.mockRejectedValue(childrenError);
 	},
@@ -169,9 +173,7 @@ export const mockTaxonomyNodeMutationScenarios = {
 			return Promise.resolve({
 				success: true,
 				deactivatedCount: args.cascadeToChildren ? 5 : 1,
-				message: args.cascadeToChildren 
-					? 'Node and 4 children deactivated' 
-					: 'Node deactivated'
+				message: args.cascadeToChildren ? 'Node and 4 children deactivated' : 'Node deactivated'
 			});
 		});
 	},
@@ -202,7 +204,7 @@ export const mockTaxonomyNodeMutationScenarios = {
 	networkTimeout: () => {
 		const timeoutError = new Error('Request timeout');
 		timeoutError.name = 'TimeoutError';
-		Object.values(mockTaxonomyNodeMutations).forEach(mock => {
+		Object.values(mockTaxonomyNodeMutations).forEach((mock) => {
 			mock.mockRejectedValue(timeoutError);
 		});
 	},
@@ -213,7 +215,7 @@ export const mockTaxonomyNodeMutationScenarios = {
 	permissionDenied: () => {
 		const permissionError = new Error('Insufficient permissions');
 		permissionError.name = 'PermissionError';
-		Object.values(mockTaxonomyNodeMutations).forEach(mock => {
+		Object.values(mockTaxonomyNodeMutations).forEach((mock) => {
 			mock.mockRejectedValue(permissionError);
 		});
 	},
@@ -224,7 +226,7 @@ export const mockTaxonomyNodeMutationScenarios = {
 	databaseConnectionError: () => {
 		const dbError = new Error('Database connection failed');
 		dbError.name = 'DatabaseError';
-		Object.values(mockTaxonomyNodeMutations).forEach(mock => {
+		Object.values(mockTaxonomyNodeMutations).forEach((mock) => {
 			mock.mockRejectedValue(dbError);
 		});
 	},
@@ -235,7 +237,7 @@ export const mockTaxonomyNodeMutationScenarios = {
 	trackMutationCalls: () => {
 		// Reset to track calls
 		resetTaxonomyNodeMutationMocks();
-		
+
 		return {
 			getCreateCalls: () => mockTaxonomyNodeMutations.create.mock.calls,
 			getUpdateCalls: () => mockTaxonomyNodeMutations.update.mock.calls,
@@ -243,7 +245,7 @@ export const mockTaxonomyNodeMutationScenarios = {
 			getMoveCalls: () => mockTaxonomyNodeMutations.moveNode.mock.calls,
 			getDeactivateCalls: () => mockTaxonomyNodeMutations.deactivate.mock.calls,
 			getReactivateCalls: () => mockTaxonomyNodeMutations.reactivate.mock.calls,
-			
+
 			// Call inspection helpers (use these instead of expect in tests)
 			getLastCreateCall: () => {
 				const calls = mockTaxonomyNodeMutations.create.mock.calls;
