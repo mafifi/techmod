@@ -57,7 +57,7 @@
 		} finally {
 			isSubmitting = false;
 		}
-	}));
+	};
 </script>
 
 <Dialog.Root bind:open={viewModel.createDialogOpen}>
