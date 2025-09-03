@@ -39,12 +39,13 @@ export class ProductViewModelMock {
 			.fn()
 			.mockImplementation((minPrice: number, maxPrice: number) => {
 				return this.data.filter(
-					(product) => product.price >= minPrice && product.price <= maxPrice
+					(product) =>
+						product.price !== undefined && product.price >= minPrice && product.price <= maxPrice
 				);
 			});
 
 		this.getTotalValue = vi.fn().mockImplementation(() => {
-			return this.data.reduce((total, product) => total + product.price, 0);
+			return this.data.reduce((total, product) => total + (product.price || 0), 0);
 		});
 	}
 
@@ -111,11 +112,14 @@ export class ProductViewModelMock {
 		});
 
 		this.getProductsInPriceRange.mockImplementation((minPrice: number, maxPrice: number) => {
-			return this.data.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+			return this.data.filter(
+				(product) =>
+					product.price !== undefined && product.price >= minPrice && product.price <= maxPrice
+			);
 		});
 
 		this.getTotalValue.mockImplementation(() => {
-			return this.data.reduce((total, product) => total + product.price, 0);
+			return this.data.reduce((total, product) => total + (product.price || 0), 0);
 		});
 	}
 }

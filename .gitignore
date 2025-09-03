@@ -24,3 +24,12 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Convex
+src/convex/_generated/
+
+# Temporary documentation files
+*_ENHANCEMENT.md
+*_SUMMARY.md
+validate-*.ts
+validate-*.mjs

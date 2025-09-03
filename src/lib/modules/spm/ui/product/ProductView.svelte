@@ -75,7 +75,16 @@
 				name: true,
 				category: true,
 				price: true,
+				productOwner: true,
+				department: true,
+				modernity: true,
 				description: false,
+				superDepartment: false,
+				businessCriticality: false,
+				lifecycleStage: false,
+				pdr: false,
+				lastAssessmentDate: false,
+				nextReviewDate: false,
 				_creationTime: false
 			}}
 		/>

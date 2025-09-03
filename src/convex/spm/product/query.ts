@@ -70,9 +70,98 @@ export const search = zQuery({
 				q.or(
 					q.eq(q.field('name'), args.searchTerm),
 					q.eq(q.field('description'), args.searchTerm),
-					q.eq(q.field('category'), args.searchTerm)
+					q.eq(q.field('category'), args.searchTerm),
+					q.eq(q.field('productOwner'), args.searchTerm),
+					q.eq(q.field('owningSuperDepartment'), args.searchTerm),
+					q.eq(q.field('productType'), args.searchTerm),
+					q.eq(q.field('fleet'), args.searchTerm),
+					q.eq(q.field('squad'), args.searchTerm)
 				)
 			)
+			.collect();
+	}
+});
+
+export const getByOwningSuperDepartment = zQuery({
+	args: {
+		owningSuperDepartment: z.string().min(1).max(100)
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query('products')
+			.filter((q) => q.eq(q.field('owningSuperDepartment'), args.owningSuperDepartment))
+			.collect();
+	}
+});
+
+export const getByProductOwner = zQuery({
+	args: {
+		productOwner: z.string().min(1).max(100)
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query('products')
+			.filter((q) => q.eq(q.field('productOwner'), args.productOwner))
+			.collect();
+	}
+});
+
+export const getByProductType = zQuery({
+	args: {
+		productType: z.string().min(1).max(100)
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query('products')
+			.filter((q) => q.eq(q.field('productType'), args.productType))
+			.collect();
+	}
+});
+
+export const getByModernity = zQuery({
+	args: {
+		modernity: z.enum(['Migrate', 'Hold', 'Continue', 'Adopt', 'Assess'])
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query('products')
+			.filter((q) => q.eq(q.field('modernity'), args.modernity))
+			.collect();
+	}
+});
+
+export const getByLifecycleStatus = zQuery({
+	args: {
+		lifecycleStatus: z.string().min(1).max(100)
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query('products')
+			.filter((q) => q.eq(q.field('lifecycleStatus'), args.lifecycleStatus))
+			.collect();
+	}
+});
+
+export const getByFleet = zQuery({
+	args: {
+		fleet: z.string().min(1).max(100)
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query('products')
+			.filter((q) => q.eq(q.field('fleet'), args.fleet))
+			.collect();
+	}
+});
+
+export const getBySquad = zQuery({
+	args: {
+		squad: z.string().min(1).max(100)
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query('products')
+			.filter((q) => q.eq(q.field('squad'), args.squad))
 			.collect();
 	}
 });

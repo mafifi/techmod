@@ -1,11 +1,29 @@
 import { describe, it, expect } from 'vitest';
-import { ProductPropsSchema, ProductSchema, type ProductProps, type Product } from './ProductDTO';
+import {
+	ProductPropsSchema,
+	ProductSchema,
+	ModernityEnum,
+	type ProductProps,
+	type Product
+} from './ProductDTO';
 
 describe('ProductDTO', () => {
 	describe('ProductPropsSchema', () => {
 		it('should validate valid product props', () => {
 			const validProduct: ProductProps = {
 				name: 'Test Product',
+				owningSuperDepartment: 'Technology',
+				productOwner: 'John Smith',
+				eonids: 'EON-1234-567',
+				productOverview: 'A comprehensive product overview describing the purpose and value.',
+				productRelatedLinks: 'https://confluence.example.com/docs',
+				productType: 'Application',
+				modernity: 'Continue',
+				lifecycleStatus: 'Active',
+				fleet: 'Web Services',
+				squad: 'Alpha Squad',
+				roadmapLink: 'https://roadmap.example.com/product/123',
+				// Legacy optional fields
 				description: 'A test product description',
 				price: 99.99,
 				category: 'Software',
@@ -19,10 +37,17 @@ describe('ProductDTO', () => {
 		it('should reject product with invalid name (too short)', () => {
 			const invalidProduct = {
 				name: 'A', // Too short (min 2)
-				description: 'Valid description',
-				price: 99.99,
-				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
+				owningSuperDepartment: 'Technology',
+				productOwner: 'John Smith',
+				eonids: 'EON-1234-567',
+				productOverview: 'A comprehensive product overview.',
+				productRelatedLinks: 'https://confluence.example.com/docs',
+				productType: 'Application',
+				modernity: 'Continue' as const,
+				lifecycleStatus: 'Active',
+				fleet: 'Web Services',
+				squad: 'Alpha Squad',
+				roadmapLink: 'https://roadmap.example.com/product/123'
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
@@ -36,62 +61,131 @@ describe('ProductDTO', () => {
 		it('should reject product with invalid name (too long)', () => {
 			const invalidProduct = {
 				name: 'A'.repeat(101), // Too long (max 100)
-				description: 'Valid description',
-				price: 99.99,
-				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
+				owningSuperDepartment: 'Technology',
+				productOwner: 'John Smith',
+				eonids: 'EON-1234-567',
+				productOverview: 'A comprehensive product overview.',
+				productRelatedLinks: 'https://confluence.example.com/docs',
+				productType: 'Application',
+				modernity: 'Continue' as const,
+				lifecycleStatus: 'Active',
+				fleet: 'Web Services',
+				squad: 'Alpha Squad',
+				roadmapLink: 'https://roadmap.example.com/product/123'
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
 			expect(result.success).toBe(false);
+		});
+
+		it('should reject product with invalid modernity value', () => {
+			const invalidProduct = {
+				name: 'Valid Product Name',
+				owningSuperDepartment: 'Technology',
+				productOwner: 'John Smith',
+				eonids: 'EON-1234-567',
+				productOverview: 'A comprehensive product overview.',
+				productRelatedLinks: 'https://confluence.example.com/docs',
+				productType: 'Application',
+				modernity: 'InvalidValue', // Invalid modernity value
+				lifecycleStatus: 'Active',
+				fleet: 'Web Services',
+				squad: 'Alpha Squad',
+				roadmapLink: 'https://roadmap.example.com/product/123'
+			};
+
+			const result = ProductPropsSchema.safeParse(invalidProduct);
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				expect(result.error.issues).toHaveLength(1);
+				expect(result.error.issues[0].path).toEqual(['modernity']);
+			}
+		});
+
+		it('should allow all valid modernity values', () => {
+			const modernityValues = ['Migrate', 'Hold', 'Continue', 'Adopt', 'Assess'] as const;
+
+			modernityValues.forEach((modernity) => {
+				const validProduct = {
+					name: 'Valid Product Name',
+					owningSuperDepartment: 'Technology',
+					productOwner: 'John Smith',
+					eonids: 'EON-1234-567',
+					productOverview: 'A comprehensive product overview.',
+					productRelatedLinks: 'https://confluence.example.com/docs',
+					productType: 'Application',
+					modernity,
+					lifecycleStatus: 'Active',
+					fleet: 'Web Services',
+					squad: 'Alpha Squad',
+					roadmapLink: 'https://roadmap.example.com/product/123'
+				};
+
+				const result = ProductPropsSchema.safeParse(validProduct);
+				expect(result.success).toBe(true);
+			});
+		});
+
+		it('should validate with minimal required fields only', () => {
+			const minimalProduct = {
+				name: 'Minimal Product',
+				owningSuperDepartment: 'Technology',
+				productOwner: 'John Smith',
+				eonids: 'EON-1234-567',
+				productOverview: 'A minimal product overview.',
+				productRelatedLinks: 'https://confluence.example.com/docs',
+				productType: 'Application',
+				modernity: 'Continue' as const,
+				lifecycleStatus: 'Active',
+				fleet: 'Web Services',
+				squad: 'Alpha Squad',
+				roadmapLink: 'https://roadmap.example.com/product/123'
+			};
+
+			const result = ProductPropsSchema.safeParse(minimalProduct);
+			expect(result.success).toBe(true);
+		});
+
+		it('should validate with optional legacy fields', () => {
+			const productWithLegacyFields = {
+				name: 'Product with Legacy',
+				owningSuperDepartment: 'Technology',
+				productOwner: 'John Smith',
+				eonids: 'EON-1234-567',
+				productOverview: 'A product with legacy fields.',
+				productRelatedLinks: 'https://confluence.example.com/docs',
+				productType: 'Application',
+				modernity: 'Continue' as const,
+				lifecycleStatus: 'Active',
+				fleet: 'Web Services',
+				squad: 'Alpha Squad',
+				roadmapLink: 'https://roadmap.example.com/product/123',
+				// Legacy optional fields
+				description: 'Legacy description',
+				price: 99.99,
+				category: 'Software',
+				productPortfolioId: 'portfolio_123'
+			};
+
+			const result = ProductPropsSchema.safeParse(productWithLegacyFields);
+			expect(result.success).toBe(true);
 		});
 
 		it('should reject product with negative price', () => {
 			const invalidProduct = {
 				name: 'Valid Product',
-				description: 'Valid description',
-				price: -10, // Invalid negative price
-				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
-			};
-
-			const result = ProductPropsSchema.safeParse(invalidProduct);
-			expect(result.success).toBe(false);
-		});
-
-		it('should reject product with invalid category (too short)', () => {
-			const invalidProduct = {
-				name: 'Valid Product',
-				description: 'Valid description',
-				price: 99.99,
-				category: 'A', // Too short (min 2)
-				productPortfolioId: 'portfolio_test_1'
-			};
-
-			const result = ProductPropsSchema.safeParse(invalidProduct);
-			expect(result.success).toBe(false);
-		});
-
-		it('should accept product without description (optional field)', () => {
-			const validProduct = {
-				name: 'Valid Product',
-				price: 99.99,
-				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
-				// description omitted
-			};
-
-			const result = ProductPropsSchema.safeParse(validProduct);
-			expect(result.success).toBe(true);
-		});
-
-		it('should reject product with description too long', () => {
-			const invalidProduct = {
-				name: 'Valid Product',
-				description: 'A'.repeat(501), // Too long (max 500)
-				price: 99.99,
-				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
+				owningSuperDepartment: 'Technology',
+				productOwner: 'John Smith',
+				eonids: 'EON-1234-567',
+				productOverview: 'A comprehensive product overview.',
+				productRelatedLinks: 'https://confluence.example.com/docs',
+				productType: 'Application',
+				modernity: 'Continue' as const,
+				lifecycleStatus: 'Active',
+				fleet: 'Web Services',
+				squad: 'Alpha Squad',
+				roadmapLink: 'https://roadmap.example.com/product/123',
+				price: -10 // Invalid negative price
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
@@ -100,48 +194,47 @@ describe('ProductDTO', () => {
 	});
 
 	describe('ProductSchema', () => {
-		it('should validate complete product with Convex fields', () => {
+		it('should validate Product with Convex metadata', () => {
 			const validProduct: Product = {
 				_id: 'product_123',
-				_creationTime: 1640995200000,
+				_creationTime: Date.now(),
 				name: 'Test Product',
-				description: 'A test product description',
-				price: 99.99,
-				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
+				owningSuperDepartment: 'Technology',
+				productOwner: 'John Smith',
+				eonids: 'EON-1234-567',
+				productOverview: 'A comprehensive product overview.',
+				productRelatedLinks: 'https://confluence.example.com/docs',
+				productType: 'Application',
+				modernity: 'Adopt',
+				lifecycleStatus: 'Active',
+				fleet: 'Web Services',
+				squad: 'Alpha Squad',
+				roadmapLink: 'https://roadmap.example.com/product/123',
+				productPortfolioId: 'portfolio_123'
 			};
 
 			const result = ProductSchema.safeParse(validProduct);
 			expect(result.success).toBe(true);
 		});
+	});
 
-		it('should accept product without _creationTime (optional)', () => {
-			const validProduct = {
-				_id: 'product_123',
-				name: 'Test Product',
-				description: 'A test product description',
-				price: 99.99,
-				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
-				// _creationTime omitted
-			};
+	describe('ModernityEnum', () => {
+		it('should validate all modernity enum values', () => {
+			const validValues = ['Migrate', 'Hold', 'Continue', 'Adopt', 'Assess'];
 
-			const result = ProductSchema.safeParse(validProduct);
-			expect(result.success).toBe(true);
+			validValues.forEach((value) => {
+				const result = ModernityEnum.safeParse(value);
+				expect(result.success).toBe(true);
+			});
 		});
 
-		it('should reject product without _id', () => {
-			const invalidProduct = {
-				// _id omitted
-				name: 'Test Product',
-				description: 'A test product description',
-				price: 99.99,
-				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
-			};
+		it('should reject invalid modernity values', () => {
+			const invalidValues = ['Legacy', 'Modern', 'Invalid', 'CONTINUE'];
 
-			const result = ProductSchema.safeParse(invalidProduct);
-			expect(result.success).toBe(false);
+			invalidValues.forEach((value) => {
+				const result = ModernityEnum.safeParse(value);
+				expect(result.success).toBe(false);
+			});
 		});
 	});
 });

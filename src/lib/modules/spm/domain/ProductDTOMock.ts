@@ -11,8 +11,30 @@ export class ProductDTOMock {
 	 * Generate a valid ProductProps for testing
 	 */
 	static createProductProps(overrides: Partial<ProductProps> = {}): ProductProps {
+		const superDepartments = ['Technology', 'Business', 'Operations', 'Support'];
+		const owners = ['John Smith', 'Sarah Johnson', 'Mike Davis', 'Lisa Wilson'];
+		const modernityLevels = ['Migrate', 'Hold', 'Continue', 'Adopt', 'Assess'] as const;
+		const productTypes = ['Application', 'Platform', 'Service', 'Infrastructure'];
+		const lifecycleStatuses = ['Active', 'Deprecated', 'Sunset', 'Development'];
+		const fleets = ['Web Services', 'Mobile Apps', 'Analytics', 'Infrastructure'];
+		const squads = ['Alpha Squad', 'Beta Squad', 'Gamma Squad', 'Delta Squad'];
+
 		return {
 			name: `Test Product ${this.counter++}`,
+			owningSuperDepartment: superDepartments[Math.floor(Math.random() * superDepartments.length)],
+			productOwner: owners[Math.floor(Math.random() * owners.length)],
+			eonids: `EON-${Math.floor(Math.random() * 10000)}-${Math.floor(Math.random() * 1000)}`,
+			productOverview:
+				'A comprehensive product overview describing the purpose, scope, and business value of this product in the organization.',
+			productRelatedLinks:
+				'https://confluence.example.com/product-docs, https://jira.example.com/project',
+			productType: productTypes[Math.floor(Math.random() * productTypes.length)],
+			modernity: modernityLevels[Math.floor(Math.random() * modernityLevels.length)],
+			lifecycleStatus: lifecycleStatuses[Math.floor(Math.random() * lifecycleStatuses.length)],
+			fleet: fleets[Math.floor(Math.random() * fleets.length)],
+			squad: squads[Math.floor(Math.random() * squads.length)],
+			roadmapLink: `https://roadmap.example.com/product/${this.counter}`,
+			// Legacy fields (optional)
 			description: 'A comprehensive test product for validation',
 			price: 99.99,
 			category: 'Software',

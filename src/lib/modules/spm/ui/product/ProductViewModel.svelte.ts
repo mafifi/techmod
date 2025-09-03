@@ -73,11 +73,14 @@ export class ProductViewModel {
 	}
 
 	getProductsInPriceRange(minPrice: number, maxPrice: number): Product[] {
-		return this.data.filter((product) => product.price >= minPrice && product.price <= maxPrice);
+		return this.data.filter(
+			(product) =>
+				product.price !== undefined && product.price >= minPrice && product.price <= maxPrice
+		);
 	}
 
 	getTotalValue(): number {
-		return this.data.reduce((total, product) => total + product.price, 0);
+		return this.data.reduce((total, product) => total + (product.price || 0), 0);
 	}
 
 	// Dialog management methods
