@@ -24,6 +24,7 @@ import type * as spm_taxonomyNode_query from "../spm/taxonomyNode/query.js";
 import type * as spm_taxonomyNode_tables from "../spm/taxonomyNode/tables.js";
 import type * as spm_taxonomyNode_trigger from "../spm/taxonomyNode/trigger.js";
 
+
 /**
  * A utility for referencing Convex functions in your app's API.
  *

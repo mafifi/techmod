@@ -4,8 +4,9 @@
 	import { Button } from '$lib/ui/components/button';
 	import { Textarea } from '$lib/ui/components/textarea';
 	import { Label } from '$lib/ui/components/label';
+	import { createForm } from '@tanstack/svelte-form';
 	import type { ProductViewModel } from './ProductViewModel.svelte';
-	import type { ProductProps } from '../../domain/ProductDTO';
+	import { ProductPropsSchema, getProductDefaults } from '../../domain/ProductDTO';
 
 	let { viewModel }: { viewModel: ProductViewModel } = $props();
 
@@ -56,7 +57,7 @@
 		} finally {
 			isSubmitting = false;
 		}
-	}
+	}));
 </script>
 
 <Dialog.Root bind:open={viewModel.createDialogOpen}>
@@ -68,57 +69,153 @@
 			</Dialog.Description>
 		</Dialog.Header>
 
-		<form id="create-product-form" onsubmit={handleSubmit} class="space-y-4 py-4">
-			<div class="space-y-2">
-				<Label for="name">Product Name</Label>
-				<Input id="name" bind:value={formData.name} placeholder="Enter product name" required />
-			</div>
+		<form
+			id="create-product-form"
+			onsubmit={(e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				form.handleSubmit();
+			}}
+			class="space-y-4 py-4"
+		>
+			<form.Field name="name" validators={{ onChange: ProductPropsSchema.shape.name }}>
+				{#snippet children(field)}
+					<div class="space-y-2">
+						<Label for={field.name}>Product Name</Label>
+						<Input
+							id={field.name}
+							name={field.name}
+							value={field.state.value}
+							onblur={field.handleBlur}
+							oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
+							placeholder="Enter product name"
+							class={field.state.meta.errors.length ? 'border-destructive' : ''}
+						/>
+						{#if field.state.meta.errors.length}
+							<p class="text-sm text-destructive" role="alert">
+								{field.state.meta.errors.join(', ')}
+							</p>
+						{/if}
+					</div>
+				{/snippet}
+			</form.Field>
 
-			<div class="space-y-2">
-				<Label for="category">Category</Label>
-				<Input id="category" bind:value={formData.category} placeholder="Enter category" required />
-			</div>
+			<form.Field name="category" validators={{ onChange: ProductPropsSchema.shape.category }}>
+				{#snippet children(field)}
+					<div class="space-y-2">
+						<Label for={field.name}>Category</Label>
+						<Input
+							id={field.name}
+							name={field.name}
+							value={field.state.value}
+							onblur={field.handleBlur}
+							oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
+							placeholder="Enter category"
+							class={field.state.meta.errors.length ? 'border-destructive' : ''}
+						/>
+						{#if field.state.meta.errors.length}
+							<p class="text-sm text-destructive" role="alert">
+								{field.state.meta.errors.join(', ')}
+							</p>
+						{/if}
+					</div>
+				{/snippet}
+			</form.Field>
 
-			<div class="space-y-2">
-				<Label for="price">Price</Label>
-				<Input
-					id="price"
-					type="number"
-					step="0.01"
-					min="0"
-					bind:value={formData.price}
-					placeholder="0.00"
-					required
-				/>
-			</div>
+			<form.Field name="price" validators={{ onChange: ProductPropsSchema.shape.price }}>
+				{#snippet children(field)}
+					<div class="space-y-2">
+						<Label for={field.name}>Price</Label>
+						<Input
+							id={field.name}
+							name={field.name}
+							type="number"
+							step="0.01"
+							min="0"
+							value={field.state.value}
+							onblur={field.handleBlur}
+							oninput={(e) => field.handleChange(Number((e.target as HTMLInputElement).value))}
+							placeholder="0.00"
+							class={field.state.meta.errors.length ? 'border-destructive' : ''}
+						/>
+						{#if field.state.meta.errors.length}
+							<p class="text-sm text-destructive" role="alert">
+								{field.state.meta.errors.join(', ')}
+							</p>
+						{/if}
+					</div>
+				{/snippet}
+			</form.Field>
 
-			<div class="space-y-2">
-				<Label for="description">Description (Optional)</Label>
-				<Textarea
-					id="description"
-					bind:value={formData.description}
-					placeholder="Enter product description"
-					rows={3}
-				/>
-			</div>
+			<form.Field
+				name="productPortfolioId"
+				validators={{ onChange: ProductPropsSchema.shape.productPortfolioId }}
+			>
+				{#snippet children(field)}
+					<div class="space-y-2">
+						<Label for={field.name}>Product Portfolio ID</Label>
+						<Input
+							id={field.name}
+							name={field.name}
+							value={field.state.value}
+							onblur={field.handleBlur}
+							oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
+							placeholder="Enter product portfolio ID"
+							class={field.state.meta.errors.length ? 'border-destructive' : ''}
+						/>
+						{#if field.state.meta.errors.length}
+							<p class="text-sm text-destructive" role="alert">
+								{field.state.meta.errors.join(', ')}
+							</p>
+						{/if}
+					</div>
+				{/snippet}
+			</form.Field>
+
+			<form.Field
+				name="description"
+				validators={{ onChange: ProductPropsSchema.shape.description }}
+			>
+				{#snippet children(field)}
+					<div class="space-y-2">
+						<Label for={field.name}>Description (Optional)</Label>
+						<Textarea
+							id={field.name}
+							name={field.name}
+							value={field.state.value || ''}
+							onblur={field.handleBlur}
+							oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
+							placeholder="Enter product description"
+							rows={3}
+							class={field.state.meta.errors.length ? 'border-destructive' : ''}
+						/>
+						{#if field.state.meta.errors.length}
+							<p class="text-sm text-destructive" role="alert">
+								{field.state.meta.errors.join(', ')}
+							</p>
+						{/if}
+					</div>
+				{/snippet}
+			</form.Field>
 		</form>
 
 		<Dialog.Footer>
-			<Button
-				type="button"
-				variant="outline"
-				onclick={() => (viewModel.createDialogOpen = false)}
-				disabled={isSubmitting}
-			>
+			<Button type="button" variant="outline" onclick={() => (viewModel.createDialogOpen = false)}>
 				Cancel
 			</Button>
-			<Button
-				type="submit"
-				form="create-product-form"
-				disabled={isSubmitting || !formData.name || !formData.category}
+			<form.Subscribe
+				selector={(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })}
 			>
-				{isSubmitting ? 'Creating...' : 'Create Product'}
-			</Button>
+				{#snippet children(state)}
+					<Button
+						type="submit"
+						form="create-product-form"
+						disabled={!state.canSubmit || state.isSubmitting}
+					>
+						{state.isSubmitting ? 'Creating...' : 'Create Product'}
+					</Button>
+				{/snippet}
+			</form.Subscribe>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
