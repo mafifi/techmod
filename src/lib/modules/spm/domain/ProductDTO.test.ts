@@ -26,7 +26,8 @@ describe('ProductDTO', () => {
 				// Legacy optional fields
 				description: 'A test product description',
 				price: 99.99,
-				category: 'Software'
+				category: 'Software',
+				productPortfolioId: 'portfolio_test_1'
 			};
 
 			const result = ProductPropsSchema.safeParse(validProduct);
@@ -55,6 +56,26 @@ describe('ProductDTO', () => {
 				expect(result.error.issues).toHaveLength(1);
 				expect(result.error.issues[0].path).toEqual(['name']);
 			}
+		});
+
+		it('should reject product with invalid name (too long)', () => {
+			const invalidProduct = {
+				name: 'A'.repeat(101), // Too long (max 100)
+				owningSuperDepartment: 'Technology',
+				productOwner: 'John Smith',
+				eonids: 'EON-1234-567',
+				productOverview: 'A comprehensive product overview.',
+				productRelatedLinks: 'https://confluence.example.com/docs',
+				productType: 'Application',
+				modernity: 'Continue' as const,
+				lifecycleStatus: 'Active',
+				fleet: 'Web Services',
+				squad: 'Alpha Squad',
+				roadmapLink: 'https://roadmap.example.com/product/123'
+			};
+
+			const result = ProductPropsSchema.safeParse(invalidProduct);
+			expect(result.success).toBe(false);
 		});
 
 		it('should reject product with invalid modernity value', () => {
@@ -124,6 +145,52 @@ describe('ProductDTO', () => {
 			const result = ProductPropsSchema.safeParse(minimalProduct);
 			expect(result.success).toBe(true);
 		});
+
+		it('should validate with optional legacy fields', () => {
+			const productWithLegacyFields = {
+				name: 'Product with Legacy',
+				owningSuperDepartment: 'Technology',
+				productOwner: 'John Smith',
+				eonids: 'EON-1234-567',
+				productOverview: 'A product with legacy fields.',
+				productRelatedLinks: 'https://confluence.example.com/docs',
+				productType: 'Application',
+				modernity: 'Continue' as const,
+				lifecycleStatus: 'Active',
+				fleet: 'Web Services',
+				squad: 'Alpha Squad',
+				roadmapLink: 'https://roadmap.example.com/product/123',
+				// Legacy optional fields
+				description: 'Legacy description',
+				price: 99.99,
+				category: 'Software',
+				productPortfolioId: 'portfolio_123'
+			};
+
+			const result = ProductPropsSchema.safeParse(productWithLegacyFields);
+			expect(result.success).toBe(true);
+		});
+
+		it('should reject product with negative price', () => {
+			const invalidProduct = {
+				name: 'Valid Product',
+				owningSuperDepartment: 'Technology',
+				productOwner: 'John Smith',
+				eonids: 'EON-1234-567',
+				productOverview: 'A comprehensive product overview.',
+				productRelatedLinks: 'https://confluence.example.com/docs',
+				productType: 'Application',
+				modernity: 'Continue' as const,
+				lifecycleStatus: 'Active',
+				fleet: 'Web Services',
+				squad: 'Alpha Squad',
+				roadmapLink: 'https://roadmap.example.com/product/123',
+				price: -10 // Invalid negative price
+			};
+
+			const result = ProductPropsSchema.safeParse(invalidProduct);
+			expect(result.success).toBe(false);
+		});
 	});
 
 	describe('ProductSchema', () => {
@@ -142,7 +209,8 @@ describe('ProductDTO', () => {
 				lifecycleStatus: 'Active',
 				fleet: 'Web Services',
 				squad: 'Alpha Squad',
-				roadmapLink: 'https://roadmap.example.com/product/123'
+				roadmapLink: 'https://roadmap.example.com/product/123',
+				productPortfolioId: 'portfolio_123'
 			};
 
 			const result = ProductSchema.safeParse(validProduct);

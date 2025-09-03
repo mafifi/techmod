@@ -28,7 +28,10 @@ export const ProductPropsSchema = z.object({
 	businessCriticality: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']).optional(),
 	lifecycleStage: z.enum(['PLAN', 'BUILD', 'RUN', 'RETIRE']).optional(),
 	lastAssessmentDate: z.number().optional(),
-	nextReviewDate: z.number().optional()
+	nextReviewDate: z.number().optional(),
+
+	// New field from main branch
+	productPortfolioId: z.string().optional()
 });
 
 export const ProductSchema = ProductPropsSchema.extend({
