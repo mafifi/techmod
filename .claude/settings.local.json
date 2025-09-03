@@ -6,7 +6,9 @@
 			"Bash(npx playwright:*)",
 			"Bash(sudo npx playwright:*)",
 			"Bash(npm run check:*)",
-			"WebFetch(domain:tanstack.com)"
+			"WebFetch(domain:tanstack.com)",
+			"Bash(npm run lint)",
+			"Bash(npm run format:*)"
 		]
 	},
 	"enableAllProjectMcpServers": true,

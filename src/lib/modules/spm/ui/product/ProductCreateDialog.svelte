@@ -58,10 +58,12 @@
 							onblur={field.handleBlur}
 							oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
 							placeholder="Enter product name"
-							class={field.state.meta.errors.length ? 'border-red-500' : ''}
+							class={field.state.meta.errors.length ? 'border-destructive' : ''}
 						/>
 						{#if field.state.meta.errors.length}
-							<p class="text-sm text-red-500" role="alert">{field.state.meta.errors.join(', ')}</p>
+							<p class="text-sm text-destructive" role="alert">
+								{field.state.meta.errors.join(', ')}
+							</p>
 						{/if}
 					</div>
 				{/snippet}
@@ -78,10 +80,12 @@
 							onblur={field.handleBlur}
 							oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
 							placeholder="Enter category"
-							class={field.state.meta.errors.length ? 'border-red-500' : ''}
+							class={field.state.meta.errors.length ? 'border-destructive' : ''}
 						/>
 						{#if field.state.meta.errors.length}
-							<p class="text-sm text-red-500" role="alert">{field.state.meta.errors.join(', ')}</p>
+							<p class="text-sm text-destructive" role="alert">
+								{field.state.meta.errors.join(', ')}
+							</p>
 						{/if}
 					</div>
 				{/snippet}
@@ -101,10 +105,12 @@
 							onblur={field.handleBlur}
 							oninput={(e) => field.handleChange(Number((e.target as HTMLInputElement).value))}
 							placeholder="0.00"
-							class={field.state.meta.errors.length ? 'border-red-500' : ''}
+							class={field.state.meta.errors.length ? 'border-destructive' : ''}
 						/>
 						{#if field.state.meta.errors.length}
-							<p class="text-sm text-red-500" role="alert">{field.state.meta.errors.join(', ')}</p>
+							<p class="text-sm text-destructive" role="alert">
+								{field.state.meta.errors.join(', ')}
+							</p>
 						{/if}
 					</div>
 				{/snippet}
@@ -124,10 +130,12 @@
 							onblur={field.handleBlur}
 							oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
 							placeholder="Enter product portfolio ID"
-							class={field.state.meta.errors.length ? 'border-red-500' : ''}
+							class={field.state.meta.errors.length ? 'border-destructive' : ''}
 						/>
 						{#if field.state.meta.errors.length}
-							<p class="text-sm text-red-500" role="alert">{field.state.meta.errors.join(', ')}</p>
+							<p class="text-sm text-destructive" role="alert">
+								{field.state.meta.errors.join(', ')}
+							</p>
 						{/if}
 					</div>
 				{/snippet}
@@ -148,10 +156,12 @@
 							oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
 							placeholder="Enter product description"
 							rows={3}
-							class={field.state.meta.errors.length ? 'border-red-500' : ''}
+							class={field.state.meta.errors.length ? 'border-destructive' : ''}
 						/>
 						{#if field.state.meta.errors.length}
-							<p class="text-sm text-red-500" role="alert">{field.state.meta.errors.join(', ')}</p>
+							<p class="text-sm text-destructive" role="alert">
+								{field.state.meta.errors.join(', ')}
+							</p>
 						{/if}
 					</div>
 				{/snippet}
