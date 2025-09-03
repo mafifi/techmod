@@ -15,3 +15,13 @@ export const ProductSchema = ProductPropsSchema.extend({
 
 export type ProductProps = z.infer<typeof ProductPropsSchema>;
 export type Product = z.infer<typeof ProductSchema>;
+
+export function getProductDefaults(): ProductProps {
+	return {
+		name: '',
+		description: '',
+		price: 0,
+		category: '',
+		productPortfolioId: ''
+	};
+}

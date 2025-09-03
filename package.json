@@ -81,6 +81,7 @@
 	},
 	"dependencies": {
 		"@sveltejs/adapter-cloudflare": "^7.2.3",
+		"@tanstack/svelte-form": "^1.19.3",
 		"convex": "^1.26.1",
 		"convex-helpers": "^0.1.104",
 		"convex-svelte": "^0.0.11",

@@ -6,15 +6,11 @@
 	import { Label } from '$lib/ui/components/label';
 	import type { ProductViewModel } from './ProductViewModel.svelte';
 	import type { ProductProps } from '../../domain/ProductDTO';
+	import { getProductDefaults } from '../../domain/ProductDTO';
 
 	let { viewModel }: { viewModel: ProductViewModel } = $props();
 
-	let formData = $state<ProductProps>({
-		name: '',
-		category: '',
-		price: 0,
-		description: ''
-	});
+	let formData = $state<ProductProps>(getProductDefaults());
 
 	let isSubmitting = $state(false);
 
@@ -25,7 +21,8 @@
 				name: viewModel.selectedProduct.name,
 				category: viewModel.selectedProduct.category,
 				price: viewModel.selectedProduct.price,
-				description: viewModel.selectedProduct.description || ''
+				description: viewModel.selectedProduct.description || '',
+				productPortfolioId: viewModel.selectedProduct.productPortfolioId
 			};
 		}
 	});
@@ -86,6 +83,16 @@
 					min="0"
 					bind:value={formData.price}
 					placeholder="0.00"
+					required
+				/>
+			</div>
+
+			<div class="space-y-2">
+				<Label for="edit-productPortfolioId">Product Portfolio ID</Label>
+				<Input
+					id="edit-productPortfolioId"
+					bind:value={formData.productPortfolioId}
+					placeholder="Enter product portfolio ID"
 					required
 				/>
 			</div>
