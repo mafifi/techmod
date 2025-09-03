@@ -13,7 +13,8 @@
 		name: '',
 		category: '',
 		price: 0,
-		description: ''
+		description: '',
+		taxonomyNodeId: ''
 	});
 
 	let isSubmitting = $state(false);
@@ -25,7 +26,8 @@
 				name: viewModel.selectedProduct.name,
 				category: viewModel.selectedProduct.category,
 				price: viewModel.selectedProduct.price,
-				description: viewModel.selectedProduct.description || ''
+				description: viewModel.selectedProduct.description || '',
+				taxonomyNodeId: viewModel.selectedProduct.taxonomyNodeId
 			};
 		}
 	});
@@ -37,7 +39,12 @@
 
 		isSubmitting = true;
 		try {
-			await viewModel.updateProduct(viewModel.selectedProduct._id, formData);
+			// Add taxonomyNodeId to the update data
+			const updateData = {
+				...formData,
+				taxonomyNodeId: viewModel.selectedProduct.taxonomyNodeId || 'default_category_id'
+			};
+			await viewModel.updateProduct(viewModel.selectedProduct._id, updateData);
 			viewModel.editDialogOpen = false;
 		} catch (error) {
 			console.error('Failed to update product:', error);

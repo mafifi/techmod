@@ -1,13 +1,18 @@
 {
-	"permissions": {
-		"allow": [
-			"Bash(npm run test:*)",
-			"Bash(cat:*)",
-			"Bash(npx playwright:*)",
-			"Bash(sudo npx playwright:*)",
-			"Bash(npm run check:*)"
-		]
-	},
-	"enableAllProjectMcpServers": true,
-	"enabledMcpjsonServers": ["playwright"]
+  "permissions": {
+    "allow": [
+      "Bash(npm run test:*)",
+      "Bash(cat:*)",
+      "Bash(npx playwright:*)",
+      "Bash(sudo npx playwright:*)",
+      "Bash(npm run check:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npm run lint)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "playwright"
+  ]
 }

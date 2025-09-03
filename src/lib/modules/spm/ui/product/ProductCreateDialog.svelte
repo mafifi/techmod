@@ -13,7 +13,8 @@
 		name: '',
 		category: '',
 		price: 0,
-		description: ''
+		description: '',
+		taxonomyNodeId: '' // Required field for taxonomy reference
 	});
 
 	let isSubmitting = $state(false);
@@ -23,7 +24,8 @@
 			name: '',
 			category: '',
 			price: 0,
-			description: ''
+			description: '',
+			taxonomyNodeId: ''
 		};
 	}
 
@@ -39,6 +41,7 @@
 				name: formData.name.trim(),
 				category: formData.category.trim(),
 				price: Number(formData.price),
+				taxonomyNodeId: 'default_category_id', // TODO: Replace with actual taxonomy node selection
 				description: formData.description?.trim() || undefined
 			};
 

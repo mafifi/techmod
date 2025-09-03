@@ -16,7 +16,7 @@ export class ProductDTOMock {
 			description: 'A comprehensive test product for validation',
 			price: 99.99,
 			category: 'Software',
-			productPortfolioId: 'portfolio_test_default',
+			taxonomyNodeId: 'portfolio_test_default',
 			...overrides
 		};
 	}
@@ -66,32 +66,32 @@ export class ProductDTOMock {
 				name: '',
 				price: 99.99,
 				category: 'Software',
-				productPortfolioId: 'portfolio_test_default'
+				taxonomyNodeId: 'portfolio_test_default'
 			},
 			nameTooLong: {
 				name: 'A'.repeat(101),
 				price: 99.99,
 				category: 'Software',
-				productPortfolioId: 'portfolio_test_default'
+				taxonomyNodeId: 'portfolio_test_default'
 			},
 			negativePrice: {
 				name: 'Valid Product',
 				price: -10,
 				category: 'Software',
-				productPortfolioId: 'portfolio_test_default'
+				taxonomyNodeId: 'portfolio_test_default'
 			},
 			categoryTooShort: {
 				name: 'Valid Product',
 				price: 99.99,
 				category: 'A',
-				productPortfolioId: 'portfolio_test_default'
+				taxonomyNodeId: 'portfolio_test_default'
 			},
 			descriptionTooLong: {
 				name: 'Valid Product',
 				description: 'A'.repeat(501),
 				price: 99.99,
 				category: 'Software',
-				productPortfolioId: 'portfolio_test_default'
+				taxonomyNodeId: 'portfolio_test_default'
 			}
 		};
 	}
