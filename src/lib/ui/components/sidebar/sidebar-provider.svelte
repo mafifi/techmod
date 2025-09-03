@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Tooltip from "$lib/ui/tooltip/index.js";
+	import * as Tooltip from "$lib/ui/components/tooltip/index.js";
 	import { cn, type WithElementRef } from "$lib/ui/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 	import {

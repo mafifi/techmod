@@ -3,6 +3,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { env } from '$env/dynamic/public';
 	import { setupConvex } from 'convex-svelte';
+	import { Toaster } from '$lib/ui/components/sonner';
 
 	let { children } = $props();
 
@@ -14,3 +15,4 @@
 </svelte:head>
 
 {@render children?.()}
+<Toaster />
