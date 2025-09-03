@@ -70,38 +70,31 @@ export const search = zQuery({
 				q.or(
 					q.eq(q.field('name'), args.searchTerm),
 					q.eq(q.field('description'), args.searchTerm),
-					q.eq(q.field('category'), args.searchTerm)
+					q.eq(q.field('category'), args.searchTerm),
+					q.eq(q.field('productOwner'), args.searchTerm),
+					q.eq(q.field('owningSuperDepartment'), args.searchTerm),
+					q.eq(q.field('productType'), args.searchTerm),
+					q.eq(q.field('fleet'), args.searchTerm),
+					q.eq(q.field('squad'), args.searchTerm)
 				)
 			)
 			.collect();
 	}
 });
 
-export const getByDepartment = zQuery({
+export const getByOwningSuperDepartment = zQuery({
 	args: {
-		department: z.string().min(1).max(100)
+		owningSuperDepartment: z.string().min(1).max(100)
 	},
 	handler: async (ctx, args) => {
 		return await ctx.db
 			.query('products')
-			.filter((q) => q.eq(q.field('department'), args.department))
+			.filter((q) => q.eq(q.field('owningSuperDepartment'), args.owningSuperDepartment))
 			.collect();
 	}
 });
 
-export const getBySuperDepartment = zQuery({
-	args: {
-		superDepartment: z.string().min(1).max(100)
-	},
-	handler: async (ctx, args) => {
-		return await ctx.db
-			.query('products')
-			.filter((q) => q.eq(q.field('superDepartment'), args.superDepartment))
-			.collect();
-	}
-});
-
-export const getByOwner = zQuery({
+export const getByProductOwner = zQuery({
 	args: {
 		productOwner: z.string().min(1).max(100)
 	},
@@ -113,9 +106,21 @@ export const getByOwner = zQuery({
 	}
 });
 
+export const getByProductType = zQuery({
+	args: {
+		productType: z.string().min(1).max(100)
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query('products')
+			.filter((q) => q.eq(q.field('productType'), args.productType))
+			.collect();
+	}
+});
+
 export const getByModernity = zQuery({
 	args: {
-		modernity: z.enum(['LEGACY', 'TRANSITIONAL', 'MODERN', 'CUTTING_EDGE'])
+		modernity: z.enum(['Migrate', 'Hold', 'Continue', 'Adopt', 'Assess'])
 	},
 	handler: async (ctx, args) => {
 		return await ctx.db
@@ -125,14 +130,38 @@ export const getByModernity = zQuery({
 	}
 });
 
-export const getByLifecycleStage = zQuery({
+export const getByLifecycleStatus = zQuery({
 	args: {
-		lifecycleStage: z.enum(['PLAN', 'BUILD', 'RUN', 'RETIRE'])
+		lifecycleStatus: z.string().min(1).max(100)
 	},
 	handler: async (ctx, args) => {
 		return await ctx.db
 			.query('products')
-			.filter((q) => q.eq(q.field('lifecycleStage'), args.lifecycleStage))
+			.filter((q) => q.eq(q.field('lifecycleStatus'), args.lifecycleStatus))
+			.collect();
+	}
+});
+
+export const getByFleet = zQuery({
+	args: {
+		fleet: z.string().min(1).max(100)
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query('products')
+			.filter((q) => q.eq(q.field('fleet'), args.fleet))
+			.collect();
+	}
+});
+
+export const getBySquad = zQuery({
+	args: {
+		squad: z.string().min(1).max(100)
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query('products')
+			.filter((q) => q.eq(q.field('squad'), args.squad))
 			.collect();
 	}
 });

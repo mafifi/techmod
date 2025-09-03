@@ -1,26 +1,34 @@
 import { z } from 'zod';
 
+// Define enum for Modernity choices
+export const ModernityEnum = z.enum(['Migrate', 'Hold', 'Continue', 'Adopt', 'Assess']);
+
 export const ProductPropsSchema = z.object({
-	// Existing fields
+	// Core product information
 	name: z.string().min(2).max(100),
+	owningSuperDepartment: z.string().min(1).max(100),
+	productOwner: z.string().min(1).max(100),
+	eonids: z.string().max(500),
+	productOverview: z.string().max(1000),
+	productRelatedLinks: z.string().max(500),
+	productType: z.string().min(1).max(100),
+	modernity: ModernityEnum,
+	lifecycleStatus: z.string().min(1).max(100),
+	fleet: z.string().min(1).max(100),
+	squad: z.string().min(1).max(100),
+	roadmapLink: z.string().max(500),
+
+	// Legacy fields for backward compatibility (now optional)
 	description: z.string().max(500).optional(),
-	price: z.number().min(0),
-	category: z.string().min(2).max(100),
-
-	// Organizational fields
-	productOwner: z.string().min(2).max(100),
-	department: z.string().min(2).max(100),
-	superDepartment: z.string().min(2).max(100),
-
-	// Portfolio management fields
-	modernity: z.enum(['LEGACY', 'TRANSITIONAL', 'MODERN', 'CUTTING_EDGE']),
-	pdr: z.string().url().optional(), // Portfolio Decision Record - web link
-
-	// Enhanced metadata
+	price: z.number().min(0).optional(),
+	category: z.string().min(2).max(100).optional(),
+	department: z.string().min(2).max(100).optional(),
+	superDepartment: z.string().min(2).max(100).optional(),
+	pdr: z.string().url().optional(),
 	businessCriticality: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']).optional(),
 	lifecycleStage: z.enum(['PLAN', 'BUILD', 'RUN', 'RETIRE']).optional(),
-	lastAssessmentDate: z.number().optional(), // Unix timestamp
-	nextReviewDate: z.number().optional() // Unix timestamp
+	lastAssessmentDate: z.number().optional(),
+	nextReviewDate: z.number().optional()
 });
 
 export const ProductSchema = ProductPropsSchema.extend({

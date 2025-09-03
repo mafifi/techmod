@@ -10,30 +10,24 @@
 
 	let { viewModel }: { viewModel: ProductViewModel } = $props();
 
-	// Initialize with all required fields and optional field placeholders
-	let formData = $state<
-		ProductProps & {
-			description?: string;
-			pdr?: string;
-			businessCriticality?: string;
-			lifecycleStage?: string;
-			lastAssessmentDate?: number;
-			nextReviewDate?: number;
-		}
-	>({
+	// Initialize with all required fields
+	let formData = $state<ProductProps>({
 		name: '',
-		category: '',
-		price: 0,
+		owningSuperDepartment: '',
 		productOwner: '',
-		department: '',
-		superDepartment: '',
-		modernity: 'MODERN' as const,
+		eonids: '',
+		productOverview: '',
+		productRelatedLinks: '',
+		productType: '',
+		modernity: 'Continue',
+		lifecycleStatus: '',
+		fleet: '',
+		squad: '',
+		roadmapLink: '',
+		// Legacy optional fields
 		description: '',
-		pdr: '',
-		businessCriticality: undefined,
-		lifecycleStage: undefined,
-		lastAssessmentDate: undefined,
-		nextReviewDate: undefined
+		price: 0,
+		category: ''
 	});
 
 	let isSubmitting = $state(false);
@@ -41,41 +35,63 @@
 
 	// Enum options for dropdowns
 	const modernityOptions = [
-		{ value: 'LEGACY', label: 'Legacy' },
-		{ value: 'TRANSITIONAL', label: 'Transitional' },
-		{ value: 'MODERN', label: 'Modern' },
-		{ value: 'CUTTING_EDGE', label: 'Cutting Edge' }
+		{ value: 'Migrate', label: 'Migrate' },
+		{ value: 'Hold', label: 'Hold' },
+		{ value: 'Continue', label: 'Continue' },
+		{ value: 'Adopt', label: 'Adopt' },
+		{ value: 'Assess', label: 'Assess' }
 	];
 
-	const criticalityOptions = [
-		{ value: 'LOW', label: 'Low' },
-		{ value: 'MEDIUM', label: 'Medium' },
-		{ value: 'HIGH', label: 'High' },
-		{ value: 'CRITICAL', label: 'Critical' }
+	const productTypeOptions = [
+		{ value: 'Application', label: 'Application' },
+		{ value: 'Platform', label: 'Platform' },
+		{ value: 'Service', label: 'Service' },
+		{ value: 'Infrastructure', label: 'Infrastructure' },
+		{ value: 'Data Product', label: 'Data Product' },
+		{ value: 'API', label: 'API' }
 	];
 
-	const lifecycleOptions = [
-		{ value: 'PLAN', label: 'Plan' },
-		{ value: 'BUILD', label: 'Build' },
-		{ value: 'RUN', label: 'Run' },
-		{ value: 'RETIRE', label: 'Retire' }
+	const lifecycleStatusOptions = [
+		{ value: 'Active', label: 'Active' },
+		{ value: 'Development', label: 'Development' },
+		{ value: 'Deprecated', label: 'Deprecated' },
+		{ value: 'Sunset', label: 'Sunset' },
+		{ value: 'Planned', label: 'Planned' }
 	];
 
+	// Form validation
+	const isFormValid = $derived(
+		formData.name.trim() !== '' &&
+			formData.owningSuperDepartment.trim() !== '' &&
+			formData.productOwner.trim() !== '' &&
+			formData.eonids.trim() !== '' &&
+			formData.productOverview.trim() !== '' &&
+			formData.productRelatedLinks.trim() !== '' &&
+			formData.productType.trim() !== '' &&
+			formData.modernity.trim() !== '' &&
+			formData.lifecycleStatus.trim() !== '' &&
+			formData.fleet.trim() !== '' &&
+			formData.squad.trim() !== '' &&
+			formData.roadmapLink.trim() !== ''
+	);
 	function resetForm() {
 		formData = {
 			name: '',
-			category: '',
-			price: 0,
+			owningSuperDepartment: '',
 			productOwner: '',
-			department: '',
-			superDepartment: '',
-			modernity: 'MODERN' as const,
+			eonids: '',
+			productOverview: '',
+			productRelatedLinks: '',
+			productType: '',
+			modernity: 'Continue',
+			lifecycleStatus: '',
+			fleet: '',
+			squad: '',
+			roadmapLink: '',
+			// Legacy optional fields
 			description: '',
-			pdr: '',
-			businessCriticality: undefined,
-			lifecycleStage: undefined,
-			lastAssessmentDate: undefined,
-			nextReviewDate: undefined
+			price: 0,
+			category: ''
 		};
 		validationErrors = {};
 	}
@@ -84,21 +100,24 @@
 		validationErrors = {};
 
 		try {
-			// Clean the form data before validation
-			const cleanData = {
-				name: formData.name.trim(),
-				category: formData.category.trim(),
-				price: Number(formData.price),
-				productOwner: formData.productOwner.trim(),
-				department: formData.department.trim(),
-				superDepartment: formData.superDepartment.trim(),
+			// Clean the form data before validation - safely handle undefined values
+			const cleanData: ProductProps = {
+				name: (formData.name || '').trim(),
+				owningSuperDepartment: (formData.owningSuperDepartment || '').trim(),
+				productOwner: (formData.productOwner || '').trim(),
+				eonids: (formData.eonids || '').trim(),
+				productOverview: (formData.productOverview || '').trim(),
+				productRelatedLinks: (formData.productRelatedLinks || '').trim(),
+				productType: (formData.productType || '').trim(),
 				modernity: formData.modernity,
+				lifecycleStatus: (formData.lifecycleStatus || '').trim(),
+				fleet: (formData.fleet || '').trim(),
+				squad: (formData.squad || '').trim(),
+				roadmapLink: (formData.roadmapLink || '').trim(),
+				// Legacy optional fields
 				description: formData.description?.trim() || undefined,
-				pdr: formData.pdr?.trim() || undefined,
-				businessCriticality: formData.businessCriticality || undefined,
-				lifecycleStage: formData.lifecycleStage || undefined,
-				lastAssessmentDate: formData.lastAssessmentDate || undefined,
-				nextReviewDate: formData.nextReviewDate || undefined
+				price: formData.price ? Number(formData.price) : undefined,
+				category: formData.category?.trim() || undefined
 			};
 
 			// Use Zod schema validation
@@ -124,28 +143,33 @@
 
 		isSubmitting = true;
 		try {
-			// Clean and validate the form data
+			// Clean the form data using the same logic as validation
 			const cleanFormData: ProductProps = {
-				name: formData.name.trim(),
-				category: formData.category.trim(),
-				price: Number(formData.price),
-				productOwner: formData.productOwner.trim(),
-				department: formData.department.trim(),
-				superDepartment: formData.superDepartment.trim(),
+				name: (formData.name || '').trim(),
+				owningSuperDepartment: (formData.owningSuperDepartment || '').trim(),
+				productOwner: (formData.productOwner || '').trim(),
+				eonids: (formData.eonids || '').trim(),
+				productOverview: (formData.productOverview || '').trim(),
+				productRelatedLinks: (formData.productRelatedLinks || '').trim(),
+				productType: (formData.productType || '').trim(),
 				modernity: formData.modernity,
+				lifecycleStatus: (formData.lifecycleStatus || '').trim(),
+				fleet: (formData.fleet || '').trim(),
+				squad: (formData.squad || '').trim(),
+				roadmapLink: (formData.roadmapLink || '').trim(),
+				// Legacy optional fields
 				description: formData.description?.trim() || undefined,
-				pdr: formData.pdr?.trim() || undefined,
-				businessCriticality: formData.businessCriticality || undefined,
-				lifecycleStage: formData.lifecycleStage || undefined,
-				lastAssessmentDate: formData.lastAssessmentDate || undefined,
-				nextReviewDate: formData.nextReviewDate || undefined
+				price: formData.price ? Number(formData.price) : undefined,
+				category: formData.category?.trim() || undefined
 			};
 
 			await viewModel.createProduct(cleanFormData);
 			resetForm();
 			viewModel.createDialogOpen = false;
+			toast.success('Product created successfully!');
 		} catch (error) {
 			console.error('Failed to create product:', error);
+			toast.error('Failed to create product. Please try again.');
 		} finally {
 			isSubmitting = false;
 		}
@@ -162,56 +186,138 @@
 		</Dialog.Header>
 
 		<form id="create-product-form" onsubmit={handleSubmit} class="space-y-6 py-4">
-			<!-- Basic Information -->
+			<!-- Core Product Information -->
 			<div class="space-y-4">
-				<h3 class="text-lg font-medium">Basic Information</h3>
+				<h3 class="text-lg font-medium">Core Product Information</h3>
+
+				<div class="space-y-2">
+					<Label for="name">Product Name *</Label>
+					<Input
+						id="name"
+						bind:value={formData.name}
+						placeholder="Enter product name"
+						class={validationErrors.name ? 'border-destructive' : ''}
+					/>
+					{#if validationErrors.name}
+						<p class="text-sm text-destructive">{validationErrors.name}</p>
+					{/if}
+				</div>
+
+				<div class="space-y-2">
+					<Label for="productOverview">Product Overview *</Label>
+					<Textarea
+						id="productOverview"
+						bind:value={formData.productOverview}
+						placeholder="Describe the purpose, scope, and business value of this product"
+						rows={4}
+						class={validationErrors.productOverview ? 'border-destructive' : ''}
+					/>
+					{#if validationErrors.productOverview}
+						<p class="text-sm text-destructive">{validationErrors.productOverview}</p>
+					{/if}
+				</div>
 
 				<div class="grid grid-cols-2 gap-4">
 					<div class="space-y-2">
-						<Label for="name">Product Name *</Label>
-						<Input
-							id="name"
-							bind:value={formData.name}
-							placeholder="Enter product name"
-							class={validationErrors.name ? 'border-destructive' : ''}
-						/>
-						{#if validationErrors.name}
-							<p class="text-sm text-destructive">{validationErrors.name}</p>
+						<Label for="productType">Product Type *</Label>
+						<select
+							id="productType"
+							bind:value={formData.productType}
+							class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+						>
+							<option value="">Select product type</option>
+							{#each productTypeOptions as option (option.value)}
+								<option value={option.value}>{option.label}</option>
+							{/each}
+						</select>
+						{#if validationErrors.productType}
+							<p class="text-sm text-destructive">{validationErrors.productType}</p>
 						{/if}
 					</div>
 
 					<div class="space-y-2">
-						<Label for="category">Category *</Label>
+						<Label for="eonids">EONIDs *</Label>
 						<Input
-							id="category"
-							bind:value={formData.category}
-							placeholder="Enter category"
-							class={validationErrors.category ? 'border-destructive' : ''}
+							id="eonids"
+							bind:value={formData.eonids}
+							placeholder="e.g., EON-1234-567"
+							class={validationErrors.eonids ? 'border-destructive' : ''}
 						/>
-						{#if validationErrors.category}
-							<p class="text-sm text-destructive">{validationErrors.category}</p>
+						{#if validationErrors.eonids}
+							<p class="text-sm text-destructive">{validationErrors.eonids}</p>
+						{/if}
+					</div>
+				</div>
+			</div>
+
+			<!-- Organizational Information -->
+			<div class="space-y-4">
+				<h3 class="text-lg font-medium">Organizational Information</h3>
+
+				<div class="grid grid-cols-2 gap-4">
+					<div class="space-y-2">
+						<Label for="owningSuperDepartment">Owning Super Department *</Label>
+						<Input
+							id="owningSuperDepartment"
+							bind:value={formData.owningSuperDepartment}
+							placeholder="e.g., Technology, Business, Operations"
+							class={validationErrors.owningSuperDepartment ? 'border-destructive' : ''}
+						/>
+						{#if validationErrors.owningSuperDepartment}
+							<p class="text-sm text-destructive">{validationErrors.owningSuperDepartment}</p>
+						{/if}
+					</div>
+
+					<div class="space-y-2">
+						<Label for="productOwner">Product Owner *</Label>
+						<Input
+							id="productOwner"
+							bind:value={formData.productOwner}
+							placeholder="Enter product owner name"
+							class={validationErrors.productOwner ? 'border-destructive' : ''}
+						/>
+						{#if validationErrors.productOwner}
+							<p class="text-sm text-destructive">{validationErrors.productOwner}</p>
 						{/if}
 					</div>
 				</div>
 
 				<div class="grid grid-cols-2 gap-4">
 					<div class="space-y-2">
-						<Label for="price">Price *</Label>
+						<Label for="fleet">Fleet *</Label>
 						<Input
-							id="price"
-							type="number"
-							step="0.01"
-							min="0"
-							bind:value={formData.price}
-							placeholder="0.00"
-							class={validationErrors.price ? 'border-destructive' : ''}
+							id="fleet"
+							bind:value={formData.fleet}
+							placeholder="e.g., Web Services, Mobile Apps"
+							class={validationErrors.fleet ? 'border-destructive' : ''}
 						/>
-						{#if validationErrors.price}
-							<p class="text-sm text-destructive">{validationErrors.price}</p>
+						{#if validationErrors.fleet}
+							<p class="text-sm text-destructive">{validationErrors.fleet}</p>
 						{/if}
 					</div>
+
 					<div class="space-y-2">
-						<Label for="modernity">Modernity Level *</Label>
+						<Label for="squad">Squad *</Label>
+						<Input
+							id="squad"
+							bind:value={formData.squad}
+							placeholder="e.g., Alpha Squad, Beta Squad"
+							class={validationErrors.squad ? 'border-destructive' : ''}
+						/>
+						{#if validationErrors.squad}
+							<p class="text-sm text-destructive">{validationErrors.squad}</p>
+						{/if}
+					</div>
+				</div>
+			</div>
+
+			<!-- Product Management -->
+			<div class="space-y-4">
+				<h3 class="text-lg font-medium">Product Management</h3>
+
+				<div class="grid grid-cols-2 gap-4">
+					<div class="space-y-2">
+						<Label for="modernity">Modernity *</Label>
 						<select
 							id="modernity"
 							bind:value={formData.modernity}
@@ -223,6 +329,87 @@
 						</select>
 						{#if validationErrors.modernity}
 							<p class="text-sm text-destructive">{validationErrors.modernity}</p>
+						{/if}
+					</div>
+
+					<div class="space-y-2">
+						<Label for="lifecycleStatus">Lifecycle Status *</Label>
+						<select
+							id="lifecycleStatus"
+							bind:value={formData.lifecycleStatus}
+							class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+						>
+							<option value="">Select lifecycle status</option>
+							{#each lifecycleStatusOptions as option (option.value)}
+								<option value={option.value}>{option.label}</option>
+							{/each}
+						</select>
+						{#if validationErrors.lifecycleStatus}
+							<p class="text-sm text-destructive">{validationErrors.lifecycleStatus}</p>
+						{/if}
+					</div>
+				</div>
+
+				<div class="space-y-2">
+					<Label for="roadmapLink">Roadmap Link *</Label>
+					<Input
+						id="roadmapLink"
+						type="url"
+						bind:value={formData.roadmapLink}
+						placeholder="https://roadmap.company.com/product/123"
+						class={validationErrors.roadmapLink ? 'border-destructive' : ''}
+					/>
+					{#if validationErrors.roadmapLink}
+						<p class="text-sm text-destructive">{validationErrors.roadmapLink}</p>
+					{/if}
+				</div>
+
+				<div class="space-y-2">
+					<Label for="productRelatedLinks">Product Related Links *</Label>
+					<Textarea
+						id="productRelatedLinks"
+						bind:value={formData.productRelatedLinks}
+						placeholder="Enter comma-separated links: Confluence docs, JIRA projects, etc."
+						rows={2}
+						class={validationErrors.productRelatedLinks ? 'border-destructive' : ''}
+					/>
+					{#if validationErrors.productRelatedLinks}
+						<p class="text-sm text-destructive">{validationErrors.productRelatedLinks}</p>
+					{/if}
+				</div>
+			</div>
+
+			<!-- Legacy Fields (Optional) -->
+			<div class="space-y-4">
+				<h3 class="text-lg font-medium">Legacy Information (Optional)</h3>
+
+				<div class="grid grid-cols-2 gap-4">
+					<div class="space-y-2">
+						<Label for="category">Category</Label>
+						<Input
+							id="category"
+							bind:value={formData.category}
+							placeholder="Enter category"
+							class={validationErrors.category ? 'border-destructive' : ''}
+						/>
+						{#if validationErrors.category}
+							<p class="text-sm text-destructive">{validationErrors.category}</p>
+						{/if}
+					</div>
+
+					<div class="space-y-2">
+						<Label for="price">Price</Label>
+						<Input
+							id="price"
+							type="number"
+							step="0.01"
+							min="0"
+							bind:value={formData.price}
+							placeholder="0.00"
+							class={validationErrors.price ? 'border-destructive' : ''}
+						/>
+						{#if validationErrors.price}
+							<p class="text-sm text-destructive">{validationErrors.price}</p>
 						{/if}
 					</div>
 				</div>
@@ -241,100 +428,6 @@
 					{/if}
 				</div>
 			</div>
-
-			<!-- Organizational Information -->
-			<div class="space-y-4">
-				<h3 class="text-lg font-medium">Organizational Information</h3>
-
-				<div class="grid grid-cols-2 gap-4">
-					<div class="space-y-2">
-						<Label for="productOwner">Product Owner *</Label>
-						<Input
-							id="productOwner"
-							bind:value={formData.productOwner}
-							placeholder="Enter product owner name"
-							class={validationErrors.productOwner ? 'border-destructive' : ''}
-						/>
-						{#if validationErrors.productOwner}
-							<p class="text-sm text-destructive">{validationErrors.productOwner}</p>
-						{/if}
-					</div>
-
-					<div class="space-y-2">
-						<Label for="department">Department *</Label>
-						<Input
-							id="department"
-							bind:value={formData.department}
-							placeholder="Enter department"
-							class={validationErrors.department ? 'border-destructive' : ''}
-						/>
-						{#if validationErrors.department}
-							<p class="text-sm text-destructive">{validationErrors.department}</p>
-						{/if}
-					</div>
-				</div>
-
-				<div class="space-y-2">
-					<Label for="superDepartment">Super Department *</Label>
-					<Input
-						id="superDepartment"
-						bind:value={formData.superDepartment}
-						placeholder="Enter super department"
-						class={validationErrors.superDepartment ? 'border-destructive' : ''}
-					/>
-					{#if validationErrors.superDepartment}
-						<p class="text-sm text-destructive">{validationErrors.superDepartment}</p>
-					{/if}
-				</div>
-			</div>
-
-			<!-- Portfolio Management -->
-			<div class="space-y-4">
-				<h3 class="text-lg font-medium">Portfolio Management</h3>
-
-				<div class="grid grid-cols-2 gap-4">
-					<div class="space-y-2">
-						<Label for="businessCriticality">Business Criticality</Label>
-						<select
-							id="businessCriticality"
-							bind:value={formData.businessCriticality}
-							class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
-						>
-							<option value="">Select criticality level</option>
-							{#each criticalityOptions as option (option.value)}
-								<option value={option.value}>{option.label}</option>
-							{/each}
-						</select>
-					</div>
-					<div class="space-y-2">
-						<Label for="lifecycleStage">Lifecycle Stage</Label>
-						<select
-							id="lifecycleStage"
-							bind:value={formData.lifecycleStage}
-							class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
-						>
-							<option value="">Select lifecycle stage</option>
-							{#each lifecycleOptions as option (option.value)}
-								<option value={option.value}>{option.label}</option>
-							{/each}
-						</select>
-					</div>
-				</div>
-
-				<div class="space-y-2">
-					<Label for="pdr">Portfolio Decision Record (PDR)</Label>
-					<Input
-						id="pdr"
-						type="url"
-						bind:value={formData.pdr}
-						placeholder="https://company.com/pdr/product-123"
-						class={validationErrors.pdr ? 'border-destructive' : ''}
-					/>
-					{#if validationErrors.pdr}
-						<p class="text-sm text-destructive">{validationErrors.pdr}</p>
-					{/if}
-				</div>
-			</div>
 		</form>
 
 		<Dialog.Footer>
@@ -349,7 +442,7 @@
 			>
 				Cancel
 			</Button>
-			<Button type="submit" form="create-product-form" disabled={isSubmitting}>
+			<Button type="submit" form="create-product-form" disabled={isSubmitting || !isFormValid}>
 				{isSubmitting ? 'Creating...' : 'Create Product'}
 			</Button>
 		</Dialog.Footer>

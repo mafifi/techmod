@@ -22,43 +22,6 @@ export function createColumns(handlers: ActionHandlers): ColumnDef<Product>[] {
 		},
 
 		{
-			accessorKey: 'category',
-			header: 'Category',
-			cell: ({ row }) => row.getValue('category'),
-			enableSorting: true,
-			enableColumnFilter: true,
-			filterFn: (row, id, value) => value.includes(row.getValue(id)),
-			meta: {
-				displayName: 'Category'
-			}
-		},
-
-		{
-			accessorKey: 'price',
-			header: 'Price',
-			cell: ({ row }) => {
-				const price = row.getValue('price') as number;
-				return `$${price.toFixed(2)}`;
-			},
-			enableSorting: true,
-			enableColumnFilter: true
-		},
-
-		// Optional columns - can be shown via column visibility
-		{
-			accessorKey: 'description',
-			header: 'Description',
-			cell: ({ row }) => {
-				const description = row.getValue('description') as string;
-				return description || 'N/A';
-			},
-			enableColumnFilter: true,
-			meta: {
-				displayName: 'Description'
-			}
-		},
-
-		{
 			accessorKey: 'productOwner',
 			header: 'Product Owner',
 			cell: ({ row }) => row.getValue('productOwner'),
@@ -74,21 +37,9 @@ export function createColumns(handlers: ActionHandlers): ColumnDef<Product>[] {
 		},
 
 		{
-			accessorKey: 'department',
-			header: 'Department',
-			cell: ({ row }) => row.getValue('department'),
-			enableSorting: true,
-			enableColumnFilter: true,
-			filterFn: (row, id, value) => value.includes(row.getValue(id)),
-			meta: {
-				displayName: 'Department'
-			}
-		},
-
-		{
-			accessorKey: 'superDepartment',
+			accessorKey: 'owningSuperDepartment',
 			header: 'Super Department',
-			cell: ({ row }) => row.getValue('superDepartment'),
+			cell: ({ row }) => row.getValue('owningSuperDepartment'),
 			enableSorting: true,
 			enableColumnFilter: true,
 			filterFn: (row, id, value) => value.includes(row.getValue(id)),
@@ -98,15 +49,147 @@ export function createColumns(handlers: ActionHandlers): ColumnDef<Product>[] {
 		},
 
 		{
+			accessorKey: 'productType',
+			header: 'Product Type',
+			cell: ({ row }) => row.getValue('productType'),
+			enableSorting: true,
+			enableColumnFilter: true,
+			filterFn: (row, id, value) => value.includes(row.getValue(id)),
+			meta: {
+				displayName: 'Product Type'
+			}
+		},
+
+		{
+			accessorKey: 'lifecycleStatus',
+			header: 'Lifecycle Status',
+			cell: ({ row }) => row.getValue('lifecycleStatus'),
+			enableSorting: true,
+			enableColumnFilter: true,
+			filterFn: (row, id, value) => value.includes(row.getValue(id)),
+			meta: {
+				displayName: 'Lifecycle Status'
+			}
+		},
+
+		{
+			accessorKey: 'fleet',
+			header: 'Fleet',
+			cell: ({ row }) => row.getValue('fleet'),
+			enableSorting: true,
+			enableColumnFilter: true,
+			filterFn: (row, id, value) => value.includes(row.getValue(id)),
+			meta: {
+				displayName: 'Fleet'
+			}
+		},
+
+		{
+			accessorKey: 'squad',
+			header: 'Squad',
+			cell: ({ row }) => row.getValue('squad'),
+			enableSorting: true,
+			enableColumnFilter: true,
+			filterFn: (row, id, value) => value.includes(row.getValue(id)),
+			meta: {
+				displayName: 'Squad'
+			}
+		},
+
+		// Optional columns - can be shown via column visibility
+		{
+			accessorKey: 'eonids',
+			header: 'EON IDs',
+			cell: ({ row }) => {
+				const eonids = row.getValue('eonids') as string;
+				return eonids || 'N/A';
+			},
+			enableColumnFilter: true,
+			meta: {
+				displayName: 'EON IDs'
+			}
+		},
+
+		{
+			accessorKey: 'productOverview',
+			header: 'Overview',
+			cell: ({ row }) => {
+				const overview = row.getValue('productOverview') as string;
+				return overview.length > 50 ? `${overview.substring(0, 50)}...` : overview;
+			},
+			enableColumnFilter: true,
+			meta: {
+				displayName: 'Product Overview'
+			}
+		},
+
+		{
+			accessorKey: 'roadmapLink',
+			header: 'Roadmap',
+			cell: ({ row }) => {
+				const link = row.getValue('roadmapLink') as string;
+				return link ? 'View Roadmap' : 'N/A';
+			},
+			enableColumnFilter: false,
+			meta: {
+				displayName: 'Roadmap Link'
+			}
+		},
+
+		// Legacy columns (now optional)
+		{
+			accessorKey: 'price',
+			header: 'Price (Legacy)',
+			cell: ({ row }) => {
+				const price = row.getValue('price') as number | undefined;
+				return price !== undefined ? `$${price.toFixed(2)}` : 'N/A';
+			},
+			enableSorting: true,
+			enableColumnFilter: true,
+			meta: {
+				displayName: 'Price'
+			}
+		},
+
+		{
+			accessorKey: 'category',
+			header: 'Category (Legacy)',
+			cell: ({ row }) => {
+				const category = row.getValue('category') as string | undefined;
+				return category || 'N/A';
+			},
+			enableSorting: true,
+			enableColumnFilter: true,
+			filterFn: (row, id, value) => value.includes(row.getValue(id)),
+			meta: {
+				displayName: 'Category'
+			}
+		},
+
+		{
+			accessorKey: 'description',
+			header: 'Description (Legacy)',
+			cell: ({ row }) => {
+				const description = row.getValue('description') as string | undefined;
+				return description || 'N/A';
+			},
+			enableColumnFilter: true,
+			meta: {
+				displayName: 'Description'
+			}
+		},
+
+		{
 			accessorKey: 'modernity',
 			header: 'Modernity',
 			cell: ({ row }) => {
 				const modernity = row.getValue('modernity') as string;
 				const badges: Record<string, string> = {
-					LEGACY: '🔴 Legacy',
-					TRANSITIONAL: '🟡 Transitional',
-					MODERN: '🟢 Modern',
-					CUTTING_EDGE: '🚀 Cutting Edge'
+					Migrate: '� Migrate',
+					Hold: '⏸️ Hold',
+					Continue: '✅ Continue',
+					Adopt: '� Adopt',
+					Assess: '� Assess'
 				};
 				return badges[modernity] || modernity;
 			},
@@ -115,101 +198,6 @@ export function createColumns(handlers: ActionHandlers): ColumnDef<Product>[] {
 			filterFn: (row, id, value) => value.includes(row.getValue(id)),
 			meta: {
 				displayName: 'Modernity Level'
-			}
-		},
-
-		{
-			accessorKey: 'businessCriticality',
-			header: 'Criticality',
-			cell: ({ row }) => {
-				const criticality = row.getValue('businessCriticality') as string;
-				if (!criticality) return 'N/A';
-				const badges: Record<string, string> = {
-					LOW: '🟢 Low',
-					MEDIUM: '🟡 Medium',
-					HIGH: '🟠 High',
-					CRITICAL: '🔴 Critical'
-				};
-				return badges[criticality] || criticality;
-			},
-			enableSorting: true,
-			enableColumnFilter: true,
-			filterFn: (row, id, value) => value.includes(row.getValue(id)),
-			meta: {
-				displayName: 'Business Criticality'
-			}
-		},
-
-		{
-			accessorKey: 'lifecycleStage',
-			header: 'Lifecycle',
-			cell: ({ row }) => {
-				const stage = row.getValue('lifecycleStage') as string;
-				if (!stage) return 'N/A';
-				const badges: Record<string, string> = {
-					PLAN: '📋 Plan',
-					BUILD: '🔨 Build',
-					RUN: '⚡ Run',
-					RETIRE: '📦 Retire'
-				};
-				return badges[stage] || stage;
-			},
-			enableSorting: true,
-			enableColumnFilter: true,
-			filterFn: (row, id, value) => value.includes(row.getValue(id)),
-			meta: {
-				displayName: 'Lifecycle Stage'
-			}
-		},
-
-		{
-			accessorKey: 'pdr',
-			header: 'PDR',
-			cell: ({ row }) => {
-				const pdr = row.getValue('pdr') as string;
-				if (!pdr) return 'N/A';
-				return `<a href="${pdr}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">View PDR</a>`;
-			},
-			enableColumnFilter: false,
-			meta: {
-				displayName: 'Portfolio Decision Record'
-			}
-		},
-
-		{
-			accessorKey: 'lastAssessmentDate',
-			header: 'Last Assessment',
-			cell: ({ row }) => {
-				const lastAssessment = row.getValue('lastAssessmentDate') as number;
-				return lastAssessment ? new Date(lastAssessment).toLocaleDateString() : 'N/A';
-			},
-			enableSorting: true,
-			meta: {
-				displayName: 'Last Assessment Date'
-			}
-		},
-
-		{
-			accessorKey: 'nextReviewDate',
-			header: 'Next Review',
-			cell: ({ row }) => {
-				const nextReview = row.getValue('nextReviewDate') as number;
-				if (!nextReview) return 'N/A';
-
-				const reviewDate = new Date(nextReview);
-				const today = new Date();
-				const isOverdue = reviewDate < today;
-				const isUpcoming = reviewDate <= new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days
-
-				let className = '';
-				if (isOverdue) className = 'text-red-600 font-semibold';
-				else if (isUpcoming) className = 'text-orange-600';
-
-				return `<span class="${className}">${reviewDate.toLocaleDateString()}</span>`;
-			},
-			enableSorting: true,
-			meta: {
-				displayName: 'Next Review Date'
 			}
 		},
 
