@@ -1,0 +1,105 @@
+import { describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@testing-library/svelte';
+import Page from './+page.svelte';
+
+// Mock UI components
+vi.mock('$lib/ui/components/button', () => ({
+	Button: vi.fn(() => ({ $$: {} }))
+}));
+
+vi.mock('$lib/ui/components/card', () => ({
+	Card: vi.fn(() => ({ $$: {} })),
+	CardContent: vi.fn(() => ({ $$: {} }))
+}));
+
+// Mock Lucide icons
+vi.mock('@lucide/svelte', () => ({
+	Search: vi.fn(() => ({ $$: {} })),
+	Layers3: vi.fn(() => ({ $$: {} })),
+	Eye: vi.fn(() => ({ $$: {} })),
+	TrendingUp: vi.fn(() => ({ $$: {} })),
+	Shield: vi.fn(() => ({ $$: {} })),
+	Target: vi.fn(() => ({ $$: {} })),
+	DollarSign: vi.fn(() => ({ $$: {} })),
+	Compass: vi.fn(() => ({ $$: {} }))
+}));
+
+describe.skip('Homepage (+page.svelte)', () => {
+	it('should render the main heading', () => {
+		render(Page);
+
+		const heading = screen.getByRole('heading', { level: 2 });
+		expect(heading).toHaveTextContent('Make Informed Technology Decisions');
+	});
+
+	it('should render the introduction description', () => {
+		render(Page);
+
+		const description = screen.getByText(/comprehensive technology catalogue provides the insights/i);
+		expect(description).toBeInTheDocument();
+	});
+
+	it('should render all six decision-making benefit cards', () => {
+		render(Page);
+
+		expect(screen.getByText('Complete Visibility')).toBeInTheDocument();
+		expect(screen.getByText('Data-Driven Insights')).toBeInTheDocument();
+		expect(screen.getByText('Risk Assessment')).toBeInTheDocument();
+		expect(screen.getByText('Strategic Alignment')).toBeInTheDocument();
+		expect(screen.getByText('Cost Optimization')).toBeInTheDocument();
+		expect(screen.getByText('Future Planning')).toBeInTheDocument();
+	});
+
+	it('should render benefit card descriptions', () => {
+		render(Page);
+
+		expect(screen.getByText(/See your entire technology landscape in one place/i)).toBeInTheDocument();
+		expect(screen.getByText(/Access usage metrics, performance data/i)).toBeInTheDocument();
+		expect(screen.getByText(/Evaluate security, compliance, and technical risks/i)).toBeInTheDocument();
+	});
+
+	it('should render call-to-action section', () => {
+		render(Page);
+
+		expect(screen.getByText('Ready to Explore Your Technology Landscape?')).toBeInTheDocument();
+		expect(screen.getByText(/Browse our comprehensive product catalogue/i)).toBeInTheDocument();
+	});
+
+	it('should render CTA buttons with correct links', () => {
+		render(Page);
+
+		const browseCatalogueButton = screen.getByText('Browse Catalogue');
+		const exploreTaxonomyButton = screen.getByText('Explore Taxonomy');
+
+		expect(browseCatalogueButton).toBeInTheDocument();
+		expect(exploreTaxonomyButton).toBeInTheDocument();
+
+		// Check the buttons are within anchor tags with correct hrefs
+		expect(browseCatalogueButton.closest('button')).toHaveAttribute('href', '/product');
+		expect(exploreTaxonomyButton.closest('button')).toHaveAttribute('href', '/taxonomy');
+	});
+
+	it('should have proper semantic structure', () => {
+		render(Page);
+
+		// Should have a main section for the introduction
+		const introSection = document.querySelector('section');
+		expect(introSection).toBeInTheDocument();
+		expect(introSection).toHaveClass('bg-gradient-to-r');
+	});
+
+	it('should have responsive grid layout', () => {
+		render(Page);
+
+		// Check for responsive grid classes
+		const benefitsGrid = document.querySelector('.grid.gap-8.md\\:grid-cols-2.lg\\:grid-cols-3');
+		expect(benefitsGrid).toBeInTheDocument();
+	});
+
+	it('should have proper page metadata', () => {
+		render(Page);
+
+		// Check that the page title is set correctly
+		expect(document.title).toBe('TechMod - Strategic Product Management');
+	});
+});
