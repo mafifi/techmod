@@ -22,6 +22,6 @@ export function getProductDefaults(): ProductProps {
 		description: '',
 		price: 0,
 		category: '',
-		productPortfolioId: ''
+		taxonomyNodeId: ''
 	};
 }

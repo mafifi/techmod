@@ -6,7 +6,7 @@
 	import { Label } from '$lib/ui/components/label';
 	import type { ProductViewModel } from './ProductViewModel.svelte';
 	import type { ProductProps } from '../../domain/ProductDTO';
-	import { getProductDefaults, ProductPropsSchema } from '../../domain/ProductDTO';
+	import { ProductPropsSchema } from '../../domain/ProductDTO';
 
 	let { viewModel }: { viewModel: ProductViewModel } = $props();
 
@@ -18,6 +18,7 @@
 		taxonomyNodeId: ''
 	});
 	let isSubmitting = $state(false);
+	let validationErrors = $state<Record<string, string>>({});
 
 	// Update form when selected product changes
 	$effect(() => {
@@ -97,7 +98,7 @@
 			Object.keys(validationErrors).length === 0 &&
 			formData.name &&
 			formData.category &&
-			formData.productPortfolioId
+			formData.taxonomyNodeId
 		);
 	});
 </script>
@@ -167,18 +168,18 @@
 			</div>
 
 			<div class="space-y-2">
-				<Label for="edit-productPortfolioId">Product Portfolio ID</Label>
+				<Label for="edit-taxonomyNodeId">Taxonomy Node ID</Label>
 				<Input
-					id="edit-productPortfolioId"
-					bind:value={formData.productPortfolioId}
-					onblur={() => validateField('productPortfolioId')}
-					placeholder="Enter product portfolio ID"
+					id="edit-taxonomyNodeId"
+					bind:value={formData.taxonomyNodeId}
+					onblur={() => validateField('taxonomyNodeId')}
+					placeholder="Enter taxonomy node ID"
 					required
-					class={validationErrors.productPortfolioId ? 'border-destructive' : ''}
+					class={validationErrors.taxonomyNodeId ? 'border-destructive' : ''}
 				/>
-				{#if validationErrors.productPortfolioId}
+				{#if validationErrors.taxonomyNodeId}
 					<p class="text-sm text-destructive" role="alert">
-						{validationErrors.productPortfolioId}
+						{validationErrors.taxonomyNodeId}
 					</p>
 				{/if}
 			</div>

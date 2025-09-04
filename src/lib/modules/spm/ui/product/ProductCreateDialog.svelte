@@ -4,9 +4,8 @@
 	import { Button } from '$lib/ui/components/button';
 	import { Textarea } from '$lib/ui/components/textarea';
 	import { Label } from '$lib/ui/components/label';
-	import { createForm } from '@tanstack/svelte-form';
 	import type { ProductViewModel } from './ProductViewModel.svelte';
-	import { ProductPropsSchema, getProductDefaults } from '../../domain/ProductDTO';
+	import type { ProductProps } from '../../domain/ProductDTO';
 
 	let { viewModel }: { viewModel: ProductViewModel } = $props();
 
@@ -57,7 +56,7 @@
 		} finally {
 			isSubmitting = false;
 		}
-	}));
+	}
 </script>
 
 <Dialog.Root bind:open={viewModel.createDialogOpen}>
@@ -74,148 +73,75 @@
 			onsubmit={(e) => {
 				e.preventDefault();
 				e.stopPropagation();
-				form.handleSubmit();
+				handleSubmit();
 			}}
 			class="space-y-4 py-4"
 		>
-			<form.Field name="name" validators={{ onChange: ProductPropsSchema.shape.name }}>
-				{#snippet children(field)}
-					<div class="space-y-2">
-						<Label for={field.name}>Product Name</Label>
-						<Input
-							id={field.name}
-							name={field.name}
-							value={field.state.value}
-							onblur={field.handleBlur}
-							oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
-							placeholder="Enter product name"
-							class={field.state.meta.errors.length ? 'border-destructive' : ''}
-						/>
-						{#if field.state.meta.errors.length}
-							<p class="text-sm text-destructive" role="alert">
-								{field.state.meta.errors.join(', ')}
-							</p>
-						{/if}
-					</div>
-				{/snippet}
-			</form.Field>
+			<div class="space-y-2">
+				<Label for="create-name">Product Name</Label>
+				<Input
+					id="create-name"
+					bind:value={formData.name}
+					placeholder="Enter product name"
+					required
+				/>
+			</div>
 
-			<form.Field name="category" validators={{ onChange: ProductPropsSchema.shape.category }}>
-				{#snippet children(field)}
-					<div class="space-y-2">
-						<Label for={field.name}>Category</Label>
-						<Input
-							id={field.name}
-							name={field.name}
-							value={field.state.value}
-							onblur={field.handleBlur}
-							oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
-							placeholder="Enter category"
-							class={field.state.meta.errors.length ? 'border-destructive' : ''}
-						/>
-						{#if field.state.meta.errors.length}
-							<p class="text-sm text-destructive" role="alert">
-								{field.state.meta.errors.join(', ')}
-							</p>
-						{/if}
-					</div>
-				{/snippet}
-			</form.Field>
+			<div class="space-y-2">
+				<Label for="create-category">Category</Label>
+				<Input
+					id="create-category"
+					bind:value={formData.category}
+					placeholder="Enter category"
+					required
+				/>
+			</div>
 
-			<form.Field name="price" validators={{ onChange: ProductPropsSchema.shape.price }}>
-				{#snippet children(field)}
-					<div class="space-y-2">
-						<Label for={field.name}>Price</Label>
-						<Input
-							id={field.name}
-							name={field.name}
-							type="number"
-							step="0.01"
-							min="0"
-							value={field.state.value}
-							onblur={field.handleBlur}
-							oninput={(e) => field.handleChange(Number((e.target as HTMLInputElement).value))}
-							placeholder="0.00"
-							class={field.state.meta.errors.length ? 'border-destructive' : ''}
-						/>
-						{#if field.state.meta.errors.length}
-							<p class="text-sm text-destructive" role="alert">
-								{field.state.meta.errors.join(', ')}
-							</p>
-						{/if}
-					</div>
-				{/snippet}
-			</form.Field>
+			<div class="space-y-2">
+				<Label for="create-price">Price</Label>
+				<Input
+					id="create-price"
+					type="number"
+					step="0.01"
+					min="0"
+					bind:value={formData.price}
+					placeholder="0.00"
+					required
+				/>
+			</div>
 
-			<form.Field
-				name="productPortfolioId"
-				validators={{ onChange: ProductPropsSchema.shape.productPortfolioId }}
-			>
-				{#snippet children(field)}
-					<div class="space-y-2">
-						<Label for={field.name}>Product Portfolio ID</Label>
-						<Input
-							id={field.name}
-							name={field.name}
-							value={field.state.value}
-							onblur={field.handleBlur}
-							oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
-							placeholder="Enter product portfolio ID"
-							class={field.state.meta.errors.length ? 'border-destructive' : ''}
-						/>
-						{#if field.state.meta.errors.length}
-							<p class="text-sm text-destructive" role="alert">
-								{field.state.meta.errors.join(', ')}
-							</p>
-						{/if}
-					</div>
-				{/snippet}
-			</form.Field>
+			<div class="space-y-2">
+				<Label for="create-taxonomyNodeId">Taxonomy Node ID</Label>
+				<Input
+					id="create-taxonomyNodeId"
+					bind:value={formData.taxonomyNodeId}
+					placeholder="Enter taxonomy node ID"
+					required
+				/>
+			</div>
 
-			<form.Field
-				name="description"
-				validators={{ onChange: ProductPropsSchema.shape.description }}
-			>
-				{#snippet children(field)}
-					<div class="space-y-2">
-						<Label for={field.name}>Description (Optional)</Label>
-						<Textarea
-							id={field.name}
-							name={field.name}
-							value={field.state.value || ''}
-							onblur={field.handleBlur}
-							oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
-							placeholder="Enter product description"
-							rows={3}
-							class={field.state.meta.errors.length ? 'border-destructive' : ''}
-						/>
-						{#if field.state.meta.errors.length}
-							<p class="text-sm text-destructive" role="alert">
-								{field.state.meta.errors.join(', ')}
-							</p>
-						{/if}
-					</div>
-				{/snippet}
-			</form.Field>
+			<div class="space-y-2">
+				<Label for="create-description">Description (Optional)</Label>
+				<Textarea
+					id="create-description"
+					bind:value={formData.description}
+					placeholder="Enter product description"
+					rows={3}
+				/>
+			</div>
 		</form>
 
 		<Dialog.Footer>
 			<Button type="button" variant="outline" onclick={() => (viewModel.createDialogOpen = false)}>
 				Cancel
 			</Button>
-			<form.Subscribe
-				selector={(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })}
+			<Button
+				type="submit"
+				form="create-product-form"
+				disabled={isSubmitting || !formData.name || !formData.category || !formData.taxonomyNodeId}
 			>
-				{#snippet children(state)}
-					<Button
-						type="submit"
-						form="create-product-form"
-						disabled={!state.canSubmit || state.isSubmitting}
-					>
-						{state.isSubmitting ? 'Creating...' : 'Create Product'}
-					</Button>
-				{/snippet}
-			</form.Subscribe>
+				{isSubmitting ? 'Creating...' : 'Create Product'}
+			</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
