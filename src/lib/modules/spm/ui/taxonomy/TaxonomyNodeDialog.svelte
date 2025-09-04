@@ -24,7 +24,7 @@
 		type TaxonomyNodeType
 	} from '../../domain/TaxonomyNodeDTO';
 	import type { Id } from '../../../../../convex/_generated/dataModel';
-	import { Folder, Package, Tag, AlertCircle } from 'lucide-svelte';
+	import { Folder, Package, Tag, AlertCircle } from '@lucide/svelte';
 	import { z } from 'zod';
 
 	// Props

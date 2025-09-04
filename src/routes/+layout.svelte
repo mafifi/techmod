@@ -6,7 +6,8 @@
 	import { Toaster } from '$lib/ui/components/sonner';
 	import { TooltipProvider } from '$lib/ui/components/tooltip';
 
-	setupConvex(env.PUBLIC_CONVEX_URL);
+	let { children } = $props();
+	setupConvex(env.PUBLIC_CONVEX_URL || '');
 </script>
 
 <svelte:head>
@@ -14,6 +15,6 @@
 </svelte:head>
 
 <TooltipProvider delayDuration={0}>
-	<slot />
+	{@render children()}
 	<Toaster />
 </TooltipProvider>

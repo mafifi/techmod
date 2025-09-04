@@ -20,7 +20,7 @@
 	import { Alert, AlertDescription } from '$lib/ui/components/alert';
 	import { Skeleton } from '$lib/ui/components/skeleton';
 	import { toast } from 'svelte-sonner';
-	import { Plus, Search, Filter, Expand, ChevronUp, FolderTree } from 'lucide-svelte';
+	import { Plus, Search, Filter, Expand, ChevronUp, FolderTree } from '@lucide/svelte';
 	import type {
 		TaxonomyNode,
 		TaxonomyNodeType,
