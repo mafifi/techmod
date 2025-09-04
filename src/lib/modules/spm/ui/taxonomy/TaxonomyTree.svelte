@@ -24,7 +24,7 @@
 		EyeOff,
 		Calendar,
 		User
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 	import Self from './TaxonomyTree.svelte';
 	import type {
 		TaxonomyNode,

@@ -14,7 +14,7 @@
 	import { Checkbox } from '$lib/ui/components/checkbox';
 	import { Label } from '$lib/ui/components/label';
 	import type { TaxonomyNode } from '../../domain/TaxonomyNodeDTO';
-	import { Folder, Package, Tag, AlertTriangle, Trash2, Users, Calendar } from 'lucide-svelte';
+	import { Folder, Package, Tag, AlertTriangle, Trash2, Users, Calendar } from '@lucide/svelte';
 
 	// Props
 	interface Props {

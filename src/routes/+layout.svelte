@@ -6,7 +6,7 @@
 	import { Toaster } from '$lib/ui/components/sonner';
 	import { TooltipProvider } from '$lib/ui/components/tooltip';
 
-	setupConvex(env.PUBLIC_CONVEX_URL);
+	setupConvex(env.PUBLIC_CONVEX_URL || '');
 </script>
 
 <svelte:head>
