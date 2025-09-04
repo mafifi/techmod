@@ -7,8 +7,15 @@
 			"Bash(sudo npx playwright:*)",
 			"Bash(npm run check:*)",
 			"WebFetch(domain:tanstack.com)",
+			"Bash(npm run format:*)",
+			"Bash(npx tsc:*)",
+			"Bash(npx eslint:*)",
 			"Bash(npm run lint)",
-			"Bash(npm run format:*)"
+			"Bash(npx convex:*)",
+			"Bash(node:*)",
+			"Bash(git commit:*)",
+			"Bash(npx prettier:*)",
+			"Bash(npx vitest run:*)"
 		]
 	},
 	"enableAllProjectMcpServers": true,

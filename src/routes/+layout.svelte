@@ -4,8 +4,7 @@
 	import { env } from '$env/dynamic/public';
 	import { setupConvex } from 'convex-svelte';
 	import { Toaster } from '$lib/ui/components/sonner';
-
-	let { children } = $props();
+	import { TooltipProvider } from '$lib/ui/components/tooltip';
 
 	setupConvex(env.PUBLIC_CONVEX_URL);
 </script>
@@ -14,5 +13,7 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-{@render children?.()}
-<Toaster />
+<TooltipProvider delayDuration={0}>
+	<slot />
+	<Toaster />
+</TooltipProvider>

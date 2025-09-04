@@ -9,7 +9,7 @@ describe('ProductDTO', () => {
 				description: 'A test product description',
 				price: 99.99,
 				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
+				taxonomyNodeId: 'portfolio_test_1'
 			};
 
 			const result = ProductPropsSchema.safeParse(validProduct);
@@ -22,7 +22,7 @@ describe('ProductDTO', () => {
 				description: 'Valid description',
 				price: 99.99,
 				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
+				taxonomyNodeId: 'portfolio_test_1'
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
@@ -39,7 +39,7 @@ describe('ProductDTO', () => {
 				description: 'Valid description',
 				price: 99.99,
 				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
+				taxonomyNodeId: 'portfolio_test_1'
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
@@ -52,7 +52,7 @@ describe('ProductDTO', () => {
 				description: 'Valid description',
 				price: -10, // Invalid negative price
 				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
+				taxonomyNodeId: 'portfolio_test_1'
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
@@ -65,7 +65,7 @@ describe('ProductDTO', () => {
 				description: 'Valid description',
 				price: 99.99,
 				category: 'A', // Too short (min 2)
-				productPortfolioId: 'portfolio_test_1'
+				taxonomyNodeId: 'portfolio_test_1'
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
@@ -77,7 +77,7 @@ describe('ProductDTO', () => {
 				name: 'Valid Product',
 				price: 99.99,
 				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
+				taxonomyNodeId: 'portfolio_test_1'
 				// description omitted
 			};
 
@@ -91,7 +91,7 @@ describe('ProductDTO', () => {
 				description: 'A'.repeat(501), // Too long (max 500)
 				price: 99.99,
 				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
+				taxonomyNodeId: 'portfolio_test_1'
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
@@ -108,7 +108,7 @@ describe('ProductDTO', () => {
 				description: 'A test product description',
 				price: 99.99,
 				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
+				taxonomyNodeId: 'portfolio_test_1'
 			};
 
 			const result = ProductSchema.safeParse(validProduct);
@@ -122,7 +122,7 @@ describe('ProductDTO', () => {
 				description: 'A test product description',
 				price: 99.99,
 				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
+				taxonomyNodeId: 'portfolio_test_1'
 				// _creationTime omitted
 			};
 
@@ -137,7 +137,7 @@ describe('ProductDTO', () => {
 				description: 'A test product description',
 				price: 99.99,
 				category: 'Software',
-				productPortfolioId: 'portfolio_test_1'
+				taxonomyNodeId: 'portfolio_test_1'
 			};
 
 			const result = ProductSchema.safeParse(invalidProduct);

@@ -6,13 +6,19 @@
 	import { Label } from '$lib/ui/components/label';
 	import type { ProductViewModel } from './ProductViewModel.svelte';
 	import type { ProductProps } from '../../domain/ProductDTO';
-	import { getProductDefaults, ProductPropsSchema } from '../../domain/ProductDTO';
+	import { ProductPropsSchema } from '../../domain/ProductDTO';
 
 	let { viewModel }: { viewModel: ProductViewModel } = $props();
 
-	let formData = $state<ProductProps>(getProductDefaults());
-	let validationErrors = $state<Record<string, string>>({});
+	let formData = $state<ProductProps>({
+		name: '',
+		category: '',
+		price: 0,
+		description: '',
+		taxonomyNodeId: ''
+	});
 	let isSubmitting = $state(false);
+	let validationErrors = $state<Record<string, string>>({});
 
 	// Update form when selected product changes
 	$effect(() => {
@@ -22,7 +28,7 @@
 				category: viewModel.selectedProduct.category,
 				price: viewModel.selectedProduct.price,
 				description: viewModel.selectedProduct.description || '',
-				productPortfolioId: viewModel.selectedProduct.productPortfolioId
+				taxonomyNodeId: viewModel.selectedProduct.taxonomyNodeId
 			};
 			// Clear validation errors when loading new data
 			validationErrors = {};
@@ -72,7 +78,12 @@
 
 		isSubmitting = true;
 		try {
-			await viewModel.updateProduct(viewModel.selectedProduct._id, formData);
+			// Add taxonomyNodeId to the update data
+			const updateData = {
+				...formData,
+				taxonomyNodeId: viewModel.selectedProduct.taxonomyNodeId || 'default_category_id'
+			};
+			await viewModel.updateProduct(viewModel.selectedProduct._id, updateData);
 			viewModel.editDialogOpen = false;
 		} catch (error) {
 			console.error('Failed to update product:', error);
@@ -87,7 +98,7 @@
 			Object.keys(validationErrors).length === 0 &&
 			formData.name &&
 			formData.category &&
-			formData.productPortfolioId
+			formData.taxonomyNodeId
 		);
 	});
 </script>
@@ -157,18 +168,18 @@
 			</div>
 
 			<div class="space-y-2">
-				<Label for="edit-productPortfolioId">Product Portfolio ID</Label>
+				<Label for="edit-taxonomyNodeId">Taxonomy Node ID</Label>
 				<Input
-					id="edit-productPortfolioId"
-					bind:value={formData.productPortfolioId}
-					onblur={() => validateField('productPortfolioId')}
-					placeholder="Enter product portfolio ID"
+					id="edit-taxonomyNodeId"
+					bind:value={formData.taxonomyNodeId}
+					onblur={() => validateField('taxonomyNodeId')}
+					placeholder="Enter taxonomy node ID"
 					required
-					class={validationErrors.productPortfolioId ? 'border-destructive' : ''}
+					class={validationErrors.taxonomyNodeId ? 'border-destructive' : ''}
 				/>
-				{#if validationErrors.productPortfolioId}
+				{#if validationErrors.taxonomyNodeId}
 					<p class="text-sm text-destructive" role="alert">
-						{validationErrors.productPortfolioId}
+						{validationErrors.taxonomyNodeId}
 					</p>
 				{/if}
 			</div>
