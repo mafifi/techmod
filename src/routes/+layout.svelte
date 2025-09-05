@@ -32,11 +32,11 @@
 	setupConvex(env.PUBLIC_CONVEX_URL || '');
 
 	const navigation = [
-		{ name: 'Overview', href: '/', icon: Home },
-		{ name: 'Product Catalogue', href: '/product', icon: Package },
-		{ name: 'Taxonomy', href: '/taxonomy', icon: Layers },
-		{ name: 'Analytics', href: '/analytics', icon: ChartColumn },
-		{ name: 'Reports', href: '/reports', icon: FileText }
+		{ name: 'Overview', href: '/', Icon: Home },
+		{ name: 'Product Catalogue', href: '/product', Icon: Package },
+		{ name: 'Taxonomy', href: '/taxonomy', Icon: Layers },
+		{ name: 'Analytics', href: '/analytics', Icon: ChartColumn },
+		{ name: 'Reports', href: '/reports', Icon: FileText }
 	];
 
 	// Helper function to check if current route matches
@@ -105,16 +105,14 @@
 							<SheetDescription>Strategic Product Management</SheetDescription>
 						</SheetHeader>
 						<div class="mt-8 space-y-4">
-							{#each navigation as { name, href, icon } (href)}
+							{#each navigation as { name, href, Icon } (name)}
 								<a
 									{href}
 									class="flex items-center space-x-3 rounded-lg {isActiveRoute(href)
 										? 'bg-midnight-blue-50 font-medium text-midnight-blue-700 dark:bg-midnight-blue-900/50 dark:text-midnight-blue-300'
 										: 'text-muted-foreground hover:bg-muted hover:text-foreground'}"
 								>
-									{#if icon}
-										<icon this={icon} class="h-5 w-5"></icon>
-									{/if}
+									<Icon class="h-5 w-5" />
 									<span>{name}</span>
 								</a>
 							{/each}
@@ -132,14 +130,16 @@
 		<div class="container px-4">
 			<div class="flex h-12 items-center space-x-8">
 				<!-- Main navigation tabs -->
-				{#each navigation as { name, href, icon } (href)}
+				{#each navigation as { name, href, Icon } (href)}
 					<a
 						{href}
-						class="flex items-center space-x-2 border-b-2 text-sm font-medium {isActiveRoute(href)
+						class="flex items-center space-x-2 border-b-2 pb-2 text-sm font-medium {isActiveRoute(
+							href
+						)
 							? 'border-midnight-blue-600 text-midnight-blue-600'
 							: 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'}"
 					>
-						<icon this={icon} class="h-4 w-4"></icon>
+						<Icon class="size-5" />
 						<span>{name}</span>
 					</a>
 				{/each}
