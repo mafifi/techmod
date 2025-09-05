@@ -23,13 +23,21 @@
 		Home,
 		Package,
 		Layers3 as Layers,
-		BarChart3,
+		ChartColumn,
 		FileText,
 		Menu
 	} from '@lucide/svelte';
 
 	let { children } = $props();
 	setupConvex(env.PUBLIC_CONVEX_URL || '');
+
+	const navigation = [
+		{ name: 'Overview', href: '/', icon: Home },
+		{ name: 'Product Catalogue', href: '/product', icon: Package },
+		{ name: 'Taxonomy', href: '/taxonomy', icon: Layers },
+		{ name: 'Analytics', href: '/analytics', icon: ChartColumn },
+		{ name: 'Reports', href: '/reports', icon: FileText }
+	];
 
 	// Helper function to check if current route matches
 	function isActiveRoute(route: string): boolean {
@@ -97,51 +105,19 @@
 							<SheetDescription>Strategic Product Management</SheetDescription>
 						</SheetHeader>
 						<div class="mt-8 space-y-4">
-							<a
-								href="/"
-								class="flex items-center space-x-3 rounded-lg p-3 {isActiveRoute('/')
-									? 'bg-midnight-blue-50 font-medium text-midnight-blue-700 dark:bg-midnight-blue-900/50 dark:text-midnight-blue-300'
-									: 'text-muted-foreground hover:bg-muted hover:text-foreground'}"
-							>
-								<Home class="h-5 w-5" />
-								<span>Overview</span>
-							</a>
-							<a
-								href="/product"
-								class="flex items-center space-x-3 rounded-lg p-3 {isActiveRoute('/product')
-									? 'bg-midnight-blue-50 font-medium text-midnight-blue-700 dark:bg-midnight-blue-900/50 dark:text-midnight-blue-300'
-									: 'text-muted-foreground hover:bg-muted hover:text-foreground'}"
-							>
-								<Package class="h-5 w-5" />
-								<span>Product Catalogue</span>
-							</a>
-							<a
-								href="/taxonomy"
-								class="flex items-center space-x-3 rounded-lg p-3 {isActiveRoute('/taxonomy')
-									? 'bg-midnight-blue-50 font-medium text-midnight-blue-700 dark:bg-midnight-blue-900/50 dark:text-midnight-blue-300'
-									: 'text-muted-foreground hover:bg-muted hover:text-foreground'}"
-							>
-								<Layers class="h-5 w-5" />
-								<span>Taxonomy</span>
-							</a>
-							<a
-								href="/analytics"
-								class="flex items-center space-x-3 rounded-lg p-3 {isActiveRoute('/analytics')
-									? 'bg-midnight-blue-50 font-medium text-midnight-blue-700 dark:bg-midnight-blue-900/50 dark:text-midnight-blue-300'
-									: 'text-muted-foreground hover:bg-muted hover:text-foreground'}"
-							>
-								<BarChart3 class="h-5 w-5" />
-								<span>Analytics</span>
-							</a>
-							<a
-								href="/reports"
-								class="flex items-center space-x-3 rounded-lg p-3 {isActiveRoute('/reports')
-									? 'bg-midnight-blue-50 font-medium text-midnight-blue-700 dark:bg-midnight-blue-900/50 dark:text-midnight-blue-300'
-									: 'text-muted-foreground hover:bg-muted hover:text-foreground'}"
-							>
-								<FileText class="h-5 w-5" />
-								<span>Reports</span>
-							</a>
+							{#each navigation as { name, href, icon } (href)}
+								<a
+									{href}
+									class="flex items-center space-x-3 rounded-lg {isActiveRoute(href)
+										? 'bg-midnight-blue-50 font-medium text-midnight-blue-700 dark:bg-midnight-blue-900/50 dark:text-midnight-blue-300'
+										: 'text-muted-foreground hover:bg-muted hover:text-foreground'}"
+								>
+									{#if icon}
+										<icon this={icon} class="h-5 w-5"></icon>
+									{/if}
+									<span>{name}</span>
+								</a>
+							{/each}
 						</div>
 					</SheetContent>
 				</Sheet>
@@ -156,63 +132,17 @@
 		<div class="container px-4">
 			<div class="flex h-12 items-center space-x-8">
 				<!-- Main navigation tabs -->
-				<a
-					href="/"
-					class="flex items-center space-x-2 border-b-2 pb-3 text-sm font-medium {isActiveRoute('/')
-						? 'border-midnight-blue-600 text-midnight-blue-600'
-						: 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'}"
-				>
-					<Home class="h-4 w-4" />
-					<span>Overview</span>
-				</a>
-
-				<a
-					href="/product"
-					class="flex items-center space-x-2 border-b-2 pb-3 text-sm font-medium {isActiveRoute(
-						'/product'
-					)
-						? 'border-midnight-blue-600 text-midnight-blue-600'
-						: 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'}"
-				>
-					<Package class="h-4 w-4" />
-					<span>Product Catalogue</span>
-				</a>
-
-				<a
-					href="/taxonomy"
-					class="flex items-center space-x-2 border-b-2 pb-3 text-sm font-medium {isActiveRoute(
-						'/taxonomy'
-					)
-						? 'border-midnight-blue-600 text-midnight-blue-600'
-						: 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'}"
-				>
-					<Layers class="h-4 w-4" />
-					<span>Taxonomy</span>
-				</a>
-
-				<a
-					href="/analytics"
-					class="flex items-center space-x-2 border-b-2 pb-3 text-sm font-medium {isActiveRoute(
-						'/analytics'
-					)
-						? 'border-midnight-blue-600 text-midnight-blue-600'
-						: 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'}"
-				>
-					<BarChart3 class="h-4 w-4" />
-					<span>Analytics</span>
-				</a>
-
-				<a
-					href="/reports"
-					class="flex items-center space-x-2 border-b-2 pb-3 text-sm font-medium {isActiveRoute(
-						'/reports'
-					)
-						? 'border-midnight-blue-600 text-midnight-blue-600'
-						: 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'}"
-				>
-					<FileText class="h-4 w-4" />
-					<span>Reports</span>
-				</a>
+				{#each navigation as { name, href, icon } (href)}
+					<a
+						{href}
+						class="flex items-center space-x-2 border-b-2 text-sm font-medium {isActiveRoute(href)
+							? 'border-midnight-blue-600 text-midnight-blue-600'
+							: 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'}"
+					>
+						<icon this={icon} class="h-4 w-4"></icon>
+						<span>{name}</span>
+					</a>
+				{/each}
 			</div>
 		</div>
 	</nav>
