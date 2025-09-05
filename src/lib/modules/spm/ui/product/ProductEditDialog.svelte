@@ -12,7 +12,6 @@
 
 	let formData = $state<ProductProps>({
 		name: '',
-		category: '',
 		price: 0,
 		description: '',
 		taxonomyNodeId: ''
@@ -25,7 +24,6 @@
 		if (viewModel.selectedProduct) {
 			formData = {
 				name: viewModel.selectedProduct.name,
-				category: viewModel.selectedProduct.category,
 				price: viewModel.selectedProduct.price,
 				description: viewModel.selectedProduct.description || '',
 				taxonomyNodeId: viewModel.selectedProduct.taxonomyNodeId
@@ -94,12 +92,7 @@
 
 	// Check if form can be submitted
 	const canSubmit = $derived(() => {
-		return (
-			Object.keys(validationErrors).length === 0 &&
-			formData.name &&
-			formData.category &&
-			formData.taxonomyNodeId
-		);
+		return Object.keys(validationErrors).length === 0 && formData.name && formData.taxonomyNodeId;
 	});
 </script>
 
@@ -130,22 +123,7 @@
 				{/if}
 			</div>
 
-			<div class="space-y-2">
-				<Label for="edit-category">Category</Label>
-				<Input
-					id="edit-category"
-					bind:value={formData.category}
-					onblur={() => validateField('category')}
-					placeholder="Enter category"
-					required
-					class={validationErrors.category ? 'border-destructive' : ''}
-				/>
-				{#if validationErrors.category}
-					<p class="text-sm text-destructive" role="alert">
-						{validationErrors.category}
-					</p>
-				{/if}
-			</div>
+			<!-- Category removed - now managed through taxonomy hierarchy -->
 
 			<div class="space-y-2">
 				<Label for="edit-price">Price</Label>

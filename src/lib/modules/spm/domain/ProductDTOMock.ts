@@ -15,7 +15,6 @@ export class ProductDTOMock {
 			name: `Test Product ${this.counter++}`,
 			description: 'A comprehensive test product for validation',
 			price: 99.99,
-			category: 'Software',
 			taxonomyNodeId: 'portfolio_test_default',
 			...overrides
 		};
@@ -58,39 +57,34 @@ export class ProductDTOMock {
 		nameEmpty: Partial<ProductProps>;
 		nameTooLong: Partial<ProductProps>;
 		negativePrice: Partial<ProductProps>;
-		categoryTooShort: Partial<ProductProps>;
+		taxonomyNodeIdEmpty: Partial<ProductProps>;
 		descriptionTooLong: Partial<ProductProps>;
 	} {
 		return {
 			nameEmpty: {
 				name: '',
 				price: 99.99,
-				category: 'Software',
 				taxonomyNodeId: 'portfolio_test_default'
 			},
 			nameTooLong: {
 				name: 'A'.repeat(101),
 				price: 99.99,
-				category: 'Software',
 				taxonomyNodeId: 'portfolio_test_default'
 			},
 			negativePrice: {
 				name: 'Valid Product',
 				price: -10,
-				category: 'Software',
 				taxonomyNodeId: 'portfolio_test_default'
 			},
-			categoryTooShort: {
+			taxonomyNodeIdEmpty: {
 				name: 'Valid Product',
 				price: 99.99,
-				category: 'A',
-				taxonomyNodeId: 'portfolio_test_default'
+				taxonomyNodeId: ''
 			},
 			descriptionTooLong: {
 				name: 'Valid Product',
 				description: 'A'.repeat(501),
 				price: 99.99,
-				category: 'Software',
 				taxonomyNodeId: 'portfolio_test_default'
 			}
 		};
@@ -106,11 +100,11 @@ export class ProductDTOMock {
 	/**
 	 * Create product with specific category for filtering tests
 	 */
-	static createProductByCategory(
-		category: string,
+	static createProductByTaxonomyNode(
+		taxonomyNodeId: string,
 		overrides: Partial<ProductProps> = {}
 	): ProductProps {
-		return this.createProductProps({ category, ...overrides });
+		return this.createProductProps({ taxonomyNodeId, ...overrides });
 	}
 
 	/**

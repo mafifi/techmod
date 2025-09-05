@@ -14,12 +14,12 @@ describe('Product Queries', () => {
 		// Insert test products using mock data
 		const product1 = ProductDTOMock.createProductProps({
 			name: 'Product 1',
-			category: 'Software',
+			taxonomyNodeId: 'software_category_id',
 			price: 100
 		});
 		const product2 = ProductDTOMock.createProductProps({
 			name: 'Product 2',
-			category: 'Hardware',
+			taxonomyNodeId: 'hardware_category_id',
 			price: 200
 		});
 
@@ -31,33 +31,39 @@ describe('Product Queries', () => {
 
 		expect(products).toHaveLength(2);
 		expect(products).toMatchObject([
-			{ name: 'Product 1', category: 'Software', price: 100 },
-			{ name: 'Product 2', category: 'Hardware', price: 200 }
+			{ name: 'Product 1', taxonomyNodeId: 'software_category_id', price: 100 },
+			{ name: 'Product 2', taxonomyNodeId: 'hardware_category_id', price: 200 }
 		]);
 	});
 
-	test('getByCategory filters products correctly', async () => {
+	test('getByTaxonomyNode filters products correctly', async () => {
 		const t = convexTest(schema, modules);
 
 		// Insert test products
-		const softwareProduct = ProductDTOMock.createProductProps({ category: 'Software', price: 100 });
-		const hardwareProduct = ProductDTOMock.createProductProps({ category: 'Hardware', price: 200 });
+		const softwareProduct = ProductDTOMock.createProductProps({
+			taxonomyNodeId: 'software_category_id',
+			price: 100
+		});
+		const hardwareProduct = ProductDTOMock.createProductProps({
+			taxonomyNodeId: 'hardware_category_id',
+			price: 200
+		});
 
 		await t.mutation(api.spm.product.mutations.create, softwareProduct);
 		await t.mutation(api.spm.product.mutations.create, hardwareProduct);
 
-		// Test category filtering
-		const softwareProducts = await t.query(api.spm.product.query.getByCategory, {
-			category: 'Software'
+		// Test taxonomy filtering
+		const softwareProducts = await t.query(api.spm.product.query.getByTaxonomyNode, {
+			taxonomyNodeId: 'software_category_id'
 		});
-		const hardwareProducts = await t.query(api.spm.product.query.getByCategory, {
-			category: 'Hardware'
+		const hardwareProducts = await t.query(api.spm.product.query.getByTaxonomyNode, {
+			taxonomyNodeId: 'hardware_category_id'
 		});
 
 		expect(softwareProducts).toHaveLength(1);
 		expect(hardwareProducts).toHaveLength(1);
-		expect(softwareProducts[0].category).toBe('Software');
-		expect(hardwareProducts[0].category).toBe('Hardware');
+		expect(softwareProducts[0].taxonomyNodeId).toBe('software_category_id');
+		expect(hardwareProducts[0].taxonomyNodeId).toBe('hardware_category_id');
 	});
 
 	test('getInPriceRange filters by price correctly', async () => {
@@ -104,24 +110,26 @@ describe('Product Queries', () => {
 			api.spm.product.mutations.create,
 			ProductDTOMock.createProductProps({
 				name: 'Test Product',
-				category: 'Software'
+				taxonomyNodeId: 'software_category_id'
 			})
 		);
 		await t.mutation(
 			api.spm.product.mutations.create,
 			ProductDTOMock.createProductProps({
 				name: 'Another Item',
-				category: 'Hardware'
+				taxonomyNodeId: 'hardware_category_id'
 			})
 		);
 
-		// Test search by category
-		const softwareResults = await t.query(api.spm.product.query.search, { searchTerm: 'Software' });
-		const hardwareResults = await t.query(api.spm.product.query.search, { searchTerm: 'Hardware' });
+		// Test search by name
+		const productResults = await t.query(api.spm.product.query.search, {
+			searchTerm: 'Test Product'
+		});
+		const itemResults = await t.query(api.spm.product.query.search, { searchTerm: 'Another Item' });
 
-		expect(softwareResults).toHaveLength(1);
-		expect(hardwareResults).toHaveLength(1);
-		expect(softwareResults[0].name).toBe('Test Product');
-		expect(hardwareResults[0].name).toBe('Another Item');
+		expect(productResults).toHaveLength(1);
+		expect(itemResults).toHaveLength(1);
+		expect(productResults[0].name).toBe('Test Product');
+		expect(itemResults[0].name).toBe('Another Item');
 	});
 });

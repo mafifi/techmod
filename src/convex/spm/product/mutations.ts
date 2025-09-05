@@ -65,29 +65,32 @@ export const updatePrice = zMutation({
 	}
 });
 
-export const bulkUpdateCategory = zMutation({
+export const bulkUpdateTaxonomy = zMutation({
 	args: z.object({
-		oldCategory: z.string().min(1).max(100),
-		newCategory: z.string().min(1).max(100)
+		oldTaxonomyNodeId: z.string().min(1),
+		newTaxonomyNodeId: z.string().min(1)
 	}),
 	handler: async (ctx, args) => {
 		const products = await ctx.db
 			.query('products')
-			.filter((q) => q.eq(q.field('category'), args.oldCategory))
+			.filter((q) => q.eq(q.field('taxonomyNodeId'), args.oldTaxonomyNodeId))
 			.collect();
 
 		if (products.length === 0) {
-			return { updated: 0, message: `No products found with category '${args.oldCategory}'` };
+			return {
+				updated: 0,
+				message: `No products found with taxonomy node '${args.oldTaxonomyNodeId}'`
+			};
 		}
 
 		const updatePromises = products.map((product) =>
-			ctx.db.patch(product._id, { category: args.newCategory })
+			ctx.db.patch(product._id, { taxonomyNodeId: args.newTaxonomyNodeId })
 		);
 
 		await Promise.all(updatePromises);
 		return {
 			updated: products.length,
-			message: `Updated ${products.length} products from '${args.oldCategory}' to '${args.newCategory}'`
+			message: `Updated ${products.length} products to new taxonomy node`
 		};
 	}
 });

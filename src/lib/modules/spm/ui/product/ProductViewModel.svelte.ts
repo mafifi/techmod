@@ -68,8 +68,8 @@ export class ProductViewModel {
 	}
 
 	// Business logic helpers
-	getProductsByCategory(category: string): Product[] {
-		return this.data.filter((product) => product.category === category);
+	getProductsByTaxonomyNode(taxonomyNodeId: string): Product[] {
+		return this.data.filter((product) => product.taxonomyNodeId === taxonomyNodeId);
 	}
 
 	getProductsInPriceRange(minPrice: number, maxPrice: number): Product[] {

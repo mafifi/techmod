@@ -4,8 +4,7 @@ export const ProductPropsSchema = z.object({
 	name: z.string().min(2).max(100),
 	description: z.string().max(500).optional(),
 	price: z.number().min(0),
-	category: z.string().min(2).max(100),
-	taxonomyNodeId: z.string() // References unified taxonomy node (portfolio/line/category)
+	taxonomyNodeId: z.string().min(1) // Must reference a category-level taxonomy node
 });
 
 export const ProductSchema = ProductPropsSchema.extend({
@@ -21,7 +20,6 @@ export function getProductDefaults(): ProductProps {
 		name: '',
 		description: '',
 		price: 0,
-		category: '',
 		taxonomyNodeId: ''
 	};
 }

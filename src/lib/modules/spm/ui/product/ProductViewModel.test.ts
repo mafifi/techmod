@@ -182,8 +182,8 @@ describe('ProductViewModel', () => {
 	describe('Business Logic Helpers', () => {
 		beforeEach(() => {
 			const mockData = [
-				...ProductDTOMock.createProductArray(2, { category: 'Software', price: 100 }),
-				...ProductDTOMock.createProductArray(2, { category: 'Hardware', price: 200 })
+				...ProductDTOMock.createProductArray(2, { taxonomyNodeId: 'taxonomy_node_1', price: 100 }),
+				...ProductDTOMock.createProductArray(2, { taxonomyNodeId: 'taxonomy_node_2', price: 200 })
 			];
 
 			mockUseQuery.mockReturnValue({
@@ -195,21 +195,21 @@ describe('ProductViewModel', () => {
 			viewModel = new ProductViewModel();
 		});
 
-		describe('getProductsByCategory', () => {
-			it('should filter products by category', () => {
-				const softwareProducts = viewModel.getProductsByCategory('Software');
-				const hardwareProducts = viewModel.getProductsByCategory('Hardware');
+		describe('getProductsByTaxonomyNode', () => {
+			it('should filter products by taxonomy node', () => {
+				const node1Products = viewModel.getProductsByTaxonomyNode('taxonomy_node_1');
+				const node2Products = viewModel.getProductsByTaxonomyNode('taxonomy_node_2');
 
-				expect(softwareProducts).toHaveLength(2);
-				expect(hardwareProducts).toHaveLength(2);
+				expect(node1Products).toHaveLength(2);
+				expect(node2Products).toHaveLength(2);
 
-				softwareProducts.forEach((product) => {
-					expect(product.category).toBe('Software');
+				node1Products.forEach((product) => {
+					expect(product.taxonomyNodeId).toBe('taxonomy_node_1');
 				});
 			});
 
-			it('should return empty array for non-existent category', () => {
-				const result = viewModel.getProductsByCategory('NonExistent');
+			it('should return empty array for non-existent taxonomy node', () => {
+				const result = viewModel.getProductsByTaxonomyNode('NonExistent');
 				expect(result).toEqual([]);
 			});
 		});

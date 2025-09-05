@@ -53,6 +53,291 @@ function handleError(error: unknown): ErrorResult {
 	};
 }
 
+// AI Category Suggestion Types
+interface CategorySuggestion {
+	taxonomyNodeId: string;
+	portfolio: string;
+	line: string;
+	category: string;
+	confidence: number;
+	reasoning: string;
+	path: string;
+}
+
+interface SuggestionResult {
+	suggestions: CategorySuggestion[];
+	totalCategories: number;
+	processingTimeMs: number;
+}
+
+// AI-powered category suggestion action
+export const suggestCategory = action({
+	args: {
+		productName: v.string(),
+		productDescription: v.optional(v.string())
+	},
+	handler: async (ctx: ActionCtx, args: { productName: string; productDescription?: string }) => {
+		const startTime = Date.now();
+		const { productName, productDescription } = args;
+
+		try {
+			// Get all categories with their full hierarchy
+			const hierarchy = await ctx.runQuery(
+				(api as any)['spm/taxonomyNode/query'].getFullHierarchy,
+				{ activeOnly: true }
+			);
+
+			const categories = extractAllCategories(hierarchy);
+
+			if (categories.length === 0) {
+				return {
+					suggestions: [],
+					totalCategories: 0,
+					processingTimeMs: Date.now() - startTime
+				};
+			}
+
+			// Generate suggestions using keyword matching and semantic analysis
+			const suggestions = await generateCategorySuggestions(
+				productName,
+				productDescription,
+				categories
+			);
+
+			// Sort by confidence and return top suggestions
+			const sortedSuggestions = suggestions.sort((a, b) => b.confidence - a.confidence).slice(0, 5); // Return top 5 suggestions
+
+			return {
+				suggestions: sortedSuggestions,
+				totalCategories: categories.length,
+				processingTimeMs: Date.now() - startTime
+			};
+		} catch (error) {
+			console.error('Category suggestion error:', error);
+			return {
+				suggestions: [],
+				totalCategories: 0,
+				processingTimeMs: Date.now() - startTime,
+				error: error instanceof Error ? error.message : 'Unknown error'
+			};
+		}
+	}
+});
+
+// Helper function to extract all categories from hierarchy
+function extractAllCategories(hierarchy: any[]): any[] {
+	const categories: any[] = [];
+
+	function traverse(nodes: any[], portfolioName = '', lineName = '') {
+		for (const node of nodes) {
+			if (node.type === 'portfolio') {
+				if (node.children) {
+					traverse(node.children, node.name, '');
+				}
+			} else if (node.type === 'line') {
+				if (node.children) {
+					traverse(node.children, portfolioName, node.name);
+				}
+			} else if (node.type === 'category') {
+				categories.push({
+					...node,
+					portfolioName,
+					lineName,
+					path: `${portfolioName} > ${lineName} > ${node.name}`
+				});
+			}
+		}
+	}
+
+	traverse(hierarchy);
+	return categories;
+}
+
+// AI suggestion algorithm using keyword matching and semantic analysis
+async function generateCategorySuggestions(
+	productName: string,
+	productDescription: string | undefined,
+	categories: any[]
+): Promise<CategorySuggestion[]> {
+	const suggestions: CategorySuggestion[] = [];
+	const searchText = `${productName} ${productDescription || ''}`.toLowerCase();
+
+	// Keywords that commonly appear in different technology categories
+	const techKeywords: Record<string, string[]> = {
+		database: [
+			'database',
+			'db',
+			'sql',
+			'nosql',
+			'mongodb',
+			'postgres',
+			'mysql',
+			'oracle',
+			'redis',
+			'data'
+		],
+		web: ['web', 'website', 'portal', 'frontend', 'backend', 'api', 'rest', 'http', 'browser'],
+		mobile: ['mobile', 'ios', 'android', 'app', 'smartphone', 'tablet', 'react native', 'flutter'],
+		analytics: [
+			'analytics',
+			'reporting',
+			'dashboard',
+			'metrics',
+			'kpi',
+			'bi',
+			'intelligence',
+			'visualization'
+		],
+		security: [
+			'security',
+			'auth',
+			'authentication',
+			'authorization',
+			'firewall',
+			'encryption',
+			'ssl',
+			'cert'
+		],
+		cloud: [
+			'cloud',
+			'aws',
+			'azure',
+			'gcp',
+			'saas',
+			'paas',
+			'iaas',
+			'serverless',
+			'container',
+			'kubernetes'
+		],
+		integration: [
+			'integration',
+			'api',
+			'middleware',
+			'etl',
+			'connector',
+			'sync',
+			'webhook',
+			'message'
+		],
+		development: [
+			'development',
+			'dev',
+			'code',
+			'git',
+			'ci',
+			'cd',
+			'build',
+			'deploy',
+			'testing',
+			'framework'
+		],
+		monitoring: [
+			'monitoring',
+			'logging',
+			'alerting',
+			'performance',
+			'uptime',
+			'health',
+			'metrics',
+			'observability'
+		],
+		collaboration: [
+			'collaboration',
+			'team',
+			'communication',
+			'chat',
+			'meeting',
+			'document',
+			'share',
+			'workflow'
+		],
+		crm: ['crm', 'customer', 'sales', 'lead', 'contact', 'opportunity', 'pipeline', 'relationship'],
+		erp: ['erp', 'finance', 'accounting', 'inventory', 'supply', 'procurement', 'hr', 'payroll'],
+		content: ['content', 'cms', 'document', 'file', 'media', 'asset', 'publish', 'editorial'],
+		ecommerce: ['ecommerce', 'commerce', 'shop', 'cart', 'payment', 'checkout', 'product', 'order'],
+		network: ['network', 'router', 'switch', 'firewall', 'vpn', 'lan', 'wan', 'dns', 'ip']
+	};
+
+	for (const category of categories) {
+		let confidence = 0;
+		let reasoning = '';
+		const reasons: string[] = [];
+
+		// Direct name matching (highest weight)
+		const categoryName = category.name.toLowerCase();
+		const categoryDescription = category.description.toLowerCase();
+
+		if (searchText.includes(categoryName) || categoryName.includes(productName.toLowerCase())) {
+			confidence += 0.4;
+			reasons.push(`Product name matches category "${category.name}"`);
+		}
+
+		// Description keyword matching
+		if (categoryDescription && productDescription) {
+			const descWords = productDescription.toLowerCase().split(' ');
+			const categoryWords = categoryDescription.split(' ');
+			const matchingWords = descWords.filter(
+				(word) =>
+					word.length > 3 &&
+					categoryWords.some((cWord: string) => cWord.includes(word) || word.includes(cWord))
+			);
+
+			if (matchingWords.length > 0) {
+				confidence += Math.min(0.3, matchingWords.length * 0.1);
+				reasons.push(`Description contains related terms: ${matchingWords.slice(0, 3).join(', ')}`);
+			}
+		}
+
+		// Technology keyword matching
+		for (const [techCategory, keywords] of Object.entries(techKeywords)) {
+			const matchingKeywords = keywords.filter(
+				(keyword) =>
+					searchText.includes(keyword) &&
+					(categoryName.includes(techCategory) || categoryDescription.includes(keyword))
+			);
+
+			if (matchingKeywords.length > 0) {
+				confidence += Math.min(0.25, matchingKeywords.length * 0.08);
+				reasons.push(`Technology keywords match: ${matchingKeywords.slice(0, 2).join(', ')}`);
+			}
+		}
+
+		// Portfolio and line context matching
+		const portfolioName = category.portfolioName.toLowerCase();
+		const lineName = category.lineName.toLowerCase();
+
+		if (searchText.includes(portfolioName) || searchText.includes(lineName)) {
+			confidence += 0.15;
+			reasons.push(
+				`Context matches portfolio/line: ${category.portfolioName} > ${category.lineName}`
+			);
+		}
+
+		// Boost confidence for categories with good descriptions
+		if (categoryDescription && categoryDescription.length > 20) {
+			confidence += 0.05;
+		}
+
+		// Only include suggestions with reasonable confidence
+		if (confidence > 0.1) {
+			reasoning = reasons.length > 0 ? reasons.join('; ') : 'Basic keyword matching';
+
+			suggestions.push({
+				taxonomyNodeId: category._id,
+				portfolio: category.portfolioName,
+				line: category.lineName,
+				category: category.name,
+				confidence: Math.min(confidence, 0.95), // Cap at 95%
+				reasoning,
+				path: category.path
+			});
+		}
+	}
+
+	return suggestions;
+}
+
 // External integration action placeholders
 export const syncWithExternalSystem = action({
 	args: {
