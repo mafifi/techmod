@@ -27,14 +27,14 @@ export const getById = zQuery({
 	}
 });
 
-export const getByCategory = zQuery({
+export const getByTaxonomyNode = zQuery({
 	args: {
-		category: z.string().min(1).max(100)
+		taxonomyNodeId: z.string().min(1)
 	},
 	handler: async (ctx, args) => {
 		return await ctx.db
 			.query('products')
-			.filter((q) => q.eq(q.field('category'), args.category))
+			.filter((q) => q.eq(q.field('taxonomyNodeId'), args.taxonomyNodeId))
 			.collect();
 	}
 });
@@ -67,11 +67,7 @@ export const search = zQuery({
 		return await ctx.db
 			.query('products')
 			.filter((q) =>
-				q.or(
-					q.eq(q.field('name'), args.searchTerm),
-					q.eq(q.field('description'), args.searchTerm),
-					q.eq(q.field('category'), args.searchTerm)
-				)
+				q.or(q.eq(q.field('name'), args.searchTerm), q.eq(q.field('description'), args.searchTerm))
 			)
 			.collect();
 	}

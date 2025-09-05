@@ -8,7 +8,6 @@ describe('ProductDTO', () => {
 				name: 'Test Product',
 				description: 'A test product description',
 				price: 99.99,
-				category: 'Software',
 				taxonomyNodeId: 'portfolio_test_1'
 			};
 
@@ -21,7 +20,6 @@ describe('ProductDTO', () => {
 				name: 'A', // Too short (min 2)
 				description: 'Valid description',
 				price: 99.99,
-				category: 'Software',
 				taxonomyNodeId: 'portfolio_test_1'
 			};
 
@@ -38,7 +36,6 @@ describe('ProductDTO', () => {
 				name: 'A'.repeat(101), // Too long (max 100)
 				description: 'Valid description',
 				price: 99.99,
-				category: 'Software',
 				taxonomyNodeId: 'portfolio_test_1'
 			};
 
@@ -51,7 +48,6 @@ describe('ProductDTO', () => {
 				name: 'Valid Product',
 				description: 'Valid description',
 				price: -10, // Invalid negative price
-				category: 'Software',
 				taxonomyNodeId: 'portfolio_test_1'
 			};
 
@@ -59,13 +55,12 @@ describe('ProductDTO', () => {
 			expect(result.success).toBe(false);
 		});
 
-		it('should reject product with invalid category (too short)', () => {
+		it('should reject product with invalid taxonomyNodeId (empty)', () => {
 			const invalidProduct = {
 				name: 'Valid Product',
 				description: 'Valid description',
 				price: 99.99,
-				category: 'A', // Too short (min 2)
-				taxonomyNodeId: 'portfolio_test_1'
+				taxonomyNodeId: '' // Empty taxonomy node ID
 			};
 
 			const result = ProductPropsSchema.safeParse(invalidProduct);
@@ -76,7 +71,6 @@ describe('ProductDTO', () => {
 			const validProduct = {
 				name: 'Valid Product',
 				price: 99.99,
-				category: 'Software',
 				taxonomyNodeId: 'portfolio_test_1'
 				// description omitted
 			};
@@ -90,7 +84,6 @@ describe('ProductDTO', () => {
 				name: 'Valid Product',
 				description: 'A'.repeat(501), // Too long (max 500)
 				price: 99.99,
-				category: 'Software',
 				taxonomyNodeId: 'portfolio_test_1'
 			};
 
@@ -107,7 +100,6 @@ describe('ProductDTO', () => {
 				name: 'Test Product',
 				description: 'A test product description',
 				price: 99.99,
-				category: 'Software',
 				taxonomyNodeId: 'portfolio_test_1'
 			};
 
@@ -121,7 +113,6 @@ describe('ProductDTO', () => {
 				name: 'Test Product',
 				description: 'A test product description',
 				price: 99.99,
-				category: 'Software',
 				taxonomyNodeId: 'portfolio_test_1'
 				// _creationTime omitted
 			};
@@ -136,7 +127,6 @@ describe('ProductDTO', () => {
 				name: 'Test Product',
 				description: 'A test product description',
 				price: 99.99,
-				category: 'Software',
 				taxonomyNodeId: 'portfolio_test_1'
 			};
 

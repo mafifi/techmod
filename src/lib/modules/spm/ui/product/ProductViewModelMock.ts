@@ -16,7 +16,7 @@ export class ProductViewModelMock {
 	public createProduct: MockedFunction<(productData: ProductProps) => Promise<void>>;
 	public updateProduct: MockedFunction<(id: string, productData: ProductProps) => Promise<void>>;
 	public deleteProduct: MockedFunction<(id: string) => Promise<void>>;
-	public getProductsByCategory: MockedFunction<(category: string) => Product[]>;
+	public getProductsByTaxonomyNode: MockedFunction<(taxonomyNodeId: string) => Product[]>;
 	public getProductsInPriceRange: MockedFunction<(minPrice: number, maxPrice: number) => Product[]>;
 	public getTotalValue: MockedFunction<() => number>;
 
@@ -31,8 +31,8 @@ export class ProductViewModelMock {
 		this.updateProduct = vi.fn().mockResolvedValue(undefined);
 		this.deleteProduct = vi.fn().mockResolvedValue(undefined);
 
-		this.getProductsByCategory = vi.fn().mockImplementation((category: string) => {
-			return this.data.filter((product) => product.category === category);
+		this.getProductsByTaxonomyNode = vi.fn().mockImplementation((taxonomyNodeId: string) => {
+			return this.data.filter((product) => product.taxonomyNodeId === taxonomyNodeId);
 		});
 
 		this.getProductsInPriceRange = vi
@@ -106,8 +106,8 @@ export class ProductViewModelMock {
 		this.updateProduct.mockResolvedValue(undefined);
 		this.deleteProduct.mockResolvedValue(undefined);
 
-		this.getProductsByCategory.mockImplementation((category: string) => {
-			return this.data.filter((product) => product.category === category);
+		this.getProductsByTaxonomyNode.mockImplementation((taxonomyNodeId: string) => {
+			return this.data.filter((product) => product.taxonomyNodeId === taxonomyNodeId);
 		});
 
 		this.getProductsInPriceRange.mockImplementation((minPrice: number, maxPrice: number) => {

@@ -16,7 +16,10 @@
 			"Bash(git commit:*)",
 			"Bash(npx prettier:*)",
 			"Bash(npx vitest run:*)",
-			"Bash(npx vitest:*)"
+			"Bash(npx vitest:*)",
+			"mcp__playwright__browser_navigate",
+			"mcp__playwright__browser_install",
+			"Bash(npm run dev:*)"
 		]
 	},
 	"enableAllProjectMcpServers": true,
