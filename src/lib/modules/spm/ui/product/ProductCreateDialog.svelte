@@ -100,7 +100,7 @@
 
 	async function handleSuggestCategory() {
 		console.log('Suggest button clicked', { formData });
-		
+
 		if (!formData.name) {
 			console.log('No product name provided');
 			return;
@@ -108,7 +108,7 @@
 
 		isLoadingSuggestions = true;
 		console.log('Loading suggestions...');
-		
+
 		try {
 			const result = await convexClient.action(api.spm.taxonomyNode.action.suggestCategory, {
 				productName: formData.name,
@@ -212,7 +212,7 @@
 						class="h-8 px-3"
 					>
 						<Sparkles class="mr-2 h-4 w-4" />
-						Suggest
+						{isLoadingSuggestions ? 'Suggesting...' : 'Suggest'}
 					</Button>
 				</div>
 

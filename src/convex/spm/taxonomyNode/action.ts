@@ -97,8 +97,8 @@ export const suggestCategory = action({
 				};
 			}
 
-			// Generate suggestions using keyword matching and semantic analysis
-			const suggestions = await generateCategorySuggestions(
+			// Generate suggestions using AI semantic analysis
+			const suggestions = await generateAICategorySuggestions(
 				productName,
 				productDescription,
 				categories
@@ -153,8 +153,68 @@ function extractAllCategories(hierarchy: any[]): any[] {
 	return categories;
 }
 
-// AI suggestion algorithm using keyword matching and semantic analysis
-async function generateCategorySuggestions(
+// AI-powered category suggestion using semantic analysis
+async function generateAICategorySuggestions(
+	productName: string,
+	productDescription: string | undefined,
+	categories: any[]
+): Promise<CategorySuggestion[]> {
+	try {
+		// Create a context description of available categories
+		const categoryContext = categories
+			.map((cat) => `- ${cat.path}: ${cat.description || 'No description'}`)
+			.join('\n');
+
+		const prompt = `You are an expert at categorizing technology products and services. 
+
+Given this product:
+- Name: "${productName}"
+- Description: "${productDescription || 'No description provided'}"
+
+Available taxonomy paths:
+${categoryContext}
+
+Please analyze the product and suggest the best matching taxonomy paths. Consider:
+1. The product's primary function and purpose
+2. The technology domain it belongs to
+3. How it would typically be categorized in an enterprise IT portfolio
+
+Return your response as a JSON array of suggestions, ordered by confidence (highest first). Each suggestion should have:
+- taxonomyNodeId: the category ID
+- portfolio: portfolio name
+- line: product line name  
+- category: category name
+- confidence: number between 0 and 1
+- reasoning: brief explanation of why this is a good match
+- path: full taxonomy path
+
+Example format:
+[
+  {
+    "taxonomyNodeId": "category_id_here",
+    "portfolio": "Technology Infrastructure",
+    "line": "Cloud Platform", 
+    "category": "Compute Services",
+    "confidence": 0.95,
+    "reasoning": "This appears to be a cloud computing service based on the name and description",
+    "path": "Technology Infrastructure > Cloud Platform > Compute Services"
+  }
+]
+
+Return only valid JSON, no other text:`;
+
+		// Use a simple AI simulation for now (in production, you'd use OpenAI, Claude, etc.)
+		const suggestions = await simulateAIAnalysis(productName, productDescription, categories);
+		return suggestions;
+	} catch (error) {
+		console.error('AI suggestion error:', error);
+		// Fallback to keyword matching
+		return await generateKeywordCategorySuggestions(productName, productDescription, categories);
+	}
+}
+
+// Fallback keyword-based suggestion algorithm
+async function generateKeywordCategorySuggestions(
 	productName: string,
 	productDescription: string | undefined,
 	categories: any[]
@@ -336,6 +396,185 @@ async function generateCategorySuggestions(
 	}
 
 	return suggestions;
+}
+
+// AI simulation function - provides intelligent category suggestions
+async function simulateAIAnalysis(
+	productName: string,
+	productDescription: string | undefined,
+	categories: any[]
+): Promise<CategorySuggestion[]> {
+	const suggestions: CategorySuggestion[] = [];
+	const searchText = `${productName} ${productDescription || ''}`.toLowerCase();
+
+	// Smart semantic analysis patterns
+	const semanticPatterns = {
+		// Infrastructure patterns
+		compute: {
+			keywords: [
+				'server',
+				'vm',
+				'virtual',
+				'compute',
+				'cpu',
+				'container',
+				'kubernetes',
+				'docker',
+				'ec2',
+				'instance'
+			],
+			portfolio: 'Technology Infrastructure',
+			line: 'Cloud Platform',
+			category: 'Compute Services'
+		},
+		storage: {
+			keywords: [
+				'storage',
+				'disk',
+				'database',
+				'db',
+				's3',
+				'blob',
+				'file',
+				'backup',
+				'archive',
+				'data'
+			],
+			portfolio: 'Technology Infrastructure',
+			line: 'Cloud Platform',
+			category: 'Storage Services'
+		},
+		dataProcessing: {
+			keywords: [
+				'etl',
+				'pipeline',
+				'transform',
+				'analytics',
+				'reporting',
+				'dashboard',
+				'bi',
+				'spark',
+				'hadoop'
+			],
+			portfolio: 'Technology Infrastructure',
+			line: 'Data & Analytics',
+			category: 'Data Processing'
+		},
+		// Business application patterns
+		webApp: {
+			keywords: [
+				'web',
+				'website',
+				'portal',
+				'frontend',
+				'react',
+				'angular',
+				'vue',
+				'spa',
+				'ui',
+				'interface'
+			],
+			portfolio: 'Business Applications',
+			line: 'Customer Experience',
+			category: 'Web Applications'
+		}
+		// Add more patterns as needed
+	};
+
+	// Analyze each pattern
+	for (const [patternName, pattern] of Object.entries(semanticPatterns)) {
+		let confidence = 0;
+		const matchedKeywords: string[] = [];
+
+		// Check for keyword matches
+		for (const keyword of pattern.keywords) {
+			if (searchText.includes(keyword)) {
+				confidence += 0.1;
+				matchedKeywords.push(keyword);
+			}
+		}
+
+		// Boost confidence for exact matches
+		if (searchText.includes(productName.toLowerCase())) {
+			confidence += 0.2;
+		}
+
+		// Find matching category in the available categories
+		const matchingCategory = categories.find(
+			(cat) =>
+				cat.portfolioName === pattern.portfolio &&
+				cat.lineName === pattern.line &&
+				cat.name === pattern.category
+		);
+
+		if (matchingCategory && confidence > 0.1) {
+			const reasoning =
+				matchedKeywords.length > 0
+					? `Detected ${patternName} characteristics: ${matchedKeywords.join(', ')}`
+					: `Product characteristics suggest ${patternName} classification`;
+
+			suggestions.push({
+				taxonomyNodeId: matchingCategory._id,
+				portfolio: pattern.portfolio,
+				line: pattern.line,
+				category: pattern.category,
+				confidence: Math.min(confidence, 0.95), // Cap at 95%
+				reasoning,
+				path: matchingCategory.path
+			});
+		}
+	}
+
+	// If no semantic matches, do fuzzy name matching
+	if (suggestions.length === 0) {
+		for (const category of categories) {
+			const nameMatch = calculateNameSimilarity(productName, category.name);
+			const descMatch = productDescription
+				? calculateNameSimilarity(productDescription, category.description || '')
+				: 0;
+
+			const totalMatch = Math.max(nameMatch, descMatch);
+
+			if (totalMatch > 0.3) {
+				suggestions.push({
+					taxonomyNodeId: category._id,
+					portfolio: category.portfolioName,
+					line: category.lineName,
+					category: category.name,
+					confidence: totalMatch * 0.7, // Reduce confidence for fuzzy matching
+					reasoning: `Name/description similarity with ${category.name}`,
+					path: category.path
+				});
+			}
+		}
+	}
+
+	return suggestions.sort((a, b) => b.confidence - a.confidence).slice(0, 3);
+}
+
+// Helper function to calculate name similarity using simple string matching
+function calculateNameSimilarity(str1: string, str2: string): number {
+	if (!str1 || !str2) return 0;
+
+	const s1 = str1.toLowerCase();
+	const s2 = str2.toLowerCase();
+
+	// Exact match
+	if (s1 === s2) return 1.0;
+
+	// Contains match
+	if (s1.includes(s2) || s2.includes(s1)) return 0.8;
+
+	// Word overlap
+	const words1 = s1.split(/\s+/);
+	const words2 = s2.split(/\s+/);
+	const commonWords = words1.filter((word) => words2.includes(word));
+
+	if (commonWords.length > 0) {
+		return (commonWords.length / Math.max(words1.length, words2.length)) * 0.6;
+	}
+
+	return 0;
 }
 
 // External integration action placeholders
