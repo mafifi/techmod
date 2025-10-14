@@ -7,7 +7,7 @@
 	import { Badge } from '$lib/ui/components/badge';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/ui/components/card';
 	import { Separator } from '$lib/ui/components/separator';
-	import { Sparkles } from 'lucide-svelte';
+	import { Sparkles } from '@lucide/svelte';
 	import TaxonomySelector from '../taxonomy/TaxonomySelector.svelte';
 	import type { ProductViewModel } from './ProductViewModel.svelte';
 	import type { ProductProps } from '../../domain/ProductDTO';
