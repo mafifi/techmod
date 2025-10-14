@@ -283,19 +283,70 @@ Modern Practices means adopting workflows, processes, and engineering discipline
 - Developer productivity indicators
 - Incident response metrics
 
-## Guiding Principles
-
-[To be written]
-
 ## The SDLC Lifecycle
 
-[To be written]
+![Software Development Lifecycle](./images/sdlc-lifecycle.svg)
 
-**Context to cover:**
+Our approach to managing technical debt is built around meeting developers where they are in their daily work. The Software Development Lifecycle (SDLC) provides a natural framework for integrating modernization guidance directly into developer workflows.
 
-- Define the five stages: Plan, Code, Test, Deploy, Operate
-- Explain how we "meet developers where they are" at each stage
-- Set up context for the scenarios that follow
+We organize our interventions around five key stages:
+
+### Plan
+
+This is where requirements are defined, stories are written, and architectural decisions are made. It's the earliest point where we can influence technical choices and ensure modernization considerations are part of the initial design.
+
+**How we meet developers here:**
+
+- Jira integration that surfaces relevant modernization standards when creating stories
+- ADR (Architectural Decision Record) authoring tools that inject recommended patterns and modern technology choices
+- Template libraries that guide teams toward proven architectural patterns
+- Integration with planning tools to highlight technical debt in the backlog
+
+### Code
+
+This is where developers spend most of their time—writing, reviewing, and refactoring code. It's the most critical stage for embedding modernization guidance directly into the development flow.
+
+**How we meet developers here:**
+
+- IDE plugins aware of internal product documentation and standards
+- Code assistants that suggest modern patterns and detect anti-patterns in real-time
+- Automated code quality checks that flag technical debt as it's introduced
+- Context-aware suggestions based on the TechMod knowledge base
+
+### Test
+
+Testing ensures quality and catches issues before they reach production. Modern testing practices are themselves a key component of technical debt management.
+
+**How we meet developers here:**
+
+- Test coverage analysis and recommendations
+- Performance and security testing integrated into CI pipelines
+- Automated detection of missing or inadequate tests
+- Modernization impact validation (ensuring upgrades don't break functionality)
+
+### Release
+
+The release stage encompasses CI/CD pipelines, deployment automation, and the journey from code commit to production. Modern release practices reduce risk and increase delivery velocity.
+
+**How we meet developers here:**
+
+- Pipeline analysis and optimization recommendations
+- Deployment frequency and lead time tracking
+- Automated checks for deprecated dependencies before release
+- Release gates that enforce modernization standards
+
+### Operate
+
+Once in production, applications must be monitored, maintained, and evolved. Operational excellence is a key indicator of modernization maturity.
+
+**How we meet developers here:**
+
+- Production metrics dashboards showing modernization health
+- Incident correlation with technical debt metrics
+- Automated alerts for end-of-life technologies in production
+- Feedback loops that inform future modernization priorities
+
+By integrating modernization guidance at each stage, we create a continuous, frictionless experience. Developers receive relevant, timely information exactly when they need it—not as an afterthought, but as a natural part of their workflow.
 
 ## Scenarios
 
