@@ -162,7 +162,7 @@ Our current measurements (listed in each pillar above) are all in Quadrant 4. Ou
 
 ## Architectural Implications
 
-These guiding principles have direct architectural implications for how we build TechMod and our broader modernization platform. This section maps each principle to the concrete capabilities and system design decisions required to support them.
+These guiding principles have direct architectural implications for how we build TechMod and our broader modernization platform. This section maps each principle to the implications that will aid us in identifying concrete capabilities and system design decisions required to support them.
 
 | Principle                                     | Architectural Implication           | Description                                                                                                                                                                                              |
 | --------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
