@@ -171,6 +171,16 @@ Based on these criteria, technical debt falls into four quadrants:
 
 Our current measurements (listed in each pillar above) are all in Quadrant 4. Our future measurements represent our pipeline—investments we're making to move items from Quadrants 2 and 3 into Quadrant 4.
 
+### Team Structure & Capacity
+
+The Technology Modernization fleet is a 20-person team structured to support this prioritization model:
+
+- **Strategic Assessment (1)**: Connects technical debt to value drivers, requiring unique skillsets spanning development, infrastructure, and technology costs (Quadrant 1 evaluation)
+- **Enablement Leadership (3-4)**: Builds measurement capabilities and creates efficient recipes to move items into Quadrant 4 (Quadrants 2 & 3 investment)
+- **Execution Team (15)**: Delivers modernization at scale where items are measurable and manageable (Quadrant 4 operations)
+
+This structure is a forcing function that ensures we only scale work that is truly ready for industrialization. The execution team's capacity drives our focus on automation, self-service tooling, and repeatable journeys.
+
 ### Governance
 
 [To be written: Decision-making process for backlog prioritization and sign-off]
@@ -631,8 +641,8 @@ Orchestrating and executing modernization journeys with automated assistance.
 
 **Application Services:**
 
-- **Journey Orchestration Service** - Manages state and progress of modernization journeys
-- **Recipe Repository** - Library of Moderne recipes, migration scripts, and transformation patterns
+- **Journey Orchestration Service (LangGraph)** - Manages state and progress of modernization journeys using LangGraph for multi-step, agentic workflows with human-in-the-loop decision points
+- **Product Category Agents** - Specialized agents per product category (databases, languages, frameworks) that own and manage their category's recipes, coordinate through LangGraph cycles to handle cross-domain modernization
 - **Recommendation Engine** - Surfaces prioritized journeys based on technology stack, impact, and Quadrant 4 opportunities
 - **Moderne Integration Service** - Executes automated code transformations and generates pull requests
 
