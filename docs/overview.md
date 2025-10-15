@@ -160,6 +160,29 @@ Our current measurements (listed in each pillar above) are all in Quadrant 4. Ou
 
 [To be written: Decision-making process for backlog prioritization and sign-off]
 
+## Architectural Implications
+
+These guiding principles have direct architectural implications for how we build TechMod and our broader modernization platform. This section maps each principle to the concrete capabilities and system design decisions required to support them.
+
+| Principle                                     | Architectural Implication           | Description                                                                                                                                                                                              |
+| --------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Value-Driven Measurement**               | Explicit Value Mapping Requirement  | Every measurement in TechMod must have an explicit mapping to at least one of the three value drivers (Growth & Efficiency, Resilience, Effectiveness) - if it can't be mapped, it shouldn't be measured |
+|                                               | Value-Driven Data Model             | The data model must support tracking which value driver(s) each measurement connects to, enabling filtering and reporting by business value                                                              |
+|                                               | KPI Measurement and Reporting       | We must be able to measure the value delivered, record these KPIs over time, and report on progress against the value drivers                                                                            |
+| **2. Accuracy & Reliability**                 | Deterministic Technology Detection  | We must be able to deterministically confirm what technology an application is using (no guesswork or subjective classification)                                                                         |
+|                                               | Traceable Technology Changes        | Changes in what an application is using must be traceable over time (audit trail, version history)                                                                                                       |
+|                                               | Common Technology Detection Service | We must use the same common service for determining what technology an application is using (prevents inconsistent detection across tools)                                                               |
+|                                               | Common Scoring Service              | We must use the same common service for determining how we're scoring an application (prevents ADR tool recommending one thing while scoring system measures another)                                    |
+| **3. Actionable Scores**                      | Meaningful Action Availability      | We can only score on opportunities where the application developer can meaningfully take action (e.g., don't flag old OS version if newer version isn't available to them)                               |
+|                                               | Minimum Documentation Requirement   | Every scored item must have, at minimum, documentation on how to address it (we cannot score developers down for not knowing how to fix something we haven't documented)                                 |
+| **4. Meet Developers Where They Are**         | SDLC Integration at Every Stage     | Modernization options must be available to developers at every step of the SDLC lifecycle (integrated into Jira and ADR process during planning, IDE during coding, CI/CD pipelines during release)      |
+|                                               | Start from Current State            | Modernization journeys must start from where applications already are (no point discussing Python upgrades if teams are running Perl - meet them at their current technology stack)                      |
+| **5. Make the Right Choice, the Easy Choice** | Self-Selling Journeys               | Modernization journeys must clearly communicate why they matter to help application teams prioritize them effectively                                                                                    |
+|                                               | Discoverability Across SDLC         | Journeys must be easily discoverable across the entire SDLC, not buried in impossible-to-find documentation                                                                                              |
+|                                               | Automation and AI Integration       | Use automation and AI to minimize migration effort (integrate with LLMs, use Moderne recipes, automate repetitive tasks)                                                                                 |
+|                                               | Incremental Journey Support         | Accept that modernization takes many sprints across complex ecosystems with changing priorities (document the running order, ensure old and new can co-exist during transition)                          |
+| **6. Common Solutions for Common Problems**   | [To be written]                     |                                                                                                                                                                                                          |
+
 ## Our Definition of Modernization
 
 Modernization is not a single activity—it's a holistic transformation across three interconnected pillars. Each pillar addresses a different dimension of technical debt and requires distinct measurement and intervention strategies.
@@ -529,29 +552,6 @@ These scenarios illustrate how our modernization platform meets developers where
 - ROI calculation and reporting tools
 - Integration with conference/expo presentation systems
 - Executive reporting with value driver mapping
-
-## Architectural Implications
-
-These guiding principles have direct architectural implications for how we build TechMod and our broader modernization platform. This section maps each principle to the concrete capabilities and system design decisions required to support them.
-
-| Principle                                     | Architectural Implication           | Description                                                                                                                                                                                              |
-| --------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1. Value-Driven Measurement**               | Explicit Value Mapping Requirement  | Every measurement in TechMod must have an explicit mapping to at least one of the three value drivers (Growth & Efficiency, Resilience, Effectiveness) - if it can't be mapped, it shouldn't be measured |
-|                                               | Value-Driven Data Model             | The data model must support tracking which value driver(s) each measurement connects to, enabling filtering and reporting by business value                                                              |
-|                                               | KPI Measurement and Reporting       | We must be able to measure the value delivered, record these KPIs over time, and report on progress against the value drivers                                                                            |
-| **2. Accuracy & Reliability**                 | Deterministic Technology Detection  | We must be able to deterministically confirm what technology an application is using (no guesswork or subjective classification)                                                                         |
-|                                               | Traceable Technology Changes        | Changes in what an application is using must be traceable over time (audit trail, version history)                                                                                                       |
-|                                               | Common Technology Detection Service | We must use the same common service for determining what technology an application is using (prevents inconsistent detection across tools)                                                               |
-|                                               | Common Scoring Service              | We must use the same common service for determining how we're scoring an application (prevents ADR tool recommending one thing while scoring system measures another)                                    |
-| **3. Actionable Scores**                      | Meaningful Action Availability      | We can only score on opportunities where the application developer can meaningfully take action (e.g., don't flag old OS version if newer version isn't available to them)                               |
-|                                               | Minimum Documentation Requirement   | Every scored item must have, at minimum, documentation on how to address it (we cannot score developers down for not knowing how to fix something we haven't documented)                                 |
-| **4. Meet Developers Where They Are**         | SDLC Integration at Every Stage     | Modernization options must be available to developers at every step of the SDLC lifecycle (integrated into Jira and ADR process during planning, IDE during coding, CI/CD pipelines during release)      |
-|                                               | Start from Current State            | Modernization journeys must start from where applications already are (no point discussing Python upgrades if teams are running Perl - meet them at their current technology stack)                      |
-| **5. Make the Right Choice, the Easy Choice** | Self-Selling Journeys               | Modernization journeys must clearly communicate why they matter to help application teams prioritize them effectively                                                                                    |
-|                                               | Discoverability Across SDLC         | Journeys must be easily discoverable across the entire SDLC, not buried in impossible-to-find documentation                                                                                              |
-|                                               | Automation and AI Integration       | Use automation and AI to minimize migration effort (integrate with LLMs, use Moderne recipes, automate repetitive tasks)                                                                                 |
-|                                               | Incremental Journey Support         | Accept that modernization takes many sprints across complex ecosystems with changing priorities (document the running order, ensure old and new can co-exist during transition)                          |
-| **6. Common Solutions for Common Problems**   | [To be written]                     |                                                                                                                                                                                                          |
 
 ## Capabilities
 
