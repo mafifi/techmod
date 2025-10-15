@@ -18,19 +18,34 @@ This is not just about technology. It's about enabling agility, reducing risk, a
 
 ## The Cost of Technical Debt
 
-Technical debt is not just a technical problem—it's a business problem. It directly impacts our ability to deliver on three core technology values:
+Technical debt is not just a technical problem—it's a business problem. It directly impacts our ability to deliver on three core technology values, each measured by specific KPIs:
 
 **1. Enable Growth & Efficiency**
 
 Technical debt slows us down. Legacy systems, outdated technologies, and poorly documented architectures increase development lead times and delay time to deployment readiness. Every day spent navigating technical debt is a day not spent delivering customer value.
 
+**KPIs:**
+
+- **Development Lead Time** - Time from commit to production deployment
+- **Time to Deployment Readiness** - Time from feature request to deployment-ready state
+
 **2. Strengthen Resilience**
 
 Technical debt increases risk. High change failure rates, security vulnerabilities in aging dependencies, and brittle systems that break under change all stem from accumulated technical debt. Resilient systems require modern foundations.
 
+**KPIs:**
+
+- **Change Failure Rate** - Percentage of deployments causing production incidents
+- **Hygiene Activities** - Effort spent on maintenance, bug fixes, and technical debt remediation
+
 **3. Improve Effectiveness**
 
 Technical debt drains engineering capacity. When developers spend time working around limitations rather than building new capabilities, we reduce pull requests per developer and increase the cost of maintaining our technology infrastructure.
+
+**KPIs:**
+
+- **Pull Requests per Developer** - Developer productivity and contribution rate
+- **Infrastructure IP&C Spend** - Infrastructure investment, provisioning, and consumption costs
 
 ### The Opportunity
 
