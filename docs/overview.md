@@ -2,7 +2,11 @@
 
 ## Executive Summary
 
-Over the past two years, we have proven that technical debt can be measured and managed at scale. Our Technology Modernization fleet has helped developers modernize over 1,500 applications, delivering measurable business outcomes: delivery lead times reduced by 20%, and change failure rates cut in half across the board.
+Over the past two years, we have proven that technical debt can be measured and managed at scale.
+
+![Modernization Progress & Scale](./images/modernization-progress-scale.png)
+
+Our Technology Modernization fleet has helped developers modernize over 1,500 applications, delivering measurable business outcomes: delivery lead times reduced by 20%, and change failure rates cut in half across the board. Through a combination of CIO-sponsored initiatives, super department partnerships, and grassroots efforts, we've improved Technical Fitness Scores from 44% to 63%, reduced non-modern applications from 3,083 to 2,352, and tripled the number of Level 4 (highest quality) applications.
 
 We started this journey with 11 key measurements. Now, we're ready to expand our impact.
 
@@ -19,6 +23,8 @@ This is not just about technology. It's about enabling agility, reducing risk, a
 ## The Cost of Technical Debt
 
 Technical debt is not just a technical problem—it's a business problem. It directly impacts our ability to deliver on three core technology values, each measured by specific KPIs:
+
+![Outcomes & Metrics Alignment](./images/outcomes-metrics-alignment.png)
 
 **1. Enable Growth & Efficiency**
 
@@ -51,7 +57,24 @@ Technical debt drains engineering capacity. When developers spend time working a
 
 The good news? We can measure these impacts—and we can improve them.
 
-One example: A super department supporting our Investment Banking & Global Capital Markets business reduced their overall lead times by **25%**—from over 1 month per feature to just over 3 weeks—while keeping headcount flat. They achieved this by reducing the number of applications they manage and cutting dependencies on legacy and high-risk technologies.
+![ASD Success Story](./images/success-story-asd.png)
+
+One example: **ASD (Advisory & Sales Department)** supporting our Investment Banking & Global Capital Markets business achieved remarkable improvements through systematic modernization. Through close partnership to modernize 500+ web applications—adopting WebStack fully (including Java, Spring, Gradle upgrades, Treadmill/MKS, AutoSDLC, and OIDC)—they delivered measurable outcomes:
+
+**Modernization Progress:**
+
+- **15% increase in Technical Fitness Score** - 86.4% of ASD's applications now classified as 'Modern' (scoring 50% or higher), with dramatic growth in Level 3 and Level 4 applications
+
+**Business Impact:**
+
+- **25%+ improvement in AutoSDLC** - Deployment effort reduced from 120+ hours to ~1 hour
+- **2.1 days faster delivery lead times** - Reduced from 9.2 to 7.1 days (average)
+- **4.4 days faster development lead time** - Reduced from 12.8 to 8.4 days (average)
+- **15%+ decrease in AFS dependencies** - Reduced via LIFT distribution and other modernization efforts
+- **13% decrease in inactive code repositories** - Decommissioned legacy repos and GRNs
+- **13 GRNs modernized** - Contributing toward firm-wide target of 1,000
+
+All while keeping headcount flat.
 
 **This is the opportunity modernization unlocks:** improved agility, reduced risk, and lower investment costs—all achievable with modest effort when approached systematically.
 
@@ -141,43 +164,43 @@ Even if we can measure something accurately, if the journey to fix it is arduous
 
 ### Our Priorities & Focus
 
-Based on these criteria, technical debt falls into four stages:
+Based on these criteria, technical debt progresses through four stages of readiness for industrialization:
 
-**1: Low Priority**
+**Stage 1: Value Undefined** (Define)
 
-- Cannot tie to value drivers
-- Interesting but unclear business impact
-- De-prioritise until value connection is established
+- Linkage to technology value drivers unclear, difficult to define, or difficult to quantify
+- Interesting but business impact uncertain
+- **Action:** Strategic assessment to establish connection to Growth & Efficiency, Resilience, or Effectiveness
 
-**2: Future Opportunity**
+**Stage 2: Measurement Undefined** (Measure)
 
-- Clear value driver
-- Difficult to measure accurately and reliably
-- Invest in measurement capabilities before rolling out
+- Clear value driver established
+- Difficult to measure technical debt accurately and reliably
+- **Action:** Build automated, consistent measurement capabilities before broader rollout
 
-**3: Needs Enablement**
+**Stage 3: Adoption Difficult** (Improve)
 
 - Clear value driver
 - Can measure accurately
-- No effective management path (arduous, difficult journey)
-- Build recipes and tooling before broad rollout
+- Adoption journey is difficult—cannot co-exist with old tech, or arduous and difficult to automate
+- **Action:** Create efficient recipes, automation, and tooling before broad rollout
 
-**4: Active Focus** ⭐
+**Stage 4: Goldilocks** ⭐ (Enable)
 
 - Clear value driver
 - Can measure accurately and reliably
-- Can be managed effectively with reasonable effort
-- **This is where we focus first**
+- Adoption journey feasible with reasonable automation and effort
+- **This is where we scale with the execution team**
 
-Our current measurements (listed in each pillar above) are all in stage 4. Our future measurements represent our pipeline—investments we're making to move items from stage 2 and 3 into stage 4.
+Our current measurements (listed in each pillar above) are all at the Goldilocks stage. Our future measurements represent our pipeline—investments we're making to move items from stages 2 and 3 into Goldilocks.
 
 ### Team Structure & Capacity
 
-The Technology Modernization fleet is a 20-person team structured to support this prioritization model:
+The Technology Modernization fleet is a 20-person team structured to support this progression model:
 
-- **Strategic Assessment (1)**: Connects technical debt to value drivers, requiring unique skillsets spanning development, infrastructure, and technology costs (stage 1 evaluation)
-- **Leadership (3-4)**: Builds measurement capabilities and creates efficient recipes to move items into stage 4 (stage 2 & 3 investment)
-- **Team (15)**: Delivers modernization at scale where items are measurable and manageable (stage 4 operations)
+- **Strategic Assessment (1 person, 5%)**: Connects technical debt to value drivers, requiring unique skillsets spanning development, infrastructure, and technology costs (Stage 1: Value Undefined)
+- **Enablement Leadership (4 people, 20%)**: Builds measurement capabilities and creates efficient recipes to move items into Goldilocks (Stages 2 & 3: Measurement Undefined + Adoption Difficult)
+- **Execution Team (15 people, 75%)**: Delivers modernization at scale where items are measurable and manageable (Stage 4: Goldilocks)
 
 This structure is a forcing function that ensures we only scale work that is truly ready for industrialization. The execution team's capacity drives our focus on automation, self-service tooling, and repeatable journeys.
 
@@ -187,6 +210,8 @@ This structure is a forcing function that ensures we only scale work that is tru
 
 ## Our Definition of Modernization
 
+![Three Pillars of Modernization](./images/three-pillars.png)
+
 Modernization is not a single activity—it's a holistic transformation across three interconnected pillars. Each pillar addresses a different dimension of technical debt and requires distinct measurement and intervention strategies.
 
 ### Modern Architecture
@@ -195,13 +220,11 @@ Modern Architecture means building systems that are maintainable, scalable, and 
 
 **Concrete examples include:**
 
-- **Microservices and Domain-Driven Design**: Breaking monoliths into well-bounded services that can evolve independently
-- **API-First Design**: Clear contracts between systems that enable loose coupling and parallel development
-- **Event-Driven Architecture**: Asynchronous communication patterns that improve resilience and scalability
-- **Cloud-Native Patterns**: Leveraging cloud capabilities like auto-scaling, managed services, and infrastructure as code
-- **Architectural Decision Records (ADRs)**: Documenting why architectural choices were made to maintain context over time
-- **Dependency Management**: Understanding and minimizing coupling between components and systems
-- **Data Architecture**: Modern data platforms, clear data ownership, and appropriate persistence strategies
+- **Consolidation + Convergence**: "Make the problem smaller" - reducing the number of applications and converging on common solutions
+- **Reusable Patterns + Golden Paths**: Proven architectural patterns that teams can adopt to solve common problems consistently
+- **Data-centric Architecture**: Modern data platforms, clear data ownership, and appropriate persistence strategies
+- **Resiliency**: Moving from synchronous to asynchronous patterns, implementing self-healing systems, circuit breakers, and graceful degradation
+- **Evolvable**: Separation of responsibilities, abstraction of implementations, enabling independent evolution of components
 
 **Our approach to measuring Modern Architecture:**
 
@@ -237,14 +260,12 @@ Modern Technology means staying current with platforms, languages, frameworks, a
 
 **Concrete examples include:**
 
-- **Language and Runtime Versions**: Moving from Java 8 to Java 21, Python 2 to Python 3, Node 14 to Node 20
-- **Framework Currency**: Upgrading Spring Boot, React, Angular versions to maintain security and feature support
-- **Deprecated Dependencies**: Eliminating libraries that are no longer maintained or have known vulnerabilities
-- **Cloud Platform Services**: Migrating from self-managed infrastructure to managed services (RDS, Lambda, container orchestration)
-- **Containerization**: Moving from VMs to Docker/Kubernetes for consistency and portability
-- **Infrastructure as Code**: Adopting Terraform, CloudFormation, or similar tools for reproducible infrastructure
-- **Observability Stack**: Modern monitoring, logging, and tracing (Prometheus, Grafana, OpenTelemetry)
-- **Security Tooling**: Static analysis, dependency scanning, secrets management
+- **Cloud-friendly Technologies**: Leveraging cloud-native services, managed platforms, and scalable infrastructure
+- **Open Standards**: Containerized environments (Docker, Kubernetes), observability standards (OpenTelemetry), API standards (REST, GraphQL)
+- **Standard Software Repositories**: Node package manager (npm), Maven, NuGet, PyPI - centralized dependency management
+- **Databases**: Modern data stores like Postgres, MongoDB, Redis, Elasticsearch aligned with use case requirements
+- **Modern Authentication**: OIDC, OAuth 2.0, SAML for secure, standardized identity management
+- **Linked Data and Semantic Technology**: Graph databases, RDF, knowledge graphs for rich data relationships
 
 **How we define and communicate modernity:**
 
@@ -258,7 +279,29 @@ These decisions are documented in **Product Decision Records (PDRs)**—inspired
 - **Pros/Cons**: Trade-offs for each option
 - **Implications**: What this means for teams using or migrating from these technologies
 
-_[Diagram of TBM 5 taxonomy and product sub-categories to be added]_
+**TBM 5 Taxonomy - Technology Delivery & Workplace:**
+
+| Type                        | Category                      | Sub-Category                                                                                                                                                                                                          |
+| --------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Workplace**               | Client Computing              | Bring Your Own Device, Computer, Mobile, Virtual Client                                                                                                                                                               |
+|                             | Communication & Collaboration | Collaboration, Communication, Print, Productivity                                                                                                                                                                     |
+|                             | Connectivity                  | Network Access, Remote Access                                                                                                                                                                                         |
+| **Artificial Intelligence** | Agentic                       | Autonomous Navigation, Autonomous Workflow Agent, Intelligent Process Automation (IPA)                                                                                                                                |
+|                             | Generative                    | Image & Video Generation, Speech/Music/Audio Generation, Synthetic Data Generation, Text Generation                                                                                                                   |
+|                             | Interpretive                  | Computer Vision, Document Processing, Natural Language Processes, Speech Recognition & Processing                                                                                                                     |
+|                             | Predictive                    | Predictive Analytics, Predictive Maintenance, Risk Scoring                                                                                                                                                            |
+|                             | Prescriptive                  | Automated Planning & Scheduling, Decision Optimization, Recommendation Service                                                                                                                                        |
+| **Delivery**                | Development                   | Design & Development, Modernization & Migration, System Integration, Testing                                                                                                                                          |
+|                             | Enabling Platforms            | Application Hosting, Content Management, Development Platform, Foundation Platform, Message Bus & Integration, Search, Streaming                                                                                      |
+|                             | Operations                    | Capacity Management, Deployment & Administration, Event Management, Scheduling, Tech Service Management                                                                                                               |
+|                             | Security & Compliance         | Business Continuity & Disaster Recovery, Cyber Security & Incident Response, Data Privacy & Security, Governance/Risk/Compliance, Identity & Access Management, Security Awareness, Threat & Vulnerability Management |
+|                             | Strategy & Planning           | Business Solution Consulting, Enterprise Architecture, Innovation & Ideation, Program/Product/Project Management, Technology Vendor Management, Technology Business Management                                        |
+|                             | Support                       | Application Support, Central Print, Service Desk, Tech Training                                                                                                                                                       |
+| **Infrastructure**          | Compute                       | Enabling Platforms, Compute on Demand, Mainframe, Physical Compute, Virtual Compute & Containers                                                                                                                      |
+|                             | Data Center                   | Enterprise Data Center, Other Data Center                                                                                                                                                                             |
+|                             | Data                          | Data Analytics & Visualizations, Data Management, Data Warehouse, Database, Distributed Cache                                                                                                                         |
+|                             | Network                       | Data Network, Domain Services, Internet Connectivity, Load Balancing, Virtual Private Network, Voice Network                                                                                                          |
+|                             | Storage                       | Backup & Archive, Distributed Storage (CDN), File & Object Storage, Networked Storage                                                                                                                                 |
 
 **What we currently measure:**
 
@@ -282,16 +325,14 @@ Modern Practices means adopting workflows, processes, and engineering discipline
 
 **Concrete examples include:**
 
-- **CI/CD Pipelines**: Automated build, test, and deployment pipelines that reduce manual toil and increase delivery frequency
-- **Testing Automation & Practice**: Unit tests, integration tests, end-to-end tests as first-class artifacts with appropriate coverage
-- **Monorepos**: Unified code repositories that improve code sharing, refactoring, and atomic changes across services
-- **Feature Flags**: Decoupling deployment from release for safer rollouts and progressive delivery
-- **Agentic Development Practice**: AI-assisted coding, automated code reviews, and intelligent development tools that augment developer capabilities
-- **Fast Inner Development Loops**: Rapid feedback cycles with fast local builds, hot-reloading, and quick test execution
-- **Code Review Practices**: Consistent, timely reviews that improve code quality and knowledge sharing
-- **Documentation Culture**: Living documentation, runbooks, API specs, onboarding guides
-- **Incident Management**: Blameless postmortems, on-call rotations, SLO/SLA tracking
-- **Infrastructure as Code (IaC)**: Version-controlled, reviewable infrastructure changes
+- **Arch Documentation**: ADRs (Architectural Decision Records), C4 model diagrams for clear architectural communication
+- **Automated Testing + Automated Assurance**: SDLC3 compliance, systematic change management, quality gates in pipelines
+- **Everything-As-Code**: Infrastructure, configuration, policy, and documentation managed as version-controlled code
+- **Continuous Non-disruptive Deployments**: Blue-green deployments, canary releases, feature flags for zero-downtime updates
+- **Security Testing Tools in Build Pipeline**: Static analysis (SAST), dependency scanning, secrets detection, DAST integration
+- **Automated Evergreening of Dependencies**: Automated dependency updates, vulnerability patching, version currency tracking
+- **SRE Practices**: Blameless postmortems, SLO/SLA tracking, error budgets, on-call rotations
+- **Chaos Testing**: Proactive failure injection to validate resilience and recovery mechanisms
 
 **What we currently measure:**
 
@@ -459,7 +500,7 @@ The following scenarios illustrate how our capabilities come together across the
    - Extension surfaces prioritized journeys based on:
      - Technologies currently in use
      - Highest impact on outcome metrics
-     - Stage 4 opportunities (can measure + can manage + clear value)
+     - Goldilocks opportunities (can measure + can manage + clear value)
    - Each journey shows:
      - **Why it matters:** Impact on DORA metrics and business value
      - **Current state:** What needs to change
@@ -643,7 +684,7 @@ Orchestrating and executing modernization journeys with automated assistance.
 
 - **Journey Orchestration Service (LangGraph)** - Manages state and progress of modernization journeys using LangGraph for multi-step, agentic workflows with human-in-the-loop decision points
 - **Product Category Agents** - Specialized agents per product category (databases, languages, frameworks) that own and manage their category's recipes, coordinate through LangGraph cycles to handle cross-domain modernization
-- **Recommendation Engine** - Surfaces prioritized journeys based on technology stack, impact, and stage 4 opportunities
+- **Recommendation Engine** - Surfaces prioritized journeys based on technology stack, impact, and Goldilocks opportunities
 - **Moderne Integration Service** - Executes automated code transformations and generates pull requests
 
 ### Capability 7: Analytics & Impact Tracking
@@ -694,7 +735,7 @@ Cross-cutting concerns that support all other capabilities.
 
 The capabilities outlined above represent our comprehensive modernization platform architecture. Delivering all 10 capabilities at once is neither practical nor aligned with our prioritization principles.
 
-Our delivery approach follows the same stage 4 focus that guides our technical debt prioritization: we build capabilities that enable us to **measure accurately, manage effectively, and deliver clear value**.
+Our delivery approach follows the same Goldilocks focus that guides our technical debt prioritization: we build capabilities that enable us to **measure accurately, manage effectively, and deliver clear value**.
 
 **Capability Dependencies and Sequencing:**
 
@@ -717,7 +758,7 @@ This ensures we only industrialize capabilities that are ready for broad adoptio
 **Context to cover:**
 
 - Roadmap/phases for capability delivery
-- Prioritization aligned to stage 4 focus (can measure + can manage + clear value)
+- Prioritization aligned to Goldilocks focus (can measure + can manage + clear value)
 - Timeline and sequencing
 - Capability dependencies and critical path
 
@@ -725,15 +766,15 @@ This ensures we only industrialize capabilities that are ready for broad adoptio
 
 ### Must Have (Core Narrative)
 
-- [ ] **Prioritization Framework with Team Structure Overlay** - Horizontal progression showing 4 stages of readiness (Q1: No value → Q2: Can't measure → Q3: Can't manage → Q4: Ready to scale), with team overlay showing 1 Strategic works on Q1, 3-4 Enablement on Q2/Q3, 15 Execution on Q4
-- [ ] **Three Pillars of Modernization** - Visual showing Modern Architecture / Modern Technology / Modern Practices with examples and interconnections
-- [ ] **Outcomes ↔ Metrics Alignment** - Flow diagram mapping 3 value drivers → 6 KPIs → specific modernization measurements
+- [x] **Prioritization Framework with Team Structure Overlay** - Horizontal progression showing 4 stages of readiness (Value Undefined → Measurement Undefined → Adoption Difficult → Goldilocks), with resource allocation overlay showing 5% / 20% / 75% distribution across Strategic Assessment / Enablement Leadership / Execution Team
+- [x] **Three Pillars of Modernization** - Visual showing Modern Architecture / Modern Technology / Modern Practices with examples and interconnections (saved at `docs/images/three-pillars.png`)
+- [x] **Outcomes ↔ Metrics Alignment** - Flow diagram mapping 3 value drivers → 6 KPIs → specific modernization measurements (saved at `docs/images/outcomes-metrics-alignment.png`)
 - [ ] **Capabilities Architecture** - 10 capabilities with dependencies, relationships, and Platform Foundation layer
 
 ### High Value (Proves Credibility)
 
-- [ ] **Modernization Success & KPI Progress** - Impact dashboard showing 1,500 apps modernized, DORA metrics improvements (20% lead time, 50% CFR), timeline of growth
-- [ ] **Success Story: Super Department Case Study** - Before/After comparison showing 25% lead time reduction with metrics and narrative
+- [x] **Modernization Success & KPI Progress** - Impact dashboard showing 1,500 apps modernized, TFS growth 44%→63%, app reduction 3,083→2,352, Level 4 applications tripled (saved at `docs/images/modernization-progress-scale.png`)
+- [x] **Success Story: ASD Case Study** - Before/After comparison showing 15% modernity increase, 25%+ AutoSDLC improvement, 2.1 days faster delivery (saved at `docs/images/success-story-asd.png`)
 
 ### Nice to Have (Explains How)
 
@@ -744,5 +785,5 @@ This ensures we only industrialize capabilities that are ready for broad adoptio
 
 ### Supporting Detail
 
-- [ ] **TBM Taxonomy Tree** - Hierarchical tree showing Categories → Sub-categories → Products with modern/legacy/deprecated color coding
+- [x] **TBM Taxonomy Table** - Technology Delivery & Workplace taxonomy showing Type → Category → Sub-Category structure (added as table in Modern Technology section)
 - [ ] **Measurement Coverage Matrix** - [To be clarified: visualization approach TBD]
