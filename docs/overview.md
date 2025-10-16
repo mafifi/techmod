@@ -140,6 +140,8 @@ We promote re-use and convergence on proven patterns. When applications solve th
 
 ## Prioritization Framework
 
+![Prioritization Framework](./images/prioritization-framework.png)
+
 With potentially 50-100 different forms of technical debt we could measure and manage, we need a clear framework for deciding where to focus our efforts. Not all technical debt is created equal, and not all of it is worth tackling immediately.
 
 We prioritize technical debt based on three critical criteria:
