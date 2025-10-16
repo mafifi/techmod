@@ -139,45 +139,45 @@ We need objective, consistent measurements that developers trust. Technical debt
 
 Even if we can measure something accurately, if the journey to fix it is arduous, difficult, or unpalatable for developers, adoption will be low and impact will be limited. We prioritize technical debt where we can provide efficient recipes, clear guidance, and practical paths to improvement.
 
-### Our Priority Quadrants
+### Our Priorities & Focus
 
-Based on these criteria, technical debt falls into four quadrants:
+Based on these criteria, technical debt falls into four stages:
 
-**Quadrant 1: Low Priority**
+**1: Low Priority**
 
 - Cannot tie to value drivers
 - Interesting but unclear business impact
-- Deprioritize until value connection is established
+- De-prioritise until value connection is established
 
-**Quadrant 2: Future Opportunity**
+**2: Future Opportunity**
 
 - Clear value driver
 - Difficult to measure accurately and reliably
 - Invest in measurement capabilities before rolling out
 
-**Quadrant 3: Needs Enablement**
+**3: Needs Enablement**
 
 - Clear value driver
 - Can measure accurately
 - No effective management path (arduous, difficult journey)
 - Build recipes and tooling before broad rollout
 
-**Quadrant 4: Active Focus** ⭐
+**4: Active Focus** ⭐
 
 - Clear value driver
 - Can measure accurately and reliably
 - Can be managed effectively with reasonable effort
 - **This is where we focus first**
 
-Our current measurements (listed in each pillar above) are all in Quadrant 4. Our future measurements represent our pipeline—investments we're making to move items from Quadrants 2 and 3 into Quadrant 4.
+Our current measurements (listed in each pillar above) are all in stage 4. Our future measurements represent our pipeline—investments we're making to move items from stage 2 and 3 into stage 4.
 
 ### Team Structure & Capacity
 
 The Technology Modernization fleet is a 20-person team structured to support this prioritization model:
 
-- **Strategic Assessment (1)**: Connects technical debt to value drivers, requiring unique skillsets spanning development, infrastructure, and technology costs (Quadrant 1 evaluation)
-- **Enablement Leadership (3-4)**: Builds measurement capabilities and creates efficient recipes to move items into Quadrant 4 (Quadrants 2 & 3 investment)
-- **Execution Team (15)**: Delivers modernization at scale where items are measurable and manageable (Quadrant 4 operations)
+- **Strategic Assessment (1)**: Connects technical debt to value drivers, requiring unique skillsets spanning development, infrastructure, and technology costs (stage 1 evaluation)
+- **Leadership (3-4)**: Builds measurement capabilities and creates efficient recipes to move items into stage 4 (stage 2 & 3 investment)
+- **Team (15)**: Delivers modernization at scale where items are measurable and manageable (stage 4 operations)
 
 This structure is a forcing function that ensures we only scale work that is truly ready for industrialization. The execution team's capacity drives our focus on automation, self-service tooling, and repeatable journeys.
 
@@ -459,7 +459,7 @@ The following scenarios illustrate how our capabilities come together across the
    - Extension surfaces prioritized journeys based on:
      - Technologies currently in use
      - Highest impact on outcome metrics
-     - Quadrant 4 opportunities (can measure + can manage + clear value)
+     - Stage 4 opportunities (can measure + can manage + clear value)
    - Each journey shows:
      - **Why it matters:** Impact on DORA metrics and business value
      - **Current state:** What needs to change
@@ -643,7 +643,7 @@ Orchestrating and executing modernization journeys with automated assistance.
 
 - **Journey Orchestration Service (LangGraph)** - Manages state and progress of modernization journeys using LangGraph for multi-step, agentic workflows with human-in-the-loop decision points
 - **Product Category Agents** - Specialized agents per product category (databases, languages, frameworks) that own and manage their category's recipes, coordinate through LangGraph cycles to handle cross-domain modernization
-- **Recommendation Engine** - Surfaces prioritized journeys based on technology stack, impact, and Quadrant 4 opportunities
+- **Recommendation Engine** - Surfaces prioritized journeys based on technology stack, impact, and stage 4 opportunities
 - **Moderne Integration Service** - Executes automated code transformations and generates pull requests
 
 ### Capability 7: Analytics & Impact Tracking
@@ -694,7 +694,7 @@ Cross-cutting concerns that support all other capabilities.
 
 The capabilities outlined above represent our comprehensive modernization platform architecture. Delivering all 10 capabilities at once is neither practical nor aligned with our prioritization principles.
 
-Our delivery approach follows the same Quadrant 4 focus that guides our technical debt prioritization: we build capabilities that enable us to **measure accurately, manage effectively, and deliver clear value**.
+Our delivery approach follows the same stage 4 focus that guides our technical debt prioritization: we build capabilities that enable us to **measure accurately, manage effectively, and deliver clear value**.
 
 **Capability Dependencies and Sequencing:**
 
@@ -717,6 +717,32 @@ This ensures we only industrialize capabilities that are ready for broad adoptio
 **Context to cover:**
 
 - Roadmap/phases for capability delivery
-- Prioritization aligned to Quadrant 4 focus (can measure + can manage + clear value)
+- Prioritization aligned to stage 4 focus (can measure + can manage + clear value)
 - Timeline and sequencing
 - Capability dependencies and critical path
+
+## TODO: Diagrams & Charts
+
+### Must Have (Core Narrative)
+
+- [ ] **Prioritization Framework with Team Structure Overlay** - Horizontal progression showing 4 stages of readiness (Q1: No value → Q2: Can't measure → Q3: Can't manage → Q4: Ready to scale), with team overlay showing 1 Strategic works on Q1, 3-4 Enablement on Q2/Q3, 15 Execution on Q4
+- [ ] **Three Pillars of Modernization** - Visual showing Modern Architecture / Modern Technology / Modern Practices with examples and interconnections
+- [ ] **Outcomes ↔ Metrics Alignment** - Flow diagram mapping 3 value drivers → 6 KPIs → specific modernization measurements
+- [ ] **Capabilities Architecture** - 10 capabilities with dependencies, relationships, and Platform Foundation layer
+
+### High Value (Proves Credibility)
+
+- [ ] **Modernization Success & KPI Progress** - Impact dashboard showing 1,500 apps modernized, DORA metrics improvements (20% lead time, 50% CFR), timeline of growth
+- [ ] **Success Story: Super Department Case Study** - Before/After comparison showing 25% lead time reduction with metrics and narrative
+
+### Nice to Have (Explains How)
+
+- [ ] **Scenario Flows** - UML sequence diagrams for 3 scenarios showing Developer → Tool → MCP → TechMod → External Systems interactions (start with Scenario 2: VSCode plugin)
+- [ ] **LangGraph Agent Orchestration** - Cycle showing Product Category Agents coordinating through LangGraph with human-in-the-loop decision points and Moderne recipe connections
+- [ ] **Modernization Journey Template** - Example journey (e.g., Spring Boot 2.7 → 3.2) showing: current state detection → Moderne recipe → PR generation → validation → score improvement
+- [ ] **SDLC Lifecycle** - Already referenced at `./images/sdlc-lifecycle.svg` (verify exists or create)
+
+### Supporting Detail
+
+- [ ] **TBM Taxonomy Tree** - Hierarchical tree showing Categories → Sub-categories → Products with modern/legacy/deprecated color coding
+- [ ] **Measurement Coverage Matrix** - [To be clarified: visualization approach TBD]
