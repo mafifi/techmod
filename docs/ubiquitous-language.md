@@ -8,11 +8,11 @@ This document defines the canonical vocabulary used across the TechMod moderniza
 
 ### Application
 
-A software system owned by a developer or team. The primary unit of modernization.
+An internally developed application with a TFS score. (Defined as internally developed software in production with an EONID.) Our primary Modernization unit.
 
 ### Modernization
 
-The continuous improvement of an application's technology, architecture, and engineering practices to reduce risk, improve speed, and increase value.
+The continuous improvement of an application's technology, architecture, and practices to advance one of Technology's value drivers.
 
 ### Value Driver
 
@@ -26,75 +26,135 @@ The strategic reasons for modernization:
 
 A measurable indicator of application performance (e.g., Lead Time, Change Failure Rate, MTTR, Incident Volume).
 
-### Modernity
+### Modernity Life Cycle
 
-The degree to which an application's technologies, architecture, and practices align with firm standards.
+A framework defining technology states:
 
-### Modernization Score
+- **Assess**: A technology under consideration
+- **Adopt**: A technology in active use and supported
+- **Continue**: A technology in widespread use and stable
+- **Hold**: A technology with emerging risks. New usage discouraged.
+- **Migrate**: A technology with known risks. Usage should be replaced.
 
-A composite score representing modernization health.
+### Modernization Score (Technical Fitness Score / TFS)
 
-### Modernization Posture
+A composite score representing an application's overall modernization level from 0 - 100, calculated from multiple components. Often referred to as **Technical Fitness Score (TFS)** in executive reporting.
 
-Categorizes overall health: **Healthy**, **Lagging**, **At Risk**, or **Critical**.
+### Goldilocks Opportunity
 
-### Opportunity
+A modernization opportunity that is **measurable**, **manageable**, and has **clear value** (Stage 4 readiness). These are the primary focus for scaled execution.
+
+### Modernization Opportunity
 
 A specific improvement that advances modernization (e.g., "Upgrade to Node.js 20").
 
-### Journey
+### Product
 
-A guided modernization path from current state to a defined target state.
+The authoritative definition of a technology product (e.g., "PostgreSQL", "Spring Boot") within the **TBM Taxonomy**. It serves as the anchor for modernity decisions.
+
+### Product Decision Record (PDR)
+
+The immutable record of a modernity decision for a **Product**. It captures the "Why", "Business Case", "Options Evaluated", and "Implications" of a technology's classification (e.g., why "Java 8" is "Migrate").
+
+### Modernization Journey
+
+A guided modernization path for an application to implement one or more opportunities using automated recipes, AI agents, with an outcome of improving one or more value drivers and the overall modernization score.
 
 ---
 
 ## 2. Tactical Vocabulary
 
-### Application Inventory
+This vocabulary reflects the actual developer journey observed in the modernization workflow: **Discover → Consult → Plan → Implement**.
 
-A detected list of technologies, frameworks, dependencies, and configurations for an application.
+```mermaid
+graph LR
+    D[Discovery] --> C[Consultation]
+    C <--> P[Planning]
+    P --> I[Implementation]
+    I --> Comp[Completion]
+    I -.->|Feedback/Refinement| P
+    I -.->|New Opportunities| D
+```
 
-### Current State
+### 2.1 Discovery Vocabulary
 
-The developer’s starting point—versions, patterns, practices, architecture, and metrics.
+These terms describe how developers explore modernization options, documentation, and technologies.
 
-### Target State
+### Modern Technology Catalog
 
-The desired modern outcome defined by a journey (e.g., upgraded runtime or migrated datastore).
+A browsable catalog of technologies classified by modernity lifecycle (Assess, Adopt, Continue, Hold, Migrate), organized by the **TBM Taxonomy** (Technology Delivery & Workplace).
 
-### Benefit
+### Technology Comparison
 
-The expected positive impact of performing a modernization opportunity.
+A side‑by‑side view that helps developers compare modern technologies or evaluate alternatives.
 
-### Effort
+### Modernization Knowledge Base
 
-Estimated complexity of completing the opportunity: **Low**, **Medium**, or **High**.
+The collection of reference documentation, official guides, patterns, and modernization journey descriptions.
 
-### Opportunity Card
+### Application Tagging
 
-A UI element summarizing a modernization opportunity, including benefit, effort, and value driver.
+The act of tagging an application as "modernize", "replatform", "refactor", or "decommission" during early exploration.
 
-### Modernization Delta
+### Opportunity Explorer
 
-The expected improvement in outcome metrics.
+A tool where developers browse modernization opportunities relevant to their application.
 
-### Detected Risk
-
-An automatically identified issue such as deprecated or unsupported technologies.
-
-### Recommendation
-
-A prioritized modernization opportunity relevant to the application.
-
-### Recipe
-
-An automated transformation used within a journey, often using Moderne.
-
-### Assessment
-
-An automated analysis of technology currency, architecture divergences, or practices.
+![Modernization Plugin Mockup](./images/modernization_plugin_mockup_1763976325826.png)
 
 ---
+
+### 2.2 Consultation Vocabulary
+
+These terms describe AI-assisted architecture guidance, consultation, and deeper investigation into modernization paths.
+
+### AI Architecture Advisor
+
+An AI-assisted architecture companion that guides developers on modernization decisions, ADRs, or recommended patterns.
+
+### Modernization Path Overview
+
+A high-level description of what a modernization journey entails, including benefits, prerequisites, and major steps.
+
+### Guided Recommendation Session
+
+A consultation process where the AI Advisor dynamically reviews the application's state and proposes suitable modernization directions.
+
+---
+
+### 2.3 Planning Vocabulary
+
+These terms describe the developer’s commitment to a modernization effort and alignment of scope.
+
+### Modernization Campaign
+
+A planned effort initiated by an application owner to modernize one or more parts of their application.
+
+### Campaign Scope
+
+The set of opportunities and technologies selected for modernization within a campaign.
+
+### Campaign Plan
+
+The structured, ordered sequence of modernization steps—automated or manual—that the developer intends to follow.
+
+---
+
+### 2.4 Implementation Vocabulary
+
+These terms describe hands-on modernization work carried out by developers or AI agents.
+
+### AI-Assisted Migration Step
+
+An automated or semi-automated transformation executed by an AI agent to move from a legacy technology to a modern one.
+
+### Reference-Driven Implementation
+
+A modernization step performed by the developer manually by following official guidance or documentation.
+
+### Execution Session
+
+A unit of implementation work, automated or manual, that advances the modernization campaign.
 
 ## 3. Operational Vocabulary
 
@@ -140,24 +200,34 @@ A recorded event capturing modernization actions.
 
 ---
 
-## 4. Domain Events (Initial Draft)
+## 4. Domain Events
 
-_This list will be replaced by the final downselected event set once provided._
+Events identified during the Event Storming session, categorized by phase:
 
-- **Application Scanned**
-- **Technologies Detected**
-- **Modernization Score Calculated**
-- **Opportunity Identified**
-- **Journey Recommended**
-- **Journey Started**
-- **Recipe Executed**
-- **Pull Request Generated**
-- **Journey Completed**
-- **Outcome Metrics Updated**
-- **Journey Blocked**
-- **Journey Abandoned**
-- **Localization Identified**
-- **Technology Reached End-of-Life**
+![Event Storming Board](./images/event-storming-board.png)
+
+### Discovery
+
+- **Technology Catalog Browsed**
+- **Application Tagged for Decommission**
+- **Official Guide Viewed**
+- **Journey Documentation Viewed**
+- **Modernization Opportunities Browsed**
+- **Technology Comparison Viewed**
+
+### Consultation
+
+- **ADR Advice Requested**
+- **Modernization Path Details Viewed**
+
+### Planning
+
+- **Modernization Campaign Started**
+
+### Implementation
+
+- **AI Migration Step Executed**
+- **Manual Migration Step Completed**
 
 ---
 
@@ -171,6 +241,8 @@ _This list will be replaced by the final downselected event set once provided._
 - Opportunity
 - Technology Profile
 - Modernization PR
+- Product
+- Product Decision Record (PDR)
 
 ### Entities
 
@@ -193,6 +265,18 @@ _This list will be replaced by the final downselected event set once provided._
 
 ## 6. Bounded Context Vocabulary Anchors
 
+The following diagram illustrates the relationships and data flow between the bounded contexts:
+
+```mermaid
+graph TD
+    PLC[Product Lifecycle Context] -->|Defines Products| TIC[Technology Intelligence Context]
+    KC[Knowledge Context] -->|Defines Standards| TIC
+    TIC -->|Provides Data| SC[Scoring Context]
+    SC -->|Provides Scores| DEC[Developer Experience Context]
+    JOC[Journey Orchestration Context] -->|Enables Action| DEC
+    DEC -->|Generates Events| AIC[Analytics & Impact Context]
+```
+
 ### Scoring Context
 
 Score, Scorecard, Metric, Component, Posture, Delta.
@@ -203,7 +287,11 @@ Technology, Version, Modernity, Detection, EOL, Technology Profile.
 
 ### Knowledge & Governance Context
 
-PDR, Standard, Pattern, Recommendation, Localization, Exception.
+Standard, Pattern, Recommendation, Localization, Exception.
+
+### Product Lifecycle Context
+
+Product, Product Catalog, PDR, Modernity Governance, TBM Taxonomy.
 
 ### Journey Orchestration Context
 
