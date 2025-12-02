@@ -10,6 +10,10 @@ This document defines the canonical vocabulary used across the TechMod moderniza
 
 An internally developed application with a TFS score. (Defined as internally developed software in production with an EONID.) Our primary Modernization unit.
 
+### EONID
+
+A firm‑internal unique identifier assigned to every application. Used as the authoritative key for tracking modernization state, scores, and lifecycle changes.
+
 ### Modernization
 
 The continuous improvement of an application's technology, architecture, and practices to advance one of Technology's value drivers.
@@ -25,6 +29,10 @@ The strategic reasons for modernization:
 ### Outcome Metric
 
 A measurable indicator of application performance (e.g., Lead Time, Change Failure Rate, MTTR, Incident Volume).
+
+### Application Current State
+
+The authoritative snapshot of an application's technologies, configurations, dependencies, architecture traits, and practice indicators at a point in time. Used by the AI Advisor, Scoring Engine, and Journey Orchestration to determine suitability, prerequisites, and recommended Journeys.
 
 ### Modernity Life Cycle
 
@@ -44,9 +52,22 @@ A composite score representing an application's overall modernization level from
 
 A modernization opportunity that is **measurable**, **manageable**, and has **clear value** (Stage 4 readiness). These are the primary focus for scaled execution.
 
+### Opportunity Family of Terms
+
+- **Modernization Opportunity** – the improvement itself.
+- **Goldilocks Opportunity** – the subset that is measurable, manageable, and high‑value.
+- **Opportunity Card** – the UI representation of an Opportunity.
+- **Opportunity Explorer** – the interface for browsing Opportunities.
+
 ### Modernization Opportunity
 
 A specific improvement that advances modernization (e.g., "Upgrade to Node.js 20").
+
+### Opportunity–Journey–Campaign Relationship
+
+A **Modernization Opportunity** defines _what_ should be modernized – a specific technology, architecture, or practice that advances a value driver and delivers measurable benefit (e.g., "Upgrade to latest web hosting technology to reduce lead time by 2 days").
+A **Modernization Journey** defines _how_ to implement that Opportunity through recipes, documentation, and AI‑assisted steps.
+A **Modernization Campaign** is a coordinated marketing and enablement effort that promotes one or more Opportunities across the firm.
 
 ### Product
 
@@ -56,9 +77,13 @@ The authoritative definition of a technology product (e.g., "PostgreSQL", "Sprin
 
 The immutable record of a modernity decision for a **Product**. It captures the "Why", "Business Case", "Options Evaluated", and "Implications" of a technology's classification (e.g., why "Java 8" is "Migrate").
 
+### Technology Profile
+
+A structured representation of the technologies an application uses, including versions, configurations, lifecycle status, and modernity classification. Produced by the Technology Intelligence Context and consumed by Scoring, Developer Experience, and Journey Orchestration.
+
 ### Modernization Journey
 
-A guided modernization path for an application to implement one or more opportunities using automated recipes, AI agents, with an outcome of improving one or more value drivers and the overall modernization score.
+A guided implementation path that delivers a Modernization Opportunity. It includes automated recipes, required documentation, validation steps, and AI‑assisted migration actions. A Journey represents the end‑to‑end execution needed to adopt a modern technology, practice, or architecture.
 
 ---
 
@@ -128,7 +153,11 @@ These terms describe the developer’s commitment to a modernization effort and 
 
 ### Modernization Campaign
 
-A planned effort initiated by an application owner to modernize one or more parts of their application.
+An orchestrated marketing and awareness initiative designed to increase adoption of a Modernization Opportunity. A Campaign coordinates communications, education sessions, guidance, and targeted messaging to help developers understand _why_ an Opportunity matters and _how_ to adopt it.
+
+### Campaign–Journey Relationship
+
+A Campaign promotes Opportunities; Journeys implement them. A Campaign may promote one or more Opportunities, each of which is executed through its corresponding Journey.
 
 ### Campaign Scope
 
