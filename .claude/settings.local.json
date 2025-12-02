@@ -20,7 +20,8 @@
 			"mcp__playwright__browser_navigate",
 			"mcp__playwright__browser_install",
 			"Bash(npm run dev:*)",
-			"Bash(mkdir:*)"
+			"Bash(mkdir:*)",
+			"Read(//Users/afifim/.claude/projects/-Users-afifim-Development-techmod/**)"
 		]
 	},
 	"enableAllProjectMcpServers": true,
